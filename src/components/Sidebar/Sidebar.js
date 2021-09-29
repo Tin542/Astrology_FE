@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import UserProfile from "../Profile/UserPage.js";
 
 // react-bootstrap components
 import {
@@ -142,7 +143,7 @@ function Sidebar({ routes, image, background }) {
               className="simple-text logo-normal"
               href="http://www.creative-tim.com"
             >
-              Creative Tim
+              Spirit Astrology 
             </a>
           </div>
           <div className="user">
@@ -173,7 +174,7 @@ function Sidebar({ routes, image, background }) {
                     <li>
                       <a
                         className="profile-dropdown"
-                        href="#pablo"
+                        href="admin/"
                         onClick={(e) => e.preventDefault()}
                       >
                         <span className="sidebar-mini">MP</span>
@@ -227,7 +228,7 @@ let linkPropTypes = {
 
 Sidebar.defaultProps = {
   image: "",
-  background: "black",
+  background: "purple",
   routes: [],
 };
 

@@ -25,14 +25,16 @@ import "assets/css/demo.css";
 
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
+import Login from "components/Login/LoginPage";
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
       <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-      <Route exact path="/login" render={(props) => <LoginPage {...props} />} />
-      <Redirect from="/" to="/admin/dashboard" />
+      <Route exact path="/login" render={(props) => <Login {...props} />} />
+      <Redirect from="/" to="/login" />
+      <Redirect from="/admin/dashboard" to="/admin/dashboard" />
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")
