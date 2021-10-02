@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import UserProfile from "../Profile/UserPage.js";
 
 // react-bootstrap components
 import {
@@ -72,8 +71,7 @@ function Sidebar({ routes, image, background }) {
           <Nav.Item
             className={getCollapseInitialState(prop.views) ? "active" : ""}
             as="li"
-            key={key}
-          >
+            key={key}>
             <Nav.Link
               className={state[prop.state] ? "collapsed" : ""}
               data-toggle="collapse"
@@ -81,8 +79,7 @@ function Sidebar({ routes, image, background }) {
                 e.preventDefault();
                 setState({ ...state, ...st });
               }}
-              aria-expanded={state[prop.state]}
-            >
+              aria-expanded={state[prop.state]}>
               <i className={prop.icon}></i>
               <p>
                 {prop.name} <b className="caret"></b>
@@ -100,8 +97,7 @@ function Sidebar({ routes, image, background }) {
         <Nav.Item
           className={activeRoute(prop.layout + prop.path)}
           key={key}
-          as="li"
-        >
+          as="li">
           <Nav.Link to={prop.layout + prop.path} as={Link}>
             {prop.icon ? (
               <>
@@ -130,8 +126,7 @@ function Sidebar({ routes, image, background }) {
           <div className="logo">
             <a
               className="simple-text logo-mini"
-              href="http://www.creative-tim.com"
-            >
+              href="http://www.creative-tim.com">
               <div className="logo-img">
                 <img
                   src={require("assets/img/logo.svg").default}
@@ -139,19 +134,15 @@ function Sidebar({ routes, image, background }) {
                 />
               </div>
             </a>
-            <a
-              className="simple-text logo-normal"
-              href="http://www.creative-tim.com"
-            >
-              Spirit Astrology 
+            <a className="simple-text logo-normal">
+              <Link to={"/admin/dashboard"}>Spirit Astrology</Link>
             </a>
           </div>
           <div className="user">
             <div className="photo">
               <img
                 alt="..."
-                src={require("assets/img/default-avatar.png").default}
-              ></img>
+                src={require("assets/img/default-avatar.png").default}></img>
             </div>
             <div className="info">
               <a
@@ -162,10 +153,9 @@ function Sidebar({ routes, image, background }) {
                   e.preventDefault();
                   setUserCollapseState(!userCollapseState);
                 }}
-                aria-expanded={userCollapseState}
-              >
+                aria-expanded={userCollapseState}>
                 <span>
-                  Tania Andrew <b className="caret"></b>
+                  Damian Wayne <b className="caret"></b>
                 </span>
               </a>
               <Collapse id="collapseExample" in={userCollapseState}>
@@ -174,33 +164,31 @@ function Sidebar({ routes, image, background }) {
                     <li>
                       <a
                         className="profile-dropdown"
-                        href="admin/"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <span className="sidebar-mini">MP</span>
-                        <span className="sidebar-normal">My Profile</span>
+                        onClick={(e) => e.preventDefault()}>
+                        <Link to={"/admin/User-Page"}>
+                          <span className="sidebar-mini">MP</span>
+                          <span className="sidebar-normal">My Profile</span>
+                        </Link>
                       </a>
                     </li>
-                    <li>
+                    {/* <li>
                       <a
                         className="profile-dropdown"
                         href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
+                        onClick={(e) => e.preventDefault()}>
                         <span className="sidebar-mini">EP</span>
                         <span className="sidebar-normal">Edit Profile</span>
                       </a>
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                       <a
                         className="profile-dropdown"
                         href="#pablo"
-                        onClick={(e) => e.preventDefault()}
-                      >
+                        onClick={(e) => e.preventDefault()}>
                         <span className="sidebar-mini">S</span>
                         <span className="sidebar-normal">Settings</span>
                       </a>
-                    </li>
+                    </li> */}
                   </Nav>
                 </div>
               </Collapse>
@@ -212,8 +200,7 @@ function Sidebar({ routes, image, background }) {
           className="sidebar-background"
           style={{
             backgroundImage: "url('" + image + "')",
-          }}
-        ></div>
+          }}></div>
       </div>
     </>
   );

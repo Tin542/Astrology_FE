@@ -32,26 +32,54 @@ function Dashboard() {
                 <Row>
                   <Col xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-chart text-warning"></i>
+                      <i className="nc-icon nc-circle-09 text-warning"></i>
                     </div>
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Number</p>
-                      <Card.Title as="h4">150GB</Card.Title>
+                      <p className="card-category">Astrologer</p>
+                      <Card.Title as="h4">150</Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
-              <Card.Footer>
+              {/* <Card.Footer>
                 <hr></hr>
                 <div className="stats">
                   <i className="fas fa-redo mr-1"></i>
                   Update Now
                 </div>
-              </Card.Footer>
+              </Card.Footer> */}
             </Card>
           </Col>
+
+          <Col lg="3" sm="6">
+            <Card className="card-stats">
+              <Card.Body>
+                <Row>
+                  <Col xs="5">
+                    <div className="icon-big text-center icon-warning">
+                      <i className="nc-icon nc-single-02 text-danger"></i>
+                    </div>
+                  </Col>
+                  <Col xs="7">
+                    <div className="numbers">
+                      <p className="card-category">Customer</p>
+                      <Card.Title as="h4">150</Card.Title>
+                    </div>
+                  </Col>
+                </Row>
+              </Card.Body>
+              {/* <Card.Footer>
+                <hr></hr>
+                <div className="stats">
+                  <i className="far fa-clock-o mr-1"></i>
+                  In the last hour
+                </div>
+              </Card.Footer> */}
+            </Card>
+          </Col>
+
           <Col lg="3" sm="6">
             <Card className="card-stats">
               <Card.Body>
@@ -69,16 +97,16 @@ function Dashboard() {
                   </Col>
                 </Row>
               </Card.Body>
-              <Card.Footer>
+              {/* <Card.Footer>
                 <hr></hr>
                 <div className="stats">
                   <i className="far fa-calendar-alt mr-1"></i>
                   Last day
                 </div>
-              </Card.Footer>
+              </Card.Footer> */}
             </Card>
           </Col>
-          <Col lg="3" sm="6">
+          {/* <Col lg="3" sm="6">
             <Card className="card-stats">
               <Card.Body>
                 <Row>
@@ -103,31 +131,31 @@ function Dashboard() {
                 </div>
               </Card.Footer>
             </Card>
-          </Col>
+          </Col> */}
           <Col lg="3" sm="6">
             <Card className="card-stats">
               <Card.Body>
                 <Row>
                   <Col xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-favourite-28 text-primary"></i>
+                      <i className="nc-icon nc-android text-primary"></i>
                     </div>
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
-                      <p className="card-category">Followers</p>
+                      <p className="card-category">Downmoaded</p>
                       <Card.Title as="h4">+45K</Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
-              <Card.Footer>
+              {/* <Card.Footer>
                 <hr></hr>
                 <div className="stats">
                   <i className="fas fa-redo mr-1"></i>
                   Update now
                 </div>
-              </Card.Footer>
+              </Card.Footer> */}
             </Card>
           </Col>
         </Row>
@@ -135,8 +163,8 @@ function Dashboard() {
           <Col md="12">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Global Sales by Top Locations</Card.Title>
-                <p className="card-category">All products that were shipped</p>
+                <Card.Title as="h4">Global User by Top Locations</Card.Title>
+                <p className="card-category">The place to use the app the most </p>
               </Card.Header>
               <Card.Body>
                 <Row>
@@ -148,11 +176,11 @@ function Dashboard() {
                             <div className="flag">
                               <img
                                 alt="..."
-                                src={require("assets/img/flags/US.png").default}
+                                src={require("assets/img/flags/VN.png").default}
                               ></img>
                             </div>
                           </td>
-                          <td>USA</td>
+                          <td>Viet Nam</td>
                           <td className="text-right">2.920</td>
                           <td className="text-right">53.23%</td>
                         </tr>

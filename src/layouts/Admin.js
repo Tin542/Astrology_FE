@@ -75,7 +75,7 @@ function Admin() {
       </div>
       <FixedPlugin
         setSidebarImageParent={(value) => setSidebarImage(value)}
-        sidebarDefaultImage={sidebarImage}
+        sidebarDefaultImage={sidebarImage}netlify deploy
         sidebarImages={[image1, image2, image3, image4]}
         backgroundColors={[
           "black",

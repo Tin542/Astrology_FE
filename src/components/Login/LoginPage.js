@@ -20,6 +20,17 @@ function LoginPage() {
       setCardClasses("");
     }, 1000);
   });
+//   let response = await axios.post(
+//     "http://localhost:9999/BookStore/auth/signin",
+//     body,
+//     { headers }
+//   );
+//   localStorage.setItem(
+//     "auth",
+//     response.data.type + " " + response.data.token
+//   );
+//   return response;
+//    }
   async function handleSubmit(event) {
     event.preventDefault();
 
@@ -32,7 +43,7 @@ function LoginPage() {
       // } else {
       //   history.push("/");
       // }
-      history.push("/admin");
+      history.push("/admin/Dashboard");
     } catch (e) {
       alert("Username or password incoorect !");
       console.log(e.stack);
@@ -58,13 +69,15 @@ function LoginPage() {
                         <label>Email address</label>
                         <Form.Control
                           placeholder="Enter email"
-                          type="email"></Form.Control>
+                          type="email"
+                          required="true"></Form.Control>
                       </Form.Group>
                       <Form.Group>
                         <label>Password</label>
                         <Form.Control
                           placeholder="Password"
-                          type="password"></Form.Control>
+                          type="password"
+                          required="true"></Form.Control>
                       </Form.Group>
                       <Form.Check className="pl-0">
                         <Form.Check.Label>
