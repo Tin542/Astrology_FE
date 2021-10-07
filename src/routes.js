@@ -21,7 +21,7 @@ import LoginPage from "views/Pages/LoginPage.js";
 import RegisterPage from "views/Pages/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 import PostTable from "views/Posts/PostTable.js";
-import AstroTable from "views/Astrologers/AstrologerTables.js"
+import AstroTable from "views/Astrologers/AstrologerTables.js";
 
 var routes = [
   {
