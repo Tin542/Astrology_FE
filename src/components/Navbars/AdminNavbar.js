@@ -1,4 +1,8 @@
-import React from "react";
+
+import React, { useState, useEffect } from "react";
+import { logout } from "../../firebase/firebaseConfig";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import routes from "routes.js";
 
 // react-bootstrap components
 import {
@@ -20,6 +24,9 @@ import {
 
 function AdminNavbar() {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
+  const [modal, setModalLogOut] = useState(false);
+
+  const toggleLogOut = () => setModalLogOut(!modal);
   return (
     <>
       <Navbar expand="lg">
@@ -204,7 +211,9 @@ function AdminNavbar() {
                   <Dropdown.Item
                     className="text-danger"
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setModalLogOut(true);
+                    }}
                   >
                     <i className="nc-icon nc-button-power"></i>
                     Log out
@@ -215,6 +224,36 @@ function AdminNavbar() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      
+      <Modal isOpen={modal} toggle={toggleLogOut}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+        >
+          Are you sure?
+        </ModalHeader>
+        <ModalBody>
+          <h5>Do you want to log out?</h5>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              logout();
+              setModalLogOut(true);
+              window.location.href = "/";
+              localStorage.clear();
+              sessionStorage.clear();
+            }}
+          >     
+            Log out
+          </Button>{""}
+
+          <Button color="secondary" onClick={toggleLogOut}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 }
