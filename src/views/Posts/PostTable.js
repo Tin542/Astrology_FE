@@ -39,15 +39,11 @@ function PostTables() {
   }, []);
   const [useListServiceShowPage, setUseListServiceShowPage] = useState([]);
   function getServiceList() {
-    get("/api/v1/posts")
+    get("/api/v1/posts",)
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
-        // setName(temp.name);
-        // setDescription(temp.description);
-        // setImage(temp.picture);
-        // setIsDeleted(temp.is_Delete);
-        // setServiceList(temp);
+        
         setUseListServiceShowPage(temp);
         // setUseListServiceShowPage(
         //   temp.slice(numberPage * 5 - 5, numberPage * 5)

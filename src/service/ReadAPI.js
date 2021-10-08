@@ -41,6 +41,15 @@ export async function post(url, body) {
   
 }
 
+export async function postToken(url, token) {
+  return await axios.post(endpoint + url, token,{
+    headers: { "Content-type": "application/json",
+    // withCredentials: true,
+   },
+  });
+  
+}
+
 export async function postWithToken(url, body, token) {
   return await axios.post(endpoint + url, body, {
     headers: {
