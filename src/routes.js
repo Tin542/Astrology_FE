@@ -22,6 +22,8 @@ import RegisterPage from "views/Pages/RegisterPage.js";
 import LockScreenPage from "views/Pages/LockScreenPage.js";
 import PostTable from "views/Posts/PostTable.js";
 import AstroTable from "views/Astrologers/AstrologerTables.js";
+import CustomTable from "views/Customers/CustomerTables.js";
+import CategoryTable from "views/Categories/CategoryTable.js";
 
 var routes = [
   {
@@ -31,65 +33,40 @@ var routes = [
     icon: "nc-icon nc-chart-pie-35",
     component: Dashboard,
   },
- 
+
   {
-    collapse: true,
-    path: "/Posts",
+    path: "/Posts/post-table",
     name: "Post",
-    state: "openPosts",
+    layout: "/admin",
     icon: "nc-icon nc-notes",
-    views: [
-      {
-        path: "/post-table",
-        layout: "/admin",
-        name: "Post Tables",
-        mini: "PT",
-        component: PostTable,
-      },
-    ],
+    component: PostTable,
   },
   {
-    collapse: true,
-    path: "/Astrologers",
+    path: "/Categories/category-table",
+    name: "Category",
+    layout: "/admin",
+    icon: "nc-icon nc-grid-45",
+    component: CategoryTable,
+    
+  },
+  {
+    path: "/Astrologers/astrologer-table",
     name: "Astrologer",
-    state: "openAstrologers",
+    layout: "/admin",
     icon: "nc-icon nc-circle-09",
-    views: [
-      {
-        path: "/astrologer-table",
-        layout: "/admin",
-        name: "astrologer Tables",
-        mini: "AT",
-        component: AstroTable,
-      },
-      
-    ],
-  },
-  {
-    collapse: true,
-    path: "/Customers",
-    name: "Customer",
-    state: "openCustomers",
-    icon: "nc-icon nc-single-02",
-    views: [
-      {
-        path: "/customer-table",
-        layout: "/admin",
-        name: "customer Tables",
-        mini: "CT",
-        component: AstroTable,
-      },
-      
-    ],
+    component: AstroTable,
+    
   },
   
   {
-    path: "/calendar",
+    path: "/Customers/customer-table",
+    name: "Customer",
     layout: "/admin",
-    name: "Calendar",
-    icon: "nc-icon nc-single-copy-04",
-    component: Calendar,
+    icon: "nc-icon nc-single-02",
+    component: CustomTable,
+    
   },
+
   {
     collapse: true,
     path: "/pages",
