@@ -155,7 +155,7 @@ function Sidebar({ routes, image, background }) {
                 }}
                 aria-expanded={userCollapseState}>
                 <span>
-                  Damian Wayne <b className="caret"></b>
+                  Nguyen Thanh Tin <b className="caret"></b>
                 </span>
               </a>
               <Collapse id="collapseExample" in={userCollapseState}>

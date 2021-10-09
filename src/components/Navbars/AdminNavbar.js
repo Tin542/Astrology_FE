@@ -1,6 +1,4 @@
-
-import React, { useState, useEffect } from "react";
-import { logout } from "../../firebase/firebaseConfig";
+import React from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import routes from "routes.js";
 
@@ -24,9 +22,14 @@ import {
 
 function AdminNavbar() {
   const [collapseOpen, setCollapseOpen] = React.useState(false);
-  const [modal, setModalLogOut] = useState(false);
-
-  const toggleLogOut = () => setModalLogOut(!modal);
+  const getBrandText = () => {
+    for (let i = 0; i < routes.length; i++) {
+      if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
+        return routes[i].name;
+      }
+    }
+    return "Brand";
+  };
   return (
     <>
       <Navbar expand="lg">
@@ -53,7 +56,7 @@ function AdminNavbar() {
               </Button>
             </div>
             <Navbar.Brand href="#pablo" onClick={(e) => e.preventDefault()}>
-              Buttons
+            {getBrandText()}
             </Navbar.Brand>
           </div>
           <button
@@ -82,7 +85,7 @@ function AdminNavbar() {
               </Form>
             </Nav>
             <Nav navbar>
-              <Dropdown as={Nav.Item}>
+              {/* <Dropdown as={Nav.Item}>
                 <Dropdown.Toggle
                   as={Nav.Link}
                   id="dropdown-165516306"
@@ -123,7 +126,7 @@ function AdminNavbar() {
                     Another action
                   </Dropdown.Item>
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> */}
               <Dropdown as={Nav.Item}>
                 <Dropdown.Toggle
                   as={Nav.Link}
@@ -153,7 +156,7 @@ function AdminNavbar() {
                   >
                     Notification 3
                   </Dropdown.Item>
-                  <Dropdown.Item
+                  {/* <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
                   >
@@ -164,7 +167,7 @@ function AdminNavbar() {
                     onClick={(e) => e.preventDefault()}
                   >
                     Notification 5
-                  </Dropdown.Item>
+                  </Dropdown.Item> */}
                 </Dropdown.Menu>
               </Dropdown>
               <Dropdown as={Nav.Item}>
@@ -179,13 +182,13 @@ function AdminNavbar() {
                   alignRight
                   aria-labelledby="navbarDropdownMenuLink"
                 >
-                  <Dropdown.Item
+                  {/* <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
                   >
                     <i className="nc-icon nc-email-85"></i>
                     Messages
-                  </Dropdown.Item>
+                  </Dropdown.Item> */}
                   <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
@@ -201,19 +204,17 @@ function AdminNavbar() {
                     Settings
                   </Dropdown.Item>
                   <div className="divider"></div>
-                  <Dropdown.Item
+                  {/* <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
                   >
                     <i className="nc-icon nc-lock-circle-open"></i>
                     Lock Screen
-                  </Dropdown.Item>
+                  </Dropdown.Item> */}
                   <Dropdown.Item
                     className="text-danger"
                     href="#pablo"
-                    onClick={() => {
-                      setModalLogOut(true);
-                    }}
+                    onClick={(e) => e.preventDefault()}
                   >
                     <i className="nc-icon nc-button-power"></i>
                     Log out
@@ -224,36 +225,6 @@ function AdminNavbar() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-
-      
-      <Modal isOpen={modal} toggle={toggleLogOut}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-        >
-          Are you sure?
-        </ModalHeader>
-        <ModalBody>
-          <h5>Do you want to log out?</h5>
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            color="danger"
-            onClick={() => {
-              logout();
-              setModalLogOut(true);
-              window.location.href = "/";
-              localStorage.clear();
-              sessionStorage.clear();
-            }}
-          >     
-            Log out
-          </Button>{""}
-
-          <Button color="secondary" onClick={toggleLogOut}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
     </>
   );
 }
