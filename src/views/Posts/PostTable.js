@@ -38,23 +38,22 @@ function PostTables() {
     // });
   }, []);
   const [useListServiceShowPage, setUseListServiceShowPage] = useState([]);
-   async function getServiceList() {
-    const result = await get("/api/v1/posts") 
-      // .then((res) => {
-      //   var temp = res.data.data.list;
-      //   console.log(temp);
-        
-      setUseListServiceShowPage(result.data.data.list);
-      //   // setUseListServiceShowPage(
-      //   //   temp.slice(numberPage * 5 - 5, numberPage * 5)
-      //   // );
-      //   // setTotalNumberPage(Math.ceil(temp.length / 5));
-      //   // setCount(count);
-      // })
-      // .catch((err) => {
-      //   console.log(err);
-      // });
-      console.log(result.data, "abcxczxcsdcsdv");
+  function getServiceList() {
+    get("/api/v1/posts")
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log(temp);
+
+        setUseListServiceShowPage(temp);
+        // setUseListCategoryShowPage(
+        //   temp.slice(numberPage * 5 - 5, numberPage * 5)
+        // );
+        // setTotalNumberPage(Math.ceil(temp.length / 5));
+        // setCount(count);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
   return (
     <>
