@@ -3,8 +3,8 @@ import axios from "axios";
 const endpoint = "http://54.169.107.173";
 
 
-export function get(url) {
-  return axios.get(endpoint + url, {
+export async function get(url) {
+  return await axios.get(endpoint + url, {
     headers: { "Content-type": "application/json" },
   });
 }

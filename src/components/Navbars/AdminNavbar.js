@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { logout} from "../../firebase/firebaseConfig";
 import routes from "routes.js";
 
 // react-bootstrap components
@@ -21,6 +23,8 @@ import {
 } from "react-bootstrap";
 
 function AdminNavbar() {
+  const [modal, setModalLogOut] = useState(false);
+  const toggleLogOut = () => setModalLogOut(!modal);
   const [collapseOpen, setCollapseOpen] = React.useState(false);
   const getBrandText = () => {
     for (let i = 0; i < routes.length; i++) {
@@ -39,8 +43,7 @@ function AdminNavbar() {
               <Button
                 className="btn-fill btn-round btn-icon d-none d-lg-block bg-dark border-dark"
                 variant="dark"
-                onClick={() => document.body.classList.toggle("sidebar-mini")}
-              >
+                onClick={() => document.body.classList.toggle("sidebar-mini")}>
                 <i className="fas fa-ellipsis-v visible-on-sidebar-regular"></i>
                 <i className="fas fa-bars visible-on-sidebar-mini"></i>
               </Button>
@@ -49,21 +52,19 @@ function AdminNavbar() {
                 variant="dark"
                 onClick={() =>
                   document.documentElement.classList.toggle("nav-open")
-                }
-              >
+                }>
                 <i className="fas fa-ellipsis-v visible-on-sidebar-regular"></i>
                 <i className="fas fa-bars visible-on-sidebar-mini"></i>
               </Button>
             </div>
             <Navbar.Brand href="#pablo" onClick={(e) => e.preventDefault()}>
-            {getBrandText()}
+              {getBrandText()}
             </Navbar.Brand>
           </div>
           <button
             className="navbar-toggler navbar-toggler-right border-0"
             type="button"
-            onClick={() => setCollapseOpen(!collapseOpen)}
-          >
+            onClick={() => setCollapseOpen(!collapseOpen)}>
             <span className="navbar-toggler-bar burger-lines"></span>
             <span className="navbar-toggler-bar burger-lines"></span>
             <span className="navbar-toggler-bar burger-lines"></span>
@@ -72,15 +73,13 @@ function AdminNavbar() {
             <Nav className="nav mr-auto" navbar>
               <Form
                 className="navbar-form navbar-left navbar-search-form ml-3 ml-lg-0"
-                role="search"
-              >
+                role="search">
                 <InputGroup>
                   <i className="nc-icon nc-zoom-split"></i>
                   <Form.Control
                     defaultValue=""
                     placeholder="Search..."
-                    type="text"
-                  ></Form.Control>
+                    type="text"></Form.Control>
                 </InputGroup>
               </Form>
             </Nav>
@@ -131,8 +130,7 @@ function AdminNavbar() {
                 <Dropdown.Toggle
                   as={Nav.Link}
                   id="dropdown-414718872"
-                  variant="default"
-                >
+                  variant="default">
                   <i className="nc-icon nc-bell-55 mr-1"></i>
                   <span className="notification">5</span>
                   <span className="d-lg-none">Notification</span>
@@ -140,20 +138,17 @@ function AdminNavbar() {
                 <Dropdown.Menu>
                   <Dropdown.Item
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
+                    onClick={(e) => e.preventDefault()}>
                     Notification 1
                   </Dropdown.Item>
                   <Dropdown.Item
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
+                    onClick={(e) => e.preventDefault()}>
                     Notification 2
                   </Dropdown.Item>
                   <Dropdown.Item
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
+                    onClick={(e) => e.preventDefault()}>
                     Notification 3
                   </Dropdown.Item>
                   {/* <Dropdown.Item
@@ -174,14 +169,12 @@ function AdminNavbar() {
                 <Dropdown.Toggle
                   as={Nav.Link}
                   id="dropdown-41471887333"
-                  variant="default"
-                >
+                  variant="default">
                   <i className="nc-icon nc-bullet-list-67"></i>
                 </Dropdown.Toggle>
                 <Dropdown.Menu
                   alignRight
-                  aria-labelledby="navbarDropdownMenuLink"
-                >
+                  aria-labelledby="navbarDropdownMenuLink">
                   {/* <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
@@ -191,15 +184,13 @@ function AdminNavbar() {
                   </Dropdown.Item> */}
                   <Dropdown.Item
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
+                    onClick={(e) => e.preventDefault()}>
                     <i className="nc-icon nc-umbrella-13"></i>
                     Help Center
                   </Dropdown.Item>
                   <Dropdown.Item
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
+                    onClick={(e) => e.preventDefault()}>
                     <i className="nc-icon nc-settings-90"></i>
                     Settings
                   </Dropdown.Item>
@@ -214,10 +205,20 @@ function AdminNavbar() {
                   <Dropdown.Item
                     className="text-danger"
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
+                    onClick={(e) => e.preventDefault()}>
                     <i className="nc-icon nc-button-power"></i>
-                    Log out
+                    <Button
+                      color="danger"
+                      onClick={() => {
+                        logout();
+                        setModalLogOut(true);
+                        window.location.href = "/";
+                        localStorage.clear();
+                        sessionStorage.clear();
+                      }}>
+                      Log out
+                    </Button>
+                    {""}
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
