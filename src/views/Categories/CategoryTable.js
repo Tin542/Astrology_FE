@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { del, post, get, put } from "../../service/ReadAPI";
+
 import Moment from "react-moment";
 import moment from "moment";
 
@@ -28,6 +29,7 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
+  Input
 } from "reactstrap";
 
 function CategoryTable() {
@@ -136,9 +138,7 @@ function CategoryTable() {
                           <td className="td-number">
                             <OverlayTrigger
                               overlay={
-                                <Tooltip id="tooltip-461494662">
-                                  Edit
-                                </Tooltip>
+                                <Tooltip id="tooltip-461494662">Edit</Tooltip>
                               }
                               placement="left">
                               <Button
@@ -150,15 +150,19 @@ function CategoryTable() {
                             </OverlayTrigger>
                             <OverlayTrigger
                               overlay={
-                                <Tooltip id="tooltip-408856985">
-                                  Remove
-                                </Tooltip>
+                                <Tooltip id="tooltip-408856985">Remove</Tooltip>
                               }
                               placement="left">
                               <Button
                                 className="btn-link btn-icon"
                                 type="button"
-                                variant="danger">
+                                variant="danger"
+                                onClick={() => {
+                                  setCategoryEdit();
+                                  setCategoryModelDelete(true);
+                                  window.location.href = "/admin/Categories/category-table";
+                                  
+                                }}>
                                 <i className="fas fa-times"></i>
                               </Button>
                             </OverlayTrigger>
@@ -187,7 +191,39 @@ function CategoryTable() {
             color="danger"
             onClick={() => {
               deleteByID();
-              setServiceModalDelete(false);
+              setCategoryModelDelete(false);
+            }}>
+            Delete
+          </Button>{" "}
+          <Button color="secondary" onClick={toggleCategoryDelete}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={modalCategoryEdit} toggle={toggleCategoryEdit}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggleCategoryEdit)}
+          toggle={toggleCategoryEdit}>
+          Edit Category
+        </ModalHeader>
+        <ModalBody>
+          <Input
+            type="text"
+            name="name"
+            id="name"
+            defaultValue={name}
+            placeholder="Name"
+            // onChange={lnerror}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              deleteByID();
+              setCategoryModelDelete(false);
             }}>
             Delete
           </Button>{" "}

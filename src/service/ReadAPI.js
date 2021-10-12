@@ -1,5 +1,4 @@
 import axios from "axios";
-// const endpoint = process.env.REACT_APP_API_URL;
 const endpoint = "http://54.169.107.173";
 
 

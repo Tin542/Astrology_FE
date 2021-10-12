@@ -2,7 +2,7 @@ import firebase from "firebase";
 import "firebase/storage";
 import "firebase/firestore";
 import "firebase/auth";
-import { postToken } from "../service/ReadAPI";
+import { post, postToken } from "../service/ReadAPI";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -25,35 +25,28 @@ const storage = firebase.storage();
 const auth = app.auth();
 const db = app.firestore();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
-localStorage.setItem("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsInJvbGVzIjoiODg4IiwiYnVmZmVyX3RpbWUiOiI4NjQwMCIsImV4cCI6MTYzNDMxMDg3NiwiaXNzIjoicW1QbHVzIiwibmJmIjoxNjMzNzA2MDc2LCJpYXQiOjE2MzM3MDYwNzZ9.D7I08N16RhSFkzr7_nmTCZDQfnyviTVeeswRkPMKtqY")
+
 
 const loginWithGoogle = async () => {
-  try {
-    const res = await auth.signInWithPopup(googleProvider);
-    const user = res.user;
-    //This is JWT
-    console.log(await user.getIdToken());
-    ////////////
-    const query = await db
-      .collection("users")
-      .where("uid", "==", user.uid)
-      .get();
-    if (query.docs.length === 0) {
-      await db.collection("users").add({
-        uid: user.uid,
-        name: user.displayName,
-        authProvider: "google",
-        email: user.email,
-      });
+    try {
+      const res = await auth.signInWithPopup(googleProvider);
+  
+      let t = await getToken(res.user._lat);
+      console.log("tokennn",res.user._lat);
+      console.log("tttttt", t);
+      // localStorage.setItem("token", t.token);
+      console.log("respone", res);
+      // localStorage.setItem("name", res.name);
+      // localStorage.setItem("email", res.data.email);
+    } catch (err) {
+        console.log(err)
+        return
     }
-    // let response = postToken("/api/v1/users/login", user.getIdToken());
-
-    // console.log(response.data.token);
-  } catch (err) {
-    console.error(err);
-    alert(err.message);
-  }
 };
+
+async function getToken(fbToken){
+  post("/api/v1/users/login", {token: fbToken});
+}
 
 const logout = () => {
   auth.signOut();
