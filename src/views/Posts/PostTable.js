@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { del, post, get, put } from "../../service/ReadAPI";
-import Moment from 'react-moment';
+import Moment from "react-moment";
 import moment from "moment";
 
 // react-bootstrap components
@@ -19,7 +19,6 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
-
 
 function PostTables() {
   useEffect(() => {
@@ -55,6 +54,11 @@ function PostTables() {
         console.log(err);
       });
   }
+
+  function getPostByID(Id){
+    
+  }
+
   return (
     <>
       <Container fluid>
@@ -92,7 +96,9 @@ function PostTables() {
                           </td>
                           <td className="td-name">{item.title}</td>
                           <td>{item.content}</td>
-                          <td className="td-number">{moment(item.updated_at).format("MM-DD-YYYY")}</td>
+                          <td className="td-number">
+                            {moment(item.updated_at).format("MM-DD-YYYY")}
+                          </td>
                           <td className="td-number">Watting</td>
                           <td className="td-actions">
                             <OverlayTrigger
@@ -105,7 +111,8 @@ function PostTables() {
                               <Button
                                 className="btn-link btn-icon"
                                 type="button"
-                                variant="info">
+                                variant="info"
+                                oncli>
                                 <i className="far fa-image"></i>
                               </Button>
                             </OverlayTrigger>
@@ -141,8 +148,6 @@ function PostTables() {
                         </tr>
                       );
                     })}
-                    
-                   
                   </tbody>
                 </Table>
               </Card.Body>
@@ -150,6 +155,19 @@ function PostTables() {
           </Col>
         </Row>
       </Container>
+
+      <Modal isOpen={this.state.modalIsOpen} onRequestClose={this.closeModal}>
+        <button onClick={this.closeModal}>Close</button>
+        <div>
+          <Form class="login">
+            <div class="login-screen">
+              <div class="app-title">
+                <h1>Detail Post</h1>
+              </div>
+            </div>
+          </Form>
+        </div>
+      </Modal>
     </>
   );
 }

@@ -1,5 +1,4 @@
 import axios from "axios";
-// const endpoint = process.env.REACT_APP_API_URL;
 const endpoint = "http://54.169.107.173";
 
 
@@ -9,10 +8,18 @@ export async function get(url) {
   });
 }
 
+export async function getWithParam(url, param) {
+  return await axios.get(endpoint + url, {
+    params: params,
+    headers: { "Content-type": "application/json" },
+  });
+}
+
 export async function getWithToken(url, token) {
   return await axios.get(endpoint + url, {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `x-${token}`,
+      
     },
   });
 }

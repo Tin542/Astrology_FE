@@ -28,8 +28,7 @@ function LoginPage() {
       return;
     }
     if (user){
-      // let response = post("/api/v1/users/login", {token: user.getIdToken()});
-      // console.log(response.data.token);
+      
 
       history.replace("/admin/dashboard");
     } 

@@ -195,30 +195,13 @@ function AdminNavbar() {
                     Settings
                   </Dropdown.Item>
                   <div className="divider"></div>
-                  {/* <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="nc-icon nc-lock-circle-open"></i>
-                    Lock Screen
-                  </Dropdown.Item> */}
+                  
                   <Dropdown.Item
                     className="text-danger"
                     href="#pablo"
-                    onClick={(e) => e.preventDefault()}>
+                    onClick={(e) => {setModalLogOut(true)}}>
                     <i className="nc-icon nc-button-power"></i>
-                    <Button
-                      color="danger"
-                      onClick={() => {
-                        logout();
-                        setModalLogOut(true);
-                        window.location.href = "/";
-                        localStorage.clear();
-                        sessionStorage.clear();
-                      }}>
-                      Log out
-                    </Button>
-                    {""}
+                    Logout
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -226,6 +209,39 @@ function AdminNavbar() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      <Modal isOpen={modal} toggle={toggleLogOut}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          // close={closeBtn(toggleLogOut)}
+          // toggle={toggleLogOut}
+        >
+          Are you sure?
+        </ModalHeader>
+        <ModalBody>
+          <h5>Do you want to log out?</h5>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              logout();
+              setModalLogOut(true);
+              window.location.href = "/";
+              localStorage.clear();
+              sessionStorage.clear();
+            }}
+          >     
+            Log out
+          </Button>{""}
+
+          <Button color="secondary" onClick={toggleLogOut}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      
     </>
   );
 }
