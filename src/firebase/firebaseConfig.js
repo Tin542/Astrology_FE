@@ -26,15 +26,17 @@ const auth = app.auth();
 const db = app.firestore();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-
+async function getToken(fbToken){
+  return post("/api/v1/users/login", {token: fbToken});
+}
 const loginWithGoogle = async () => {
     try {
       const res = await auth.signInWithPopup(googleProvider);
   
       let t = await getToken(res.user._lat);
       console.log("tokennn",res.user._lat);
-      console.log("tttttt", t);
-      // localStorage.setItem("token", t.token);
+      console.log("t", t.data.data.token);
+      localStorage.setItem("token", t.token);
       console.log("respone", res);
       // localStorage.setItem("name", res.name);
       // localStorage.setItem("email", res.data.email);
@@ -44,9 +46,7 @@ const loginWithGoogle = async () => {
     }
 };
 
-async function getToken(fbToken){
-  post("/api/v1/users/login", {token: fbToken});
-}
+
 
 const logout = () => {
   auth.signOut();
