@@ -15,11 +15,6 @@
 
 */
 import Dashboard from "views/Dashboard.js";
-import Calendar from "views/Calendar.js";
-import UserPage from "views/Pages/UserPage.js";
-import LoginPage from "views/Pages/LoginPage.js";
-import RegisterPage from "views/Pages/RegisterPage.js";
-import LockScreenPage from "views/Pages/LockScreenPage.js";
 import PostTable from "views/Posts/PostTable.js";
 import AstroTable from "views/Astrologers/AstrologerTables.js";
 import CustomTable from "views/Customers/CustomerTables.js";
@@ -65,44 +60,6 @@ var routes = [
     icon: "nc-icon nc-single-02",
     component: CustomTable,
     
-  },
-
-  {
-    collapse: true,
-    path: "/pages",
-    name: "Pages",
-    state: "openPages",
-    icon: "nc-icon nc-puzzle-10",
-    views: [
-      {
-        path: "/user-page",
-        layout: "/admin",
-        name: "User Page",
-        mini: "UP",
-        component: UserPage,
-      },
-      {
-        path: "/login-page",
-        layout: "/auth",
-        name: "Login Page",
-        mini: "LP",
-        component: LoginPage,
-      },
-      {
-        path: "/register-page",
-        layout: "/auth",
-        name: "Register",
-        mini: "RP",
-        component: RegisterPage,
-      },
-      {
-        path: "/lock-screen-page",
-        layout: "/auth",
-        name: "Lock Screen Page",
-        mini: "LSP",
-        component: LockScreenPage,
-      },
-    ],
   },
 ];
 export default routes;
