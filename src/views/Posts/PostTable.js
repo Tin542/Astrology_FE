@@ -39,20 +39,9 @@ import {
 function PostTables() {
   useEffect(() => {
     getServiceList();
-    // displayFIeldName();
-    // displayStateName();
-    // get("​/api​/v1.0​/company​").then((res) => {
-    //   if (res && res.status === 200) {
-    //     setListFilterState(res.data);
-    //   }
-    // });
-    // get("/api​/v1.0​/major_field​").then((res) => {
-    //   if (res && res.status === 200) {
-    //     setListFilterState(res.data);
-    //   }
-    // });
   }, []);
   const [useListServiceShowPage, setUseListServiceShowPage] = useState([]);
+  const [postPaging, setPostPaging] = useState([]);
 
   //detail
   const [id, setId] = useState();
@@ -74,22 +63,55 @@ function PostTables() {
   const [deleteModal, setDeleteModal] = useState(false);
   const toggleDelete = () => setDeleteModal(!deleteModal);
 
+  //paging
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState();
+  const [pageList, setPageList] = useState([]);
+  const [limit, setLimit] = useState(5);
+
   function getServiceList() {
-    get("/api/v1/posts")
+    get(`/api/v1/posts?limit=${limit}&&page=${currentPage}`)
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
 
         setUseListServiceShowPage(temp);
-        // setUseListCategoryShowPage(
-        //   temp.slice(numberPage * 5 - 5, numberPage * 5)
-        // );
-        // setTotalNumberPage(Math.ceil(temp.length / 5));
-        // setCount(count);
+        showPageList(res);
+        
       })
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  function changePage(crrPage) {
+    get(`/api/v1/posts?limit=${limit}&&page=${crrPage}`)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("paging post ",temp);
+
+        setUseListServiceShowPage(temp);
+        setCurrentPage(crrPage);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function showPageList(res) {
+    var list = [];
+    var totalPageNumber = Math.ceil(res.data.data.total / 5);
+    console.log("total: ", totalPageNumber);
+
+    setTotalPage(totalPageNumber);
+
+    for (let i = 0; i < totalPageNumber; i++) {
+      list.push(i);
+    }
+    if (list.length > 1) {
+      setPageList(list);
+      console.log("list page: " + list);
+    }
   }
 
   function getPostByID(Id) {
@@ -193,6 +215,49 @@ function PostTables() {
           </Col>
         </Row>
       </Container>
+      <Pagination aria-label="Page navigation example" className="page-right">
+        <PaginationItem disabled={currentPage === 1}>
+          <PaginationLink
+            className="page"
+            previous
+            //disable={numberPage === 1 ? "true" : "false"}
+
+            onClick={() => {
+              if (currentPage - 1 > 0) {
+                changePage(currentPage - 1);
+              }
+            }}>
+            Previous
+          </PaginationLink>
+        </PaginationItem>
+
+        {pageList.map((page, index) => (
+          <PaginationItem>
+            <PaginationLink
+              className="page"
+              key={index}
+              onClick={() => {
+                changePage(page + 1);
+              }}>
+              {page + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+
+        <PaginationItem disabled={currentPage === totalPage}>
+          <PaginationLink
+            className="page"
+            next
+            //disable={numberPage === totalNumberPage ? true : false}
+            onClick={() => {
+              if (currentPage + 1 <= totalPage) {
+                changePage(currentPage + 1);
+              }
+            }}>
+            Next
+          </PaginationLink>
+        </PaginationItem>
+      </Pagination>
 
       <Modal isOpen={editModal} toggle={toggleDelete}>
         <ModalHeader
