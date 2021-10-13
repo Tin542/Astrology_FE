@@ -18,7 +18,7 @@ export async function getWithParam(url, param) {
 export async function getWithToken(url, token) {
   return await axios.get(endpoint + url, {
     headers: {
-      Authorization: `x-${token}`,
+      Authorization: `Bearer ${token}`,
       
     },
   });

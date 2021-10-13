@@ -84,87 +84,8 @@ function AdminNavbar() {
               </Form>
             </Nav>
             <Nav navbar>
-              {/* <Dropdown as={Nav.Item}>
-                <Dropdown.Toggle
-                  as={Nav.Link}
-                  id="dropdown-165516306"
-                  variant="default"
-                >
-                  <i className="nc-icon nc-planet"></i>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Create New Post
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Manage Something
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Do Nothing
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Submit to live
-                  </Dropdown.Item>
-                  <li className="divider"></li>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Another action
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown> */}
-              <Dropdown as={Nav.Item}>
-                <Dropdown.Toggle
-                  as={Nav.Link}
-                  id="dropdown-414718872"
-                  variant="default">
-                  <i className="nc-icon nc-bell-55 mr-1"></i>
-                  <span className="notification">5</span>
-                  <span className="d-lg-none">Notification</span>
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}>
-                    Notification 1
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}>
-                    Notification 2
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}>
-                    Notification 3
-                  </Dropdown.Item>
-                  {/* <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Notification 4
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    Notification 5
-                  </Dropdown.Item> */}
-                </Dropdown.Menu>
-              </Dropdown>
+            
+              
               <Dropdown as={Nav.Item}>
                 <Dropdown.Toggle
                   as={Nav.Link}
@@ -175,13 +96,7 @@ function AdminNavbar() {
                 <Dropdown.Menu
                   alignRight
                   aria-labelledby="navbarDropdownMenuLink">
-                  {/* <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    <i className="nc-icon nc-email-85"></i>
-                    Messages
-                  </Dropdown.Item> */}
+                  
                   <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}>
