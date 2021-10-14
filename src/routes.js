@@ -24,6 +24,8 @@ import PostTable from "views/Posts/PostTable.js";
 import AstroTable from "views/Astrologers/AstrologerTables.js";
 import CustomTable from "views/Customers/CustomerTables.js";
 import CategoryTable from "views/Categories/CategoryTable.js";
+import PlanetTable from "views/Planets/PlanetTable.js";
+import ZodiacTable from "views/Zodiacs/ZodiacTable.js";
 
 var routes = [
   {
@@ -103,6 +105,22 @@ var routes = [
         component: LockScreenPage,
       },
     ],
+  },
+
+  {
+    path: "/Planets/planet",
+    name: "Planet",
+    layout: "/admin",
+    icon: "nc-icon nc-planet",
+    component: PlanetTable,
+  },
+
+  {
+    path: "/Zodiacs/zodiac",
+    name: "Zodiac",
+    layout: "/admin",
+    icon: "nc-icon nc-explore-2",
+    component: ZodiacTable,
   },
 ];
 export default routes;
