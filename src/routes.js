@@ -63,45 +63,6 @@ var routes = [
     component: CustomTable,
     
   },
-
-  {
-    collapse: true,
-    path: "/pages",
-    name: "Pages",
-    state: "openPages",
-    icon: "nc-icon nc-puzzle-10",
-    views: [
-      {
-        path: "/user-page",
-        layout: "/admin",
-        name: "User Page",
-        mini: "UP",
-        component: UserPage,
-      },
-      {
-        path: "/login-page",
-        layout: "/auth",
-        name: "Login Page",
-        mini: "LP",
-        component: LoginPage,
-      },
-      {
-        path: "/register-page",
-        layout: "/auth",
-        name: "Register",
-        mini: "RP",
-        component: RegisterPage,
-      },
-      {
-        path: "/lock-screen-page",
-        layout: "/auth",
-        name: "Lock Screen Page",
-        mini: "LSP",
-        component: LockScreenPage,
-      },
-    ],
-  },
-
   {
     path: "/Planets/planet",
     name: "Planet",
