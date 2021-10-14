@@ -106,11 +106,3 @@ export async function patchWithToken(url, body, token) {
 export async function put(url, body) {
   return await axios.put(endpoint + url, body);
 }
-
-
-
-// export async function del(url) {
-//   return await axios.delete(endpoint + url, {
-//     headers: { "Content-type": "application/json" },
-//   });
-// }
