@@ -50,7 +50,7 @@ function PostTables() {
   const [approve, setAprove] = useState(false);
   const [category, setCategory] = useState();
   const [astrologer, setAstrologer] = useState();
-  const [zodiac, setZodiac] = useState();
+  const [zodiac, setZodiac] = useState([]);
   const [createDate, setCreateDate] = useState();
   const [updateDate, setUpdateDate] = useState();
   const [image, setImage] = useState();
@@ -131,7 +131,7 @@ function PostTables() {
         setUpdateDate(temp.updated_at);
         setImage(temp.image_url);
 
-        console.log(temp.zodiacs.name);
+        console.log("zodiacs: ",temp.zodiacs.data.name);
       })
       .catch((err) => {
         console.log(err);
@@ -227,7 +227,7 @@ function PostTables() {
                 changePage(currentPage - 1);
               }
             }}>
-            Previous
+            «
           </PaginationLink>
         </PaginationItem>
 
@@ -254,7 +254,7 @@ function PostTables() {
                 changePage(currentPage + 1);
               }
             }}>
-            Next
+            »
           </PaginationLink>
         </PaginationItem>
       </Pagination>

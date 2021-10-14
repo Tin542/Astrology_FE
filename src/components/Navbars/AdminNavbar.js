@@ -70,19 +70,7 @@ function AdminNavbar() {
             <span className="navbar-toggler-bar burger-lines"></span>
           </button>
           <Navbar.Collapse className="justify-content-end" in={collapseOpen}>
-            <Nav className="nav mr-auto" navbar>
-              <Form
-                className="navbar-form navbar-left navbar-search-form ml-3 ml-lg-0"
-                role="search">
-                <InputGroup>
-                  <i className="nc-icon nc-zoom-split"></i>
-                  <Form.Control
-                    defaultValue=""
-                    placeholder="Search..."
-                    type="text"></Form.Control>
-                </InputGroup>
-              </Form>
-            </Nav>
+            
             <Nav navbar>
             
               

@@ -106,46 +106,7 @@ function FixedPlugin({
                 </a>
               </li>
             ))}
-            <li className="button-container">
-              <div>
-                <Button
-                  block
-                  href="http://www.creative-tim.com/product/light-bootstrap-dashboard-react?ref=lbpr-fp"
-                  target="_blank"
-                  variant="info"
-                >
-                  Get free demo!
-                </Button>
-              </div>
-            </li>
-            <li className="button-container">
-              <div>
-                <Button
-                  block
-                  className="btn-fill"
-                  href="http://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react?ref=lbpr-fp"
-                  target="_blank"
-                  variant="warning"
-                >
-                  Buy now!
-                </Button>
-              </div>
-            </li>
-            <li className="button-container">
-              <div>
-                <Button
-                  block
-                  href="https://demos.creative-tim.com/light-bootstrap-dashboard-pro-react/#/documentation/tutorial?ref=lbpr-fp"
-                  target="_blank"
-                  variant="danger"
-                >
-                  Documentation
-                </Button>
-              </div>
-            </li>
-            <li className="header-title" id="sharrreTitle">
-              Thank you for sharing!
-            </li>
+            
             <li className="button-container d-flex justify-content-center">
               <Button className="mr-2" id="twitter" variant="twitter">
                 <i className="fab fa-twitter"></i>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { del, post, get, put, getWithParam } from "../../service/ReadAPI";
+import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
 
 import Moment from "react-moment";
 import moment from "moment";
@@ -29,17 +29,16 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
-  Input
+  Input,
 } from "reactstrap";
 
 function CategoryTable() {
   const [useListCategoryShowPage, setUseListCategoryShowPage] = useState([]);
-  const [isPaging, setIsPaging] = useState(false);
 
   //Edit Category
-  const [CategoryEdit, setCategoryEdit] = useState(null);
-  const [modalCategoryEdit, setCategoryModelEdit] = useState(false);
-  const toggleCategoryEdit = () => setCategoryModelEdit(!modalCategoryEdit);
+  const [edtCategory, setEdtCategory] = useState([]);
+  const [modalEdit, setModelEdit] = useState(false);
+  const toggEditModal = () => setModelEdit(!modalEdit);
 
   //Delete Category
   const [CategoryDelete, setCategoryDelete] = useState(null);
@@ -47,64 +46,129 @@ function CategoryTable() {
   const toggleCategoryDelete = () =>
     setCategoryModelDelete(!modalCategoryDelete);
 
-  //paging
-  const [numberPage, setNumberPage] = useState(1);
-  const [totalNumberPage, setTotalNumberPage] = useState(1);
-  // const [sort, setSort] = useState(id);
-  const [limit, setLimit] = useState(5);
-  const [count, setCount] = useState(1);
+  //create category
+  const [Create, setCreate] = useState([]);
+  const [modalCreate, setModalCreate] = useState(false);
+  const toggleCreateModal = () => setModalCreate(!modalCreate);
 
-  // field edit
-  const [name, setName] = useState("");
+  //paging
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState();
+  const [pageList, setPageList] = useState([]);
+  const [limit, setLimit] = useState(5);
 
   useEffect(() => {
     getCategoryList();
-    // displayFIeldName();
-    // displayStateName();
-    // get("​/api​/v1.0​/company​").then((res) => {
-    //   if (res && res.status === 200) {
-    //     setListFilterState(res.data);
-    //   }
-    // });
-    // get("/api​/v1.0​/major_field​").then((res) => {
-    //   if (res && res.status === 200) {
-    //     setListFilterState(res.data);
-    //   }
-    // });
   }, []);
 
   function getCategoryList() {
-    get("/api/v1/categories")
+    get(`/api/v1/categories?limit=${limit}&&page=${currentPage}`)
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
-
         setUseListCategoryShowPage(temp);
-        setUseListCategoryShowPage(
-          temp.slice(numberPage * 5 - 5, numberPage * 5)
-        );
-        setTotalNumberPage(Math.ceil(temp.length / 5));
-        setCount(count);
+        showPageList(res);
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  function onClickPage(number) {
-    setNumberPage(number);
-    setUseListCategoryShowPage(useListCategoryShowPage.slice(number * 5 - 5, number * 5));
-    setTotalNumberPage(Math.ceil(useListCategoryShowPage.length / 5));
+  function changePage(number) {
+    get(`/api/v1/categories?limit=${limit}&&page=${number}`)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log(temp);
+        setUseListCategoryShowPage(temp);
+        setCurrentPage(number);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function showPageList(res) {
+    var list = [];
+    var totalPageNumber = Math.ceil(res.data.data.total / 5);
+    console.log("total: ", totalPageNumber);
+
+    setTotalPage(totalPageNumber);
+
+    for (let i = 0; i < totalPageNumber; i++) {
+      list.push(i);
+    }
+    if (list.length > 1) {
+      setPageList(list);
+      console.log("list page: " + list);
+    }
   }
 
   function deleteByID() {
-    del(`/api/v1.0/categories/${CategoryDelete}`)
+    console.log("delete: ", CategoryDelete);
+    // console.log("token: ", localStorage.getItem("token"));
+
+    del(`/api/v1.0/categories/${CategoryDelete}`, localStorage.getItem("token"))
       .then((res) => {
-        if (res.status === 200) {
+        if (res.data.code === 0) {
+          alert("delete success");
           window.location = "/admin/category-table";
+        }
+        if (res.data.code === 7) {
+          console.log(res.data.msg);
+          alert(res.data.msg);
         }
       })
       .catch((err) => {
+        alert(err);
+        console.log(err);
+      });
+  }
+
+  function addCategory() {
+    console.log("add: ", Create);
+
+    postWithToken(
+      `/api/v1.0/categories`,
+      { name: Create },
+      localStorage.getItem("token")
+    )
+      .then((res) => {
+        if (res.data.code === 0) {
+          alert("Add success");
+          window.location = "/admin/category-table";
+        }
+        if (res.data.code === 7) {
+          console.log(res.data.msg);
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+        console.log(err);
+      });
+  }
+
+  function editCategory(){
+    console.log("edt ID: ", edtCategory.id);
+    console.log("wdt Name: ", edtCategory.name);
+
+    putWithToken(
+      `/api/v1.0/categories/${edtCategory.id}`,
+      { name: edtCategory.name },
+      localStorage.getItem("token")
+    )
+      .then((res) => {
+        if (res.data.code === 0) {
+          alert("Edit success");
+          window.location = "/admin/category-table";
+        }
+        if (res.data.code === 7) {
+          console.log(res.data.msg);
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        alert(err);
         console.log(err);
       });
   }
@@ -125,7 +189,25 @@ function CategoryTable() {
           <Col md="12">
             <Card className="table-big-boy">
               <Card.Header>
-                <Card.Title as="h4">All Category</Card.Title>
+                <Card.Title as="h4">
+                  All Category
+                  <OverlayTrigger
+                    overlay={
+                      <Tooltip id="tooltip-461494662">Add Category</Tooltip>
+                    }
+                    placement="left">
+                    <Button
+                      className="btn-link btn-icon"
+                      type="button"
+                      variant="success"
+                      onClick={() => {
+                        setModalCreate(true);
+                      }}>
+                      <i className="fas fa-plus"></i>
+                    </Button>
+                  </OverlayTrigger>
+                </Card.Title>
+
                 <br></br>
               </Card.Header>
               <Card.Body className="table-full-width">
@@ -154,7 +236,15 @@ function CategoryTable() {
                               <Button
                                 className="btn-link btn-icon"
                                 type="button"
-                                variant="success">
+                                variant="success"
+                                onClick={() => {
+                                  // setEdtId(item.id);
+                                  setEdtCategory({
+                                    id: item.id,
+                                    name: item.name,
+                                  });
+                                  setModelEdit(true);
+                                }}>
                                 <i className="fas fa-edit"></i>
                               </Button>
                             </OverlayTrigger>
@@ -168,10 +258,8 @@ function CategoryTable() {
                                 type="button"
                                 variant="danger"
                                 onClick={() => {
-                                  setCategoryEdit();
+                                  setCategoryDelete(item.id);
                                   setCategoryModelDelete(true);
-                                  window.location.href = "/admin/Categories/category-table";
-                                  
                                 }}>
                                 <i className="fas fa-times"></i>
                               </Button>
@@ -184,96 +272,57 @@ function CategoryTable() {
                 </Table>
               </Card.Body>
               <Row>
-                  <Col md={6}></Col>
-                  <Col md={6}>
-                    <Pagination
-                      aria-label="Page navigation example"
-                      className="page-right"
-                    >
-                      <PaginationItem disabled={numberPage === 1}>
-                        <PaginationLink
-                          className="page"
-                          previous
-                          //disable={numberPage === 1 ? "true" : "false"}
-
-                          onClick={() => {
-                            if (numberPage - 1 > 0) {
-                              onClickPage(numberPage - 1);
-                            }
-                          }}
-                        >
-                          Previous
-                        </PaginationLink>
-                      </PaginationItem>
-                      {numberPage - 1 > 0 ? (
-                        <PaginationItem>
-                          <PaginationLink
-                            className="page"
-                            onClick={() => {
-                              onClickPage(numberPage - 1);
-                            }}
-                          >
-                            {numberPage - 1}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ) : (
-                        ""
-                      )}
-                      <PaginationItem active>
-                        <PaginationLink className="page-active">
-                          {numberPage}
-                        </PaginationLink>
-                      </PaginationItem>
-                      {numberPage + 1 <= totalNumberPage ? (
-                        <PaginationItem>
-                          <PaginationLink
-                            className="page"
-                            onClick={() => {
-                              onClickPage(numberPage + 1);
-                            }}
-                          >
-                            {numberPage + 1}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ) : (
-                        ""
-                      )}
-                      {numberPage + 2 <= totalNumberPage ? (
-                        <PaginationItem>
-                          <PaginationLink
-                            className="page"
-                            onClick={() => {
-                              onClickPage(numberPage + 2);
-                            }}
-                          >
-                            {numberPage + 2}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ) : (
-                        ""
-                      )}
-
-                      <PaginationItem disabled={numberPage === totalNumberPage}>
-                        <PaginationLink
-                          className="page"
-                          next
-                          //disable={numberPage === totalNumberPage ? true : false}
-                          onClick={() => {
-                            if (numberPage + 1 <= totalNumberPage) {
-                              onClickPage(numberPage + 1);
-                            }
-                          }}
-                        >
-                          Next
-                        </PaginationLink>
-                      </PaginationItem>
-                    </Pagination>
-                  </Col>
-                </Row>
+                <Col md={6}></Col>
+                <Col md={6}></Col>
+              </Row>
             </Card>
           </Col>
         </Row>
       </Container>
+
+      <Pagination aria-label="Page navigation example" className="page-center">
+        <PaginationItem disabled={currentPage === 1}>
+      
+          <PaginationLink
+            className="page"
+            previous
+            //disable={numberPage === 1 ? "true" : "false"}
+
+            onClick={() => {
+              if (currentPage - 1 > 0) {
+                changePage(currentPage - 1);
+              }
+            }}>
+            «
+          </PaginationLink>
+        </PaginationItem>
+        {pageList.map((page, index) => (
+          <PaginationItem>
+            <PaginationLink
+              className="page"
+              key={index}
+              onClick={() => {
+                changePage(page + 1);
+              }}>
+              {page + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+        <PaginationItem disabled={currentPage === totalPage}>
+        
+          <PaginationLink
+            className="page"
+            next
+            //disable={numberPage === totalNumberPage ? true : false}
+            onClick={() => {
+              if (currentPage + 1 <= totalPage) {
+                changePage(currentPage + 1);
+              }
+            }}>
+            »
+          </PaginationLink>
+        </PaginationItem>
+      </Pagination>
 
       <Modal isOpen={modalCategoryDelete} toggle={toggleCategoryDelete}>
         <ModalHeader
@@ -298,19 +347,20 @@ function CategoryTable() {
         </ModalFooter>
       </Modal>
 
-      <Modal isOpen={modalCategoryEdit} toggle={toggleCategoryEdit}>
+      <Modal isOpen={modalCreate} toggle={toggleCreateModal}>
         <ModalHeader
           style={{ color: "#B22222" }}
-          close={closeBtn(toggleCategoryEdit)}
-          toggle={toggleCategoryEdit}>
-          Edit Category
+          close={closeBtn(toggleCreateModal)}
+          toggle={toggleCreateModal}>
+          Add Category
         </ModalHeader>
         <ModalBody>
           <Input
             type="text"
             name="name"
             id="name"
-            defaultValue={name}
+            value={Create}
+            onChange={(e) => setCreate(e.target.value)}
             placeholder="Name"
             // onChange={lnerror}
           />
@@ -319,12 +369,45 @@ function CategoryTable() {
           <Button
             color="danger"
             onClick={() => {
-              deleteByID();
-              setCategoryModelDelete(false);
+              addCategory();
+              setModalCreate(false);
             }}>
-            Delete
+            Add
           </Button>{" "}
-          <Button color="secondary" onClick={toggleCategoryDelete}>
+          <Button color="secondary" onClick={toggleCreateModal}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={modalEdit} toggle={toggEditModal}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggEditModal)}
+          toggle={toggEditModal}>
+          Add Category
+        </ModalHeader>
+        <ModalBody>
+          <Input
+            type="text"
+            name="name"
+            id="name"
+            value={edtCategory.name}
+            onChange={(e) => setEdtCategory({name: e.target.value})}
+            placeholder="Name"
+            // onChange={lnerror}
+          />
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              editCategory();
+              setModelEdit(false);
+            }}>
+            Edit
+          </Button>{" "}
+          <Button color="secondary" onClick={toggEditModal}>
             Cancel
           </Button>
         </ModalFooter>
