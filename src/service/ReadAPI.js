@@ -8,6 +8,38 @@ export async function get(url) {
   });
 }
 
+export async function postWithToken(url, body, token) {
+  return await axios.post(endpoint + url, body, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "x-token": `${token}`,
+      "Content-type": "application/json",
+      withCredentials: true,
+    },
+  });
+}
+
+export async function putWithToken(url, body, token) {
+  return await axios.put(endpoint + url, body, {
+    headers: { Authorization: `Bearer ${token}`,
+    "Content-type": "application/json",
+    "x-token": `${token}`
+    },
+  });
+}
+
+export async function del(url , token) {
+  console.log("token: ", token);
+  console.log("url: ", url);
+
+  return await axios.delete(endpoint + url,{
+    headers: { Authorization: `Bearer ${token}`,
+    "Content-type": "application/json",
+    "x-token": `${token}`
+    },
+  });
+}
+
 export async function getWithParam(url, param) {
   return await axios.get(endpoint + url, {
     params: params,
@@ -57,15 +89,6 @@ export async function postToken(url, token) {
   
 }
 
-export async function postWithToken(url, body, token) {
-  return await axios.post(endpoint + url, body, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-type": "application/json",
-      withCredentials: true,
-    },
-  });
-}
 
 export async function patch(url, body) {
   return await axios.patch(endpoint + url, body);
@@ -84,21 +107,10 @@ export async function put(url, body) {
   return await axios.put(endpoint + url, body);
 }
 
-export async function putWithToken(url, body, token) {
-  return await axios.put(endpoint + url, body, {
-    headers: { Authorization: `Bearer ${token}`,
-    "Content-type": "application/json",
-    },
-  });
-}
 
-// export async function del(url, token) {
+
+// export async function del(url) {
 //   return await axios.delete(endpoint + url, {
-//     headers: { Authorization: `Bearer ${token}` },
+//     headers: { "Content-type": "application/json" },
 //   });
 // }
-export async function del(url) {
-  return await axios.delete(endpoint + url, {
-    headers: { "Content-type": "application/json" },
-  });
-}

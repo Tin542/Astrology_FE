@@ -30,9 +30,14 @@ function LoginPage() {
     if (user){
       
 
-      history.replace("/admin/dashboard");
+      history.push("/admin/dashboard");
     } 
   }, [user, loading]);
+
+  function handleLogin(){
+    loginWithGoogle;
+    console.log(loginWithGoogle);
+  }
 
   const [cardClasses, setCardClasses] = React.useState("card-hidden");
   React.useEffect(() => {
@@ -66,44 +71,6 @@ function LoginPage() {
             </div>
           </div>
 
-          {/* <Container>
-            <Col className="mx-auto" lg="4" md="8">
-              <Form action="" className="form" method="">
-                <Card className={"card-login " + cardClasses}>
-                  <Card.Header>
-                    <h3 className="header text-center">Login</h3>
-                  </Card.Header>
-                  <Card.Body>
-                    <Card.Body>
-                      <Form.Group
-                        onSubmit={(e) => {
-                          handleSubmit(e);
-                        }}
-                      >
-                        <label>Username</label>
-                        <Form.Control
-                          placeholder="Enter username"
-                          type="text"
-                        ></Form.Control>
-                      </Form.Group>
-                      <Form.Group>
-                        <label>Password</label>
-                        <Form.Control
-                          placeholder="Password"
-                          type="password"
-                        ></Form.Control>
-                      </Form.Group>
-                    </Card.Body>
-                  </Card.Body>
-                  <Card.Footer className="ml-auto mr-auto">
-                    <Button className="btn-wd" type="submit" variant="warning">
-                      Login
-                    </Button>
-                  </Card.Footer>
-                </Card>
-              </Form>
-            </Col>
-          </Container> */}
         </div>
 
         <div

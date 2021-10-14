@@ -36,10 +36,9 @@ const loginWithGoogle = async () => {
       let t = await getToken(res.user._lat);
       console.log("tokennn",res.user._lat);
       console.log("t", t.data.data.token);
-      localStorage.setItem("token", t.token);
+      localStorage.setItem("token", t.data.data.token);
       console.log("respone", res);
-      // localStorage.setItem("name", res.name);
-      // localStorage.setItem("email", res.data.email);
+      
     } catch (err) {
         console.log(err)
         return

@@ -129,7 +129,7 @@ function Sidebar({ routes, image, background }) {
               href="http://www.creative-tim.com">
               <div className="logo-img">
                 <img
-                  src={require("assets/img/logo.svg").default}
+                  src={require("assets/img/logo.png").default}
                   alt="react-logo"
                 />
               </div>
@@ -171,24 +171,7 @@ function Sidebar({ routes, image, background }) {
                         </Link>
                       </a>
                     </li>
-                    {/* <li>
-                      <a
-                        className="profile-dropdown"
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}>
-                        <span className="sidebar-mini">EP</span>
-                        <span className="sidebar-normal">Edit Profile</span>
-                      </a>
-                    </li> */}
-                    {/* <li>
-                      <a
-                        className="profile-dropdown"
-                        href="#pablo"
-                        onClick={(e) => e.preventDefault()}>
-                        <span className="sidebar-mini">S</span>
-                        <span className="sidebar-normal">Settings</span>
-                      </a>
-                    </li> */}
+                    
                   </Nav>
                 </div>
               </Collapse>
