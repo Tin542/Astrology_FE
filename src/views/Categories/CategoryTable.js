@@ -67,6 +67,8 @@ function CategoryTable() {
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
+        var totalPageNumber = Math.ceil(res.data.data.total / 5);
+        setTotalPage(totalPageNumber);
         setUseListCategoryShowPage(temp);
         showPageList(res);
       })
@@ -98,7 +100,7 @@ function CategoryTable() {
     for (let i = 0; i < totalPageNumber; i++) {
       list.push(i);
     }
-    if (list.length > 1) {
+    if (list.length >= 1) {
       setPageList(list);
       console.log("list page: " + list);
     }
@@ -112,7 +114,8 @@ function CategoryTable() {
       .then((res) => {
         if (res.data.code === 0) {
           alert("delete success");
-          window.location = "/admin/Categories/category-table";
+          setCurrentPage(1);
+          getCategoryList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -136,7 +139,8 @@ function CategoryTable() {
       .then((res) => {
         if (res.data.code === 0) {
           alert("Add success");
-          window.location = "/admin/Categories/category-table";
+          setCurrentPage(1);
+          getCategoryList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -150,7 +154,7 @@ function CategoryTable() {
   }
 
   function editCategory(){
-    console.log("edt ID: ", edtCategory.id);
+    console.log("edt ID: ", edtID);
     console.log("wdt Name: ", edtCategory.name);
 
     putWithToken(
@@ -161,7 +165,8 @@ function CategoryTable() {
       .then((res) => {
         if (res.data.code === 0) {
           alert("Edit success");
-          window.location = "/admin/Categories/category-table";
+          setCurrentPage(1);
+          getCategoryList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
