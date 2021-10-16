@@ -1,5 +1,6 @@
 import axios from "axios";
-const endpoint = "http://54.169.107.173";
+require('dotenv').config()
+const endpoint = "https://ec2-13-213-42-113.ap-southeast-1.compute.amazonaws.com";
 
 
 export async function get(url) {
