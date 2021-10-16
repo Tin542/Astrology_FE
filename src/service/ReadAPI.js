@@ -33,7 +33,7 @@ export async function del(url , token) {
   console.log("url: ", url);
 
   return await axios.delete(endpoint + url,{
-    headers: { Authorization: `Bearer ${token}`,
+    headers: {
     "Content-type": "application/json",
     "x-token": `${token}`
     },

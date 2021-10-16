@@ -88,7 +88,7 @@ function PostTables() {
     get(`/api/v1/posts?limit=${limit}&&page=${crrPage}`)
       .then((res) => {
         var temp = res.data.data.list;
-        console.log("paging post ",temp);
+        console.log("paging post: ",temp);
 
         setUseListServiceShowPage(temp);
         setCurrentPage(crrPage);

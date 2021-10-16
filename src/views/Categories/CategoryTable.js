@@ -36,6 +36,7 @@ function CategoryTable() {
   const [useListCategoryShowPage, setUseListCategoryShowPage] = useState([]);
 
   //Edit Category
+  const [edtID, setEdtId] = useState();
   const [edtCategory, setEdtCategory] = useState([]);
   const [modalEdit, setModelEdit] = useState(false);
   const toggEditModal = () => setModelEdit(!modalEdit);
@@ -107,11 +108,11 @@ function CategoryTable() {
     console.log("delete: ", CategoryDelete);
     // console.log("token: ", localStorage.getItem("token"));
 
-    del(`/api/v1.0/categories/${CategoryDelete}`, localStorage.getItem("token"))
+    del(`/api/v1/categories/${CategoryDelete}`, localStorage.getItem("token"))
       .then((res) => {
         if (res.data.code === 0) {
           alert("delete success");
-          window.location = "/admin/category-table";
+          window.location = "/admin/Categories/category-table";
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -128,14 +129,14 @@ function CategoryTable() {
     console.log("add: ", Create);
 
     postWithToken(
-      `/api/v1.0/categories`,
+      `/api/v1/categories`,
       { name: Create },
       localStorage.getItem("token")
     )
       .then((res) => {
         if (res.data.code === 0) {
           alert("Add success");
-          window.location = "/admin/category-table";
+          window.location = "/admin/Categories/category-table";
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -153,14 +154,14 @@ function CategoryTable() {
     console.log("wdt Name: ", edtCategory.name);
 
     putWithToken(
-      `/api/v1.0/categories/${edtCategory.id}`,
+      `/api/v1/categories/${edtID}`,
       { name: edtCategory.name },
       localStorage.getItem("token")
     )
       .then((res) => {
         if (res.data.code === 0) {
           alert("Edit success");
-          window.location = "/admin/category-table";
+          window.location = "/admin/Categories/category-table";
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -240,9 +241,9 @@ function CategoryTable() {
                                 onClick={() => {
                                   // setEdtId(item.id);
                                   setEdtCategory({
-                                    id: item.id,
                                     name: item.name,
                                   });
+                                  setEdtId(item.id);
                                   setModelEdit(true);
                                 }}>
                                 <i className="fas fa-edit"></i>
@@ -362,7 +363,6 @@ function CategoryTable() {
             value={Create}
             onChange={(e) => setCreate(e.target.value)}
             placeholder="Name"
-            // onChange={lnerror}
           />
         </ModalBody>
         <ModalFooter>
@@ -402,6 +402,7 @@ function CategoryTable() {
           <Button
             color="danger"
             onClick={() => {
+            
               editCategory();
               setModelEdit(false);
             }}>
