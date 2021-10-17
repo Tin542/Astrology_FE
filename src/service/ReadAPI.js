@@ -4,12 +4,17 @@ const endpoint = "https://ec2-13-213-42-113.ap-southeast-1.compute.amazonaws.com
 
 
 export async function get(url) {
+  console.log("url: ", url);
+
   return await axios.get(endpoint + url, {
     headers: { "Content-type": "application/json" },
   });
 }
 
 export async function postWithToken(url, body, token) {
+  console.log("token: ", token);
+  console.log("url: ", url);
+  
   return await axios.post(endpoint + url, body, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -21,6 +26,9 @@ export async function postWithToken(url, body, token) {
 }
 
 export async function putWithToken(url, body, token) {
+  console.log("token: ", token);
+  console.log("url: ", url);
+
   return await axios.put(endpoint + url, body, {
     headers: { Authorization: `Bearer ${token}`,
     "Content-type": "application/json",

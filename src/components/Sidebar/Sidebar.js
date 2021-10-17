@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -29,6 +29,7 @@ function Sidebar({ routes, image, background }) {
   React.useEffect(() => {
     setState(getCollapseStates(routes));
   }, []);
+
   // this creates the intial state of this component based on the collapse routes
   // that it gets through routes prop
   const getCollapseStates = (routes) => {
@@ -154,9 +155,9 @@ function Sidebar({ routes, image, background }) {
                   setUserCollapseState(!userCollapseState);
                 }}
                 aria-expanded={userCollapseState}>
-                <span>
-                  Nguyen Thanh Tin <b className="caret"></b>
-                </span>
+               
+                 {localStorage.getItem("NAME")}
+                
               </a>
               <Collapse id="collapseExample" in={userCollapseState}>
                 <div>

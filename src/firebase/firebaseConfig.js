@@ -34,10 +34,14 @@ const loginWithGoogle = async () => {
       const res = await auth.signInWithPopup(googleProvider);
   
       let t = await getToken(res.user._lat);
-      console.log("tokennn",res.user._lat);
-      console.log("t", t.data.data.token);
-      localStorage.setItem("token", t.data.data.token);
+      console.log("firebase token: ",res.user._lat);
+      console.log("authen token: ", t.data.data.token);
       console.log("respone", res);
+      console.log("t: ", t);
+      console.log("name: ", res.user.displayName);
+
+      localStorage.setItem("token", t.data.data.token);
+      localStorage.setItem("NAME", res.user.displayName);
       
     } catch (err) {
         console.log(err)

@@ -13,7 +13,6 @@ import {
 
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import AuthFooter from "components/Footers/AuthFooter.js";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
 // dinamically create auth routes
 import routes from "routes.js";
@@ -39,14 +38,13 @@ function Auth() {
   };
   return (
     <>
-      <div className="wrapper wrapper-full-page">
+      <div>
         {/* Navbar */}
         <AuthNavbar />
         {/* End Navbar */}
         <Switch>{getRoutes(routes)}</Switch>
         <AuthFooter />
       </div>
-      <FixedPlugin />
     </>
   );
 }

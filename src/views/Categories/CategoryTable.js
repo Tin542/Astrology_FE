@@ -108,7 +108,7 @@ function CategoryTable() {
 
   function deleteByID() {
     console.log("delete: ", CategoryDelete);
-    // console.log("token: ", localStorage.getItem("token"));
+    console.log("name: ", localStorage.getItem("NAME"));
 
     del(`/api/v1/categories/${CategoryDelete}`, localStorage.getItem("token"))
       .then((res) => {

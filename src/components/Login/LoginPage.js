@@ -34,11 +34,6 @@ function LoginPage() {
     } 
   }, [user, loading]);
 
-  function handleLogin(){
-    loginWithGoogle;
-    console.log(loginWithGoogle);
-  }
-
   const [cardClasses, setCardClasses] = React.useState("card-hidden");
   React.useEffect(() => {
     setTimeout(function () {
