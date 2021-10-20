@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ReactDatetime from "react-datetime";
 import moment from "moment";
-import Moment from "react-moment";
 import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
 import DateTimeOffset from "datetime-offset";
+import ImageUploading from "react-images-uploading";
+import ImageUploader from "react-images-upload";
 
 // react-bootstrap components
 import {
@@ -46,7 +47,7 @@ function AstrologerTables() {
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
   const [description, setDescription] = useState();
-  const [image, setImage] = useState();
+  const [image, setImage] = useState("");
   const [flowwers, setFollowers] = useState();
 
   //detail modal
@@ -222,16 +223,10 @@ function AstrologerTables() {
             <Card className="regular-table-with-color">
               <Card.Header>
                 <Card.Title as="h4">
-                  Astrologers{" "}
-                  <OverlayTrigger
-                    overlay={
-                      <Tooltip id="tooltip-461494662">Add Astrologer</Tooltip>
-                    }
-                    placement="left">
+                  
                     <Button
-                      className="btn-link btn-icon"
+                      className="btn-wd mr-1" variant="info"
                       type="button"
-                      variant="success"
                       onClick={() => {
                         setId(null);
                         setName(null);
@@ -241,13 +236,13 @@ function AstrologerTables() {
                         setLongitude(null);
                         setGender(true);
                         setDescription(null);
-                        setImage(null);
+                        setImage("https://image.lag.vn/upload/news/21/08/16/236599595_1425452954506376_3110056547255537769_n_WOLP.jpg");
 
                         setCreateModal(true);
                       }}>
-                      <i className="fas fa-plus"></i>
+                      Add Astrologer
                     </Button>
-                  </OverlayTrigger>
+                  
                 </Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
@@ -294,24 +289,24 @@ function AstrologerTables() {
                             }}>
                             {moment(item.time_of_birth).format("MM-DD-YYYY")}
                           </td>
-                            <td>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-461494662">Edit</Tooltip>
-                            }
-                            placement="left">
-                            <Button
-                              className="btn-link btn-icon"
-                              type="button"
-                              variant="danger"
-                              onClick={() => {
-                                setId(item.id);
+                          <td>
+                            <OverlayTrigger
+                              overlay={
+                                <Tooltip id="tooltip-461494662">Edit</Tooltip>
+                              }
+                              placement="left">
+                              <Button
+                                className="btn-link btn-icon"
+                                type="button"
+                                variant="danger"
+                                onClick={() => {
+                                  setId(item.id);
 
-                                setDeleteModal(true);
-                              }}>
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
+                                  setDeleteModal(true);
+                                }}>
+                                <i className="fas fa-times"></i>
+                              </Button>
+                            </OverlayTrigger>
                           </td>
                         </tr>
                       );
@@ -424,7 +419,7 @@ function AstrologerTables() {
             id="id"
             value={id}
             onChange={(e) => setId(e.target.value)}
-            placeholder="ID"
+            placeholder="User id"
           />
         </ModalBody>
         <ModalBody>
@@ -531,21 +526,6 @@ function AstrologerTables() {
           />
         </ModalBody>
 
-        <ModalBody>
-          <Input
-            type="text"
-            onFocus={(e) => {
-              e.currentTarget.type = "file";
-              e.currentTarget.focus();
-            }}
-            name="image"
-            id="image"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            placeholder="Image URL"
-          />
-        </ModalBody>
-
         <ModalFooter>
           <Button
             className="btn-wd"
@@ -566,7 +546,7 @@ function AstrologerTables() {
           toggle={toggleDeleteModal}>
           Are you sure?
         </ModalHeader>
-        <ModalBody>Do you want to delete this Category</ModalBody>
+        <ModalBody>Do you want to delete this Astrologer</ModalBody>
         <ModalFooter>
           <Button
             color="danger"

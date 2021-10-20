@@ -196,22 +196,18 @@ function CategoryTable() {
             <Card className="table-big-boy">
               <Card.Header>
                 <Card.Title as="h4">
-                  All Category
-                  <OverlayTrigger
-                    overlay={
-                      <Tooltip id="tooltip-461494662">Add Category</Tooltip>
-                    }
-                    placement="left">
+                 
+                  
+                    
                     <Button
-                      className="btn-link btn-icon"
+                      className="btn-wd mr-1" variant="info"
                       type="button"
-                      variant="success"
                       onClick={() => {
                         setModalCreate(true);
                       }}>
-                      <i className="fas fa-plus"></i>
+                      Add Category
                     </Button>
-                  </OverlayTrigger>
+                  
                 </Card.Title>
 
                 <br></br>

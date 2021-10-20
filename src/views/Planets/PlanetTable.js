@@ -62,7 +62,7 @@ function PlanetTable() {
           <Col md="12">
             <Card className="table-big-boy">
               <Card.Header>
-                <Card.Title as="h4">All Planet</Card.Title>
+                
                 <br></br>
               </Card.Header>
               <Card.Body className="table-full-width">

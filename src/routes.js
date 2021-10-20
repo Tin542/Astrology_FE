@@ -78,5 +78,6 @@ var routes = [
     icon: "nc-icon nc-explore-2",
     component: ZodiacTable,
   },
+
 ];
 export default routes;

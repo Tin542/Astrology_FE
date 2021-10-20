@@ -30,7 +30,7 @@ import image3 from "assets/img/full-screen-image-3.jpg";
 import image4 from "assets/img/full-screen-image-4.jpg";
 
 function Admin() {
-  const [sidebarImage, setSidebarImage] = React.useState(image3);
+  const [sidebarImage, setSidebarImage] = React.useState(image4);
   const [sidebarBackground, setSidebarBackground] = React.useState("purple");
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {

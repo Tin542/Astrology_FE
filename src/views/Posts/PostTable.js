@@ -116,9 +116,11 @@ function PostTables() {
 
   function getPostByID(Id) {
     console.log("id: ", Id);
+    
     get(`/api/v1/posts/${Id}`)
       .then((res) => {
         var temp = res.data.data;
+        var zodiacss = [temp.zodiacs]
         console.log(temp);
         setId(Id);
         setittle(temp.title);
@@ -131,7 +133,7 @@ function PostTables() {
         setUpdateDate(temp.updated_at);
         setImage(temp.image_url);
 
-        console.log("zodiacs: ",temp.zodiacs.data.name);
+        console.log("zodiacs: ",zodiacss);
       })
       .catch((err) => {
         console.log(err);
@@ -154,8 +156,6 @@ function PostTables() {
           <Col md="12">
             <Card className="table-big-boy">
               <Card.Header>
-                <Card.Title as="h4">All Post</Card.Title>
-                <br></br>
               </Card.Header>
               <Card.Body className="table-full-width">
                 <Table className="table-bigboy">

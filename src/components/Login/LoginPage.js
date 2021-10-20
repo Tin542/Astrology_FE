@@ -28,8 +28,6 @@ function LoginPage() {
       return;
     }
     if (user){
-      
-
       history.push("/admin/dashboard");
     } 
   }, [user, loading]);

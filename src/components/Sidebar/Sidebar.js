@@ -139,11 +139,11 @@ function Sidebar({ routes, image, background }) {
               <Link to={"/admin/dashboard"}>Spirit Astrology</Link>
             </a>
           </div>
-          <div className="user">
+          {/* <div className="user">
             <div className="photo">
               <img
                 alt="..."
-                src={require("assets/img/default-avatar.png").default}></img>
+                src={require("assets/img/faces/face-1.jpg").default}></img>
             </div>
             <div className="info">
               <a
@@ -177,7 +177,7 @@ function Sidebar({ routes, image, background }) {
                 </div>
               </Collapse>
             </div>
-          </div>
+          </div> */}
           <Nav as="ul">{createLinks(routes)}</Nav>
         </div>
         <div

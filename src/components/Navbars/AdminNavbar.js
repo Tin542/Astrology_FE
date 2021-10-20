@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { logout} from "../../firebase/firebaseConfig";
+import { logout } from "../../firebase/firebaseConfig";
 import routes from "routes.js";
+import "../../assets/css/customize.css";
 
 // react-bootstrap components
 import {
@@ -70,21 +71,24 @@ function AdminNavbar() {
             <span className="navbar-toggler-bar burger-lines"></span>
           </button>
           <Navbar.Collapse className="justify-content-end" in={collapseOpen}>
-            
             <Nav navbar>
-            
-              
               <Dropdown as={Nav.Item}>
                 <Dropdown.Toggle
                   as={Nav.Link}
-                  id="dropdown-41471887333"
+                  // id="dropdown-41471887333"
                   variant="default">
-                  <i className="nc-icon nc-bullet-list-67"></i>
+                  <div className="photoCustomer">
+                    <img
+                      alt="..."
+                      src={
+                        require("assets/img/faces/face-1.jpg").default
+                      }></img>
+                  </div>
+                  {localStorage.getItem("NAME")}
                 </Dropdown.Toggle>
                 <Dropdown.Menu
                   alignRight
                   aria-labelledby="navbarDropdownMenuLink">
-                  
                   <Dropdown.Item
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}>
@@ -98,11 +102,13 @@ function AdminNavbar() {
                     Settings
                   </Dropdown.Item>
                   <div className="divider"></div>
-                  
+
                   <Dropdown.Item
                     className="text-danger"
                     href="#pablo"
-                    onClick={(e) => {setModalLogOut(true)}}>
+                    onClick={(e) => {
+                      setModalLogOut(true);
+                    }}>
                     <i className="nc-icon nc-button-power"></i>
                     Logout
                   </Dropdown.Item>
@@ -133,18 +139,16 @@ function AdminNavbar() {
               window.location.href = "/";
               localStorage.clear();
               sessionStorage.clear();
-            }}
-          >     
+            }}>
             Log out
-          </Button>{""}
+          </Button>
+          {""}
 
           <Button color="secondary" onClick={toggleLogOut}>
             Cancel
           </Button>
         </ModalFooter>
       </Modal>
-
-      
     </>
   );
 }
