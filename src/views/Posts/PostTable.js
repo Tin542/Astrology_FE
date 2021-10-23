@@ -160,7 +160,7 @@ function PostTables() {
     console.log("id: ", id);
     console.log("token: ", localStorage.getItem("token"));
     patchWithToken(
-      `/api/v1/posts/approve`,{id: id},
+      `/api/v1/posts/approve?id=${id}`,{id: id},
       localStorage.getItem("token")
     ).then((res) => {
       if (res.data.code === 0) {

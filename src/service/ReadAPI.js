@@ -67,11 +67,10 @@ export async function post(url, body) {
   });
 }
 
-export async function patchWithToken(url, param, token) {
+export async function patchWithToken(url, body, token) {
   console.log("url: ", url);
   console.log("token: ", token);
-  return await axios.patch(endpoint + url, {
-    params: param,
+  return await axios.patch(endpoint + url, body, {
     headers: {
       Accept: 'application/json',
       Authorization: `Bearer ${token}`,
