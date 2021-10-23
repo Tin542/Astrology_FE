@@ -47,7 +47,7 @@ function PostTables() {
     getServiceList();
   }, []);
   const [useListServiceShowPage, setUseListServiceShowPage] = useState([]);
-  const [postPaging, setPostPaging] = useState([]);
+  const [categoryName, setCategoryName] = useState([]);
 
   //detail
   const [id, setId] = useState();
@@ -160,11 +160,31 @@ function PostTables() {
     console.log("id: ", id);
     console.log("token: ", localStorage.getItem("token"));
     patchWithToken(
-      `/api/v1/posts/approve?id=${id}`,{id: id},
+      `/api/v1/posts/approve?id=${id}`,
+      { id: id },
       localStorage.getItem("token")
     ).then((res) => {
       if (res.data.code === 0) {
         alert("approve success");
+        setCurrentPage(1);
+        getServiceList();
+      }
+      if (res.data.code === 7) {
+        console.log(res.data.msg);
+        alert(res.data.msg);
+      }
+    });
+  }
+
+  function deletePost(){
+    console.log("id: ", id);
+    console.log("token: ", localStorage.getItem("token"));
+    del(
+      `/api/v1/posts/${id}`,
+      localStorage.getItem("token")
+    ).then((res) => {
+      if (res.data.code === 0) {
+        alert("delete success");
         setCurrentPage(1);
         getServiceList();
       }
@@ -237,7 +257,11 @@ function PostTables() {
                             {moment(item.created_at).format("MM-DD-YYYY")}
                           </td>
                           <td className="td-number">
-                            {item.is_approve ? "Approved" : "Waiting"}
+                            {item.is_approve ? (
+                              <b style={{ color: "green" }}>Approved</b>
+                            ) : (
+                              <b style={{ color: "red" }}>Waiting</b>
+                            )}
                           </td>
                           <td className="td-actions"></td>
                         </tr>
@@ -321,18 +345,52 @@ function PostTables() {
           <br />
           <b>Update at:</b> {moment(updateDate).format("MM-DD-YYYY")}
           <br />
-          <b>Status:</b> {approve ? "Approved" : "Waiting"}
+          <b>Status:</b>{" "}
+          {approve ? (
+            <b style={{ color: "green" }}>Approved</b>
+          ) : (
+            <b style={{ color: "red" }}>Waiting</b>
+          )}
           <br />
         </ModalBody>
 
         <ModalFooter>
           <Button
-            color="secondary"
+            disabled={approve}
+            variant="success"
             onClick={() => {
               approvePost();
             }}>
             Approve
           </Button>{" "}
+          <Button variant="danger" onClick={() => {setDeleteModal(true)}}>
+            Delete
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={deleteModal} toggle={toggleDelete}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggleDelete)}
+          toggle={toggleDelete}>
+          Are you sure?
+        </ModalHeader>
+        <ModalBody>Do you want to delete this Category</ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              setDeleteModal(false);
+              setEditModal(false);
+              deletePost();
+              
+            }}>
+            Delete
+          </Button>{" "}
+          <Button color="secondary" onClick={toggleDelete}>
+            Cancel
+          </Button>
         </ModalFooter>
       </Modal>
     </>
