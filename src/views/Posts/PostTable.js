@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { del, post, get, put } from "../../service/ReadAPI";
+import {
+  del,
+  patchWithToken,
+  get,
+  put,
+  getWithToken,
+} from "../../service/ReadAPI";
 import Moment from "react-moment";
 import moment from "moment";
 
@@ -70,14 +76,17 @@ function PostTables() {
   const [limit, setLimit] = useState(5);
 
   function getServiceList() {
-    get(`/api/v1/posts?limit=${limit}&&page=${currentPage}`)
+    getWithToken(
+      `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,
+      localStorage.getItem("token")
+    )
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
+        console.log("data: ", res.data);
 
         setUseListServiceShowPage(temp);
         showPageList(res);
-        
       })
       .catch((err) => {
         console.log(err);
@@ -85,10 +94,13 @@ function PostTables() {
   }
 
   function changePage(crrPage) {
-    get(`/api/v1/posts?limit=${limit}&&page=${crrPage}`)
+    getWithToken(
+      `/api/v1/posts/admin?limit=${limit}&&page=${crrPage}`,
+      localStorage.getItem("token")
+    )
       .then((res) => {
         var temp = res.data.data.list;
-        console.log("paging post: ",temp);
+        console.log("paging post: ", temp);
 
         setUseListServiceShowPage(temp);
         setCurrentPage(crrPage);
@@ -116,28 +128,51 @@ function PostTables() {
 
   function getPostByID(Id) {
     console.log("id: ", Id);
-    
+
     get(`/api/v1/posts/${Id}`)
       .then((res) => {
         var temp = res.data.data;
-        var zodiacss = [temp.zodiacs]
         console.log(temp);
+
+        //get name in list zodiac
+        var listZodiac = temp.zodiacs;
+        var zodiacName = listZodiac.map((zodiacs) => zodiacs.name);
+
         setId(Id);
         setittle(temp.title);
         setDescription(temp.content);
         setAprove(temp.is_approve);
         setCategory(temp.category_id);
         setAstrologer(temp.astrologer.name);
-        setZodiac(temp.zodiacs.name);
+        setZodiac(zodiacName + ", ");
         setCreateDate(temp.created_at);
         setUpdateDate(temp.updated_at);
         setImage(temp.image_url);
 
-        console.log("zodiacs: ",zodiacss);
+        console.log("zodiacs: ", zodiacName);
       })
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  function approvePost() {
+    console.log("id: ", id);
+    console.log("token: ", localStorage.getItem("token"));
+    patchWithToken(
+      `/api/v1/posts/approve`,{id: id},
+      localStorage.getItem("token")
+    ).then((res) => {
+      if (res.data.code === 0) {
+        alert("approve success");
+        setCurrentPage(1);
+        getServiceList();
+      }
+      if (res.data.code === 7) {
+        console.log(res.data.msg);
+        alert(res.data.msg);
+      }
+    });
   }
 
   const closeBtn = (x) => (
@@ -155,8 +190,7 @@ function PostTables() {
         <Row>
           <Col md="12">
             <Card className="table-big-boy">
-              <Card.Header>
-              </Card.Header>
+              <Card.Header></Card.Header>
               <Card.Body className="table-full-width">
                 <Table className="table-bigboy">
                   <thead>
@@ -181,6 +215,7 @@ function PostTables() {
                                 src={item.image_url}
                                 onClick={() => {
                                   // setserviceEdit(e.Id);
+                                  setId(item.id);
                                   getPostByID(item.id);
                                   setEditModal(true);
                                 }}></img>
@@ -259,45 +294,43 @@ function PostTables() {
         </PaginationItem>
       </Pagination>
 
-      <Modal isOpen={editModal} toggle={toggleDelete}>
+      <Modal isOpen={editModal} toggle={toggleEdit}>
         <ModalHeader
           style={{ color: "#B22222" }}
           close={closeBtn(toggleEdit)}
-          toggle={toggleDelete}>
+          toggle={toggleEdit}>
           Post detail
         </ModalHeader>
         <ModalBody>
-          <b>Image:</b>{" "}
           <div className="img-container">
             <img alt="..." src={image}></img>
           </div>
         </ModalBody>
         <ModalBody>
           <b>Title:</b> {title}
-        </ModalBody>
-        <ModalBody>
+          <br />
           <b>Content:</b> {description}
-        </ModalBody>
-        <ModalBody>
+          <br />
           <b>Posted by:</b> {astrologer}
-        </ModalBody>
-        <ModalBody>
+          <br />
           <b>Zodiac:</b> {zodiac}
-        </ModalBody>
-        <ModalBody>
+          <br />
           <b>Category:</b> {category}
-        </ModalBody>
-        <ModalBody>
+          <br />
           <b>Create at:</b> {moment(createDate).format("MM-DD-YYYY")}
-        </ModalBody>
-        <ModalBody>
+          <br />
           <b>Update at:</b> {moment(updateDate).format("MM-DD-YYYY")}
-        </ModalBody>
-        <ModalBody>
+          <br />
           <b>Status:</b> {approve ? "Approved" : "Waiting"}
+          <br />
         </ModalBody>
+
         <ModalFooter>
-          <Button color="secondary" onClick={() => {}}>
+          <Button
+            color="secondary"
+            onClick={() => {
+              approvePost();
+            }}>
             Approve
           </Button>{" "}
         </ModalFooter>
