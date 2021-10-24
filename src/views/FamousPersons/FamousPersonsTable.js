@@ -297,7 +297,7 @@ function FamousPersonsTable() {
           </PaginationLink>
         </PaginationItem>
         {pageList.map((page, index) => (
-          <PaginationItem>
+          <PaginationItem active={page+1 === currentPage}>
             <PaginationLink
               className="page"
               key={index}
