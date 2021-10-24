@@ -24,7 +24,7 @@ import {
 function Dashboard() {
   return (
     <>
-      <Container fluid>
+      {/* <Container fluid>
         <Row>
           <Col lg="3" sm="6">
             <Card className="card-stats">
@@ -43,13 +43,6 @@ function Dashboard() {
                   </Col>
                 </Row>
               </Card.Body>
-              {/* <Card.Footer>
-                <hr></hr>
-                <div className="stats">
-                  <i className="fas fa-redo mr-1"></i>
-                  Update Now
-                </div>
-              </Card.Footer> */}
             </Card>
           </Col>
 
@@ -70,13 +63,6 @@ function Dashboard() {
                   </Col>
                 </Row>
               </Card.Body>
-              {/* <Card.Footer>
-                <hr></hr>
-                <div className="stats">
-                  <i className="far fa-clock-o mr-1"></i>
-                  In the last hour
-                </div>
-              </Card.Footer> */}
             </Card>
           </Col>
 
@@ -97,13 +83,6 @@ function Dashboard() {
                   </Col>
                 </Row>
               </Card.Body>
-              {/* <Card.Footer>
-                <hr></hr>
-                <div className="stats">
-                  <i className="far fa-calendar-alt mr-1"></i>
-                  Last day
-                </div>
-              </Card.Footer> */}
             </Card>
           </Col>
           
@@ -124,13 +103,6 @@ function Dashboard() {
                   </Col>
                 </Row>
               </Card.Body>
-              {/* <Card.Footer>
-                <hr></hr>
-                <div className="stats">
-                  <i className="fas fa-redo mr-1"></i>
-                  Update now
-                </div>
-              </Card.Footer> */}
             </Card>
           </Col>
         </Row>
@@ -275,7 +247,7 @@ function Dashboard() {
           </Col>
         </Row>
         
-      </Container>
+      </Container> */}
     </>
   );
 }
