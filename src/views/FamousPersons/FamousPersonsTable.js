@@ -36,9 +36,9 @@ import {
 
 function FamousPersonsTable() {
   //show page
-  const [astrologerList, setAstrologerList] = useState([]);
+  const [personList, setPersonList] = useState([]);
 
-  //Astrologer detail
+  // Famous Person detail
   const [id, setId] = useState();
   const [name, setName] = useState();
   const [zodiac_id, setZodiac] = useState();
@@ -70,17 +70,17 @@ function FamousPersonsTable() {
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
-    getAstrologerList();
+    getFamousPersonList();
   }, []);
 
-  function getAstrologerList() {
+  function getFamousPersonList() {
     get(`/api/v1/famouspersons?limit=${limit}&&page=${currentPage}`)
       .then((res) => {
         var temp = res.data.data.list;
         console.log("temp: ", temp);
         var totalPageNumber = Math.ceil(res.data.data.total / 5);
         setTotalPage(totalPageNumber);
-        setAstrologerList(temp);
+        setPersonList(temp);
         showPageList(res);
       })
       .catch((err) => {
@@ -93,7 +93,7 @@ function FamousPersonsTable() {
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
-        setAstrologerList(temp);
+        setPersonList(temp);
         setCurrentPage(number);
       })
       .catch((err) => {
@@ -118,7 +118,7 @@ function FamousPersonsTable() {
     }
   }
 
-  function getAstrologerByID(Id) {
+  function getFamousPersonByID(Id) {
     console.log("id: ", Id);
     get(`/api/v1/famouspersons/${Id}`)
       .then((res) => {
@@ -138,7 +138,7 @@ function FamousPersonsTable() {
       });
   }
 
-  function createAstrologer() {
+  function createFamousPerson() {
     console.log("id: ", id);
     console.log("name: ", name);
     console.log("long: ", zodiac_id);
@@ -160,7 +160,7 @@ function FamousPersonsTable() {
         if (res.data.code === 0) {
           alert("Add success");
           setCurrentPage(1);
-          getAstrologerList();
+          getFamousPersonList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -208,7 +208,7 @@ function FamousPersonsTable() {
         if (res.data.code === 0) {
           alert("delete success");
           setCurrentPage(1);
-          getAstrologerList();
+          getFamousPersonList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -266,18 +266,19 @@ function FamousPersonsTable() {
                     </tr>
                   </thead>
                   <tbody>
-                    {astrologerList.map((item, index) => {
+                    {personList.map((item, index) => {
                       return (
                         <tr key={index}>
                           <td>{item.id}</td>
                           <td
                             onClick={() => {
-                              getAstrologerByID(item.id);
+                              getFamousPersonByID(item.id);
                               setDetailModal(true);
                             }}>
                             {item.name}
                           </td>
                           <td>
+
                           <OverlayTrigger
                               overlay={
                                 <Tooltip id="tooltip-461494662">Edit</Tooltip>
@@ -298,6 +299,7 @@ function FamousPersonsTable() {
                                 <i className="fas fa-edit"></i>
                               </Button>
                             </OverlayTrigger>
+
                             <OverlayTrigger
                               overlay={
                                 <Tooltip id="tooltip-461494662">Remove</Tooltip>
@@ -374,13 +376,14 @@ function FamousPersonsTable() {
           style={{ color: "#B22222" }}
           close={closeBtn(toggleDetailModal)}
           toggle={toggleDetailModal}>
-          Famous Person detail
+          Famous Person Details
         </ModalHeader>
         <ModalBody>
           <div className="img-container">
             <img alt="..." src={image}></img>
           </div>
         </ModalBody>
+        
         <ModalBody>
           <b>ID: </b>
           {id}
@@ -395,7 +398,6 @@ function FamousPersonsTable() {
           {zodiac_id}
           <br />
         </ModalBody>
-        <ModalFooter></ModalFooter>
       </Modal>
 
       {/* Modal Create */}
@@ -406,6 +408,7 @@ function FamousPersonsTable() {
           toggle={toggleCreateModal}>
           Add Famous Person
         </ModalHeader>
+
         <ModalBody>
           <Input
             type="number"
@@ -416,6 +419,7 @@ function FamousPersonsTable() {
             placeholder="User id"
           />
         </ModalBody>
+
         <ModalBody>
           <Input
             type="text"
@@ -437,6 +441,7 @@ function FamousPersonsTable() {
             placeholder="Description"
           />
         </ModalBody>
+
         <ModalBody>
           <Input
             type="number"
@@ -453,7 +458,7 @@ function FamousPersonsTable() {
             className="btn-wd"
             variant="info"
             onClick={() => {
-              createAstrologer();
+              createFamousPerson();
               setCreateModal(false);
             }}>
             Create
@@ -468,6 +473,7 @@ function FamousPersonsTable() {
           toggle={toggEditModal}>
           Edit Famous Person
         </ModalHeader>
+
         <ModalBody>
           <Input
             type="text"
@@ -491,6 +497,7 @@ function FamousPersonsTable() {
             // onChange={lnerror}
           />
         </ModalBody>
+        
         <ModalFooter>
           <Button
             color="danger"
