@@ -21,6 +21,8 @@ import CustomTable from "views/Customers/CustomerTables.js";
 import CategoryTable from "views/Categories/CategoryTable.js";
 import PlanetTable from "views/Planets/PlanetTable.js";
 import ZodiacTable from "views/Zodiacs/ZodiacTable.js";
+import FamousPersonsTable from "views/FamousPersons/FamousPersonsTable.js";
+
 
 var routes = [
   {
@@ -77,6 +79,15 @@ var routes = [
     layout: "/admin",
     icon: "nc-icon nc-explore-2",
     component: ZodiacTable,
+  },
+
+  {
+    path: "/FamousPersons/famousperson-table",
+    name: "Famous Persons",
+    layout: "/admin",
+    icon: "nc-icon nc-single-02",
+    component: FamousPersonsTable,
+    
   },
 
 ];
