@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
-
-import Moment from "react-moment";
+import ReactDatetime from "react-datetime";
 import moment from "moment";
+import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
+import DateTimeOffset from "datetime-offset";
+import ImageUploading from "react-images-uploading";
+import ImageUploader from "react-images-upload";
 
 // react-bootstrap components
 import {
@@ -33,24 +35,33 @@ import {
 } from "reactstrap";
 
 function FamousPersonsTable() {
-  const [useListPersonShowPage, setUseListPersonShowPage] = useState([]);
+  //show page
+  const [astrologerList, setAstrologerList] = useState([]);
+
+  //Astrologer detail
+  const [id, setId] = useState();
+  const [name, setName] = useState();
+  const [zodiac_id, setZodiac] = useState();
+  const [description, setDescription] = useState();
+  const [image, setImage] = useState("");
+
+  //detail modal
+  const [detailModal, setDetailModal] = useState(false);
+  const toggleDetailModal = () => setDetailModal(!detailModal);
+
+  //create modal
+  const [createModal, setCreateModal] = useState(false);
+  const toggleCreateModal = () => setCreateModal(!createModal);
+
+  //delete modal
+  const [deleteModal, setDeleteModal] = useState(false);
+  const toggleDeleteModal = () => setDeleteModal(!deleteModal);
 
   //Edit Person
   const [edtID, setEdtId] = useState();
   const [edtFamousPerson, setEdtPerson] = useState([]);
   const [modalEdit, setModelEdit] = useState(false);
   const toggEditModal = () => setModelEdit(!modalEdit);
-
-  //Delete Person
-  const [PersonDelete, setPersonDelete] = useState(null);
-  const [modalPersonDelete, setPersonModelDelete] = useState(false);
-  const togglePersonDelete = () =>
-  setPersonModelDelete(!modalPersonDelete);
-
-  //create Person
-  const [Create, setCreate] = useState([]);
-  const [modalCreate, setModalCreate] = useState(false);
-  const toggleCreateModal = () => setModalCreate(!modalCreate);
 
   //paging
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,17 +70,17 @@ function FamousPersonsTable() {
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
-    getPersonList();
+    getAstrologerList();
   }, []);
 
-  function getPersonList() {
+  function getAstrologerList() {
     get(`/api/v1/famouspersons?limit=${limit}&&page=${currentPage}`)
       .then((res) => {
         var temp = res.data.data.list;
-        console.log(temp);
+        console.log("temp: ", temp);
         var totalPageNumber = Math.ceil(res.data.data.total / 5);
         setTotalPage(totalPageNumber);
-        setUseListPersonShowPage(temp);
+        setAstrologerList(temp);
         showPageList(res);
       })
       .catch((err) => {
@@ -82,7 +93,7 @@ function FamousPersonsTable() {
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
-        setUseListPersonShowPage(temp);
+        setAstrologerList(temp);
         setCurrentPage(number);
       })
       .catch((err) => {
@@ -100,47 +111,56 @@ function FamousPersonsTable() {
     for (let i = 0; i < totalPageNumber; i++) {
       list.push(i);
     }
+    console.log("list: ", list);
     if (list.length >= 1) {
       setPageList(list);
       console.log("list page: " + list);
     }
   }
 
-  function deleteByID() {
-    console.log("delete: ", PersonDelete);
-    console.log("name: ", localStorage.getItem("NAME"));
-
-    del(`/api/v1/famouspersons/${PersonDelete}`, localStorage.getItem("token"))
+  function getAstrologerByID(Id) {
+    console.log("id: ", Id);
+    get(`/api/v1/famouspersons/${Id}`)
       .then((res) => {
-        if (res.data.code === 0) {
-          alert("delete successful");
-          setCurrentPage(1);
-          getPersonList();
-        }
-        if (res.data.code === 7) {
-          console.log(res.data.msg);
-          alert(res.data.msg);
-        }
+        var temp = res.data.data;
+        console.log(temp);
+
+        setId(Id);
+        setName(temp.name);
+        setZodiac(temp.zodiac_id);
+        setDescription(temp.description);
+        setImage(temp.url_image);
+
+        console.log("name: ", temp.name);
       })
       .catch((err) => {
-        alert(err);
         console.log(err);
       });
   }
 
-  function addPerson() {
-    console.log("add: ", Create);
+  function createAstrologer() {
+    console.log("id: ", id);
+    console.log("name: ", name);
+    console.log("long: ", zodiac_id);
+    console.log("image url: ", image);
 
     postWithToken(
       `/api/v1/famouspersons`,
-      { name: Create },
+      {
+        user_id: id,
+        name: name,
+        description: description,
+        url_image: image,
+        longitude_of_birth: zodiac_id,
+        
+      },
       localStorage.getItem("token")
     )
       .then((res) => {
         if (res.data.code === 0) {
           alert("Add success");
           setCurrentPage(1);
-          getPersonList();
+          getAstrologerList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -156,6 +176,7 @@ function FamousPersonsTable() {
   function editFamousPerson(){
     console.log("edt ID: ", edtID);
     console.log("wdt Name: ", edtFamousPerson.name);
+    console.log("wdt Description: ", edtFamousPerson.description);
 
     putWithToken(
       `/api/v1/famouspersons${edtID}`,
@@ -167,6 +188,27 @@ function FamousPersonsTable() {
           alert("Edit success");
           setCurrentPage(1);
           getPersonList();
+        }
+        if (res.data.code === 7) {
+          console.log(res.data.msg);
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+        console.log(err);
+      });
+  }
+  
+  function deleteByID() {
+    console.log("delete: ", id);
+
+    del(`/api/v1/famouspersons/${id}`, localStorage.getItem("token"))
+      .then((res) => {
+        if (res.data.code === 0) {
+          alert("delete success");
+          setCurrentPage(1);
+          getAstrologerList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -193,42 +235,50 @@ function FamousPersonsTable() {
       <Container fluid>
         <Row>
           <Col md="12">
-            <Card className="table-big-boy">
+            <Card className="regular-table-with-color">
               <Card.Header>
                 <Card.Title as="h4">
-                 
+                  
                     <Button
                       className="btn-wd mr-1" variant="info"
                       type="button"
                       onClick={() => {
-                        setModalCreate(true);
+                        setId(null);
+                        setName(null);
+                        setZodiac(null);
+                        setDescription(null);
+                        setImage("https://image.lag.vn/upload/news/21/08/16/236599595_1425452954506376_3110056547255537769_n_WOLP.jpg");
+
+                        setCreateModal(true);
                       }}>
                       Add Famous Person
                     </Button>
                   
                 </Card.Title>
-
-                <br></br>
               </Card.Header>
-              <Card.Body className="table-full-width">
-                <Table className="table-bigboy">
+              <Card.Body className="table-responsive p-0">
+                <Table className="table-hover">
                   <thead>
                     <tr>
-                      <th>No.</th>
-                      <th className="text-right">ID</th>
-                      <th className="text-right">Name</th>
-                      <th className="text-right">Action</th>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {useListPersonShowPage.map((item, index) => {
+                    {astrologerList.map((item, index) => {
                       return (
                         <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td className="td-number">{item.id}</td>
-                          <td className="td-number">{item.name}</td>
-                          <td className="td-number">
-                            <OverlayTrigger
+                          <td>{item.id}</td>
+                          <td
+                            onClick={() => {
+                              getAstrologerByID(item.id);
+                              setDetailModal(true);
+                            }}>
+                            {item.name}
+                          </td>
+                          <td>
+                          <OverlayTrigger
                               overlay={
                                 <Tooltip id="tooltip-461494662">Edit</Tooltip>
                               }
@@ -250,7 +300,7 @@ function FamousPersonsTable() {
                             </OverlayTrigger>
                             <OverlayTrigger
                               overlay={
-                                <Tooltip id="tooltip-408856985">Remove</Tooltip>
+                                <Tooltip id="tooltip-461494662">Remove</Tooltip>
                               }
                               placement="left">
                               <Button
@@ -258,8 +308,9 @@ function FamousPersonsTable() {
                                 type="button"
                                 variant="danger"
                                 onClick={() => {
-                                  setPersonDelete(item.id);
-                                  setPersonModelDelete(true);
+                                  setId(item.id);
+
+                                  setDeleteModal(true);
                                 }}>
                                 <i className="fas fa-times"></i>
                               </Button>
@@ -271,10 +322,6 @@ function FamousPersonsTable() {
                   </tbody>
                 </Table>
               </Card.Body>
-              <Row>
-                <Col md={6}></Col>
-                <Col md={6}></Col>
-              </Row>
             </Card>
           </Col>
         </Row>
@@ -282,7 +329,6 @@ function FamousPersonsTable() {
 
       <Pagination aria-label="Page navigation example" className="page-center">
         <PaginationItem disabled={currentPage === 1}>
-      
           <PaginationLink
             className="page"
             previous
@@ -309,7 +355,6 @@ function FamousPersonsTable() {
           </PaginationItem>
         ))}
         <PaginationItem disabled={currentPage === totalPage}>
-        
           <PaginationLink
             className="page"
             next
@@ -324,30 +369,37 @@ function FamousPersonsTable() {
         </PaginationItem>
       </Pagination>
 
-      <Modal isOpen={modalPersonDelete} toggle={togglePersonDelete}>
+      <Modal isOpen={detailModal} toggle={toggleDetailModal}>
         <ModalHeader
           style={{ color: "#B22222" }}
-          close={closeBtn(togglePersonDelete)}
-          toggle={togglePersonDelete}>
-          Are you sure?
+          close={closeBtn(toggleDetailModal)}
+          toggle={toggleDetailModal}>
+          Famous Person detail
         </ModalHeader>
-        <ModalBody>Do you want to delete this Famous Person</ModalBody>
-        <ModalFooter>
-          <Button
-            color="danger"
-            onClick={() => {
-              deleteByID();
-              setPersonModelDelete(false);
-            }}>
-            Delete
-          </Button>{" "}
-          <Button color="secondary" onClick={togglePersonDelete}>
-            Cancel
-          </Button>
-        </ModalFooter>
+        <ModalBody>
+          <div className="img-container">
+            <img alt="..." src={image}></img>
+          </div>
+        </ModalBody>
+        <ModalBody>
+          <b>ID: </b>
+          {id}
+          <br />
+          <b>Name: </b>
+          {name}
+          <br />
+          <b>Description: </b> 
+          {description}
+          <br />
+          <b>Zodiac: </b>
+          {zodiac_id}
+          <br />
+        </ModalBody>
+        <ModalFooter></ModalFooter>
       </Modal>
 
-      <Modal isOpen={modalCreate} toggle={toggleCreateModal}>
+      {/* Modal Create */}
+      <Modal isOpen={createModal} toggle={toggleCreateModal}>
         <ModalHeader
           style={{ color: "#B22222" }}
           close={closeBtn(toggleCreateModal)}
@@ -356,25 +408,55 @@ function FamousPersonsTable() {
         </ModalHeader>
         <ModalBody>
           <Input
+            type="number"
+            name="id"
+            id="id"
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            placeholder="User id"
+          />
+        </ModalBody>
+        <ModalBody>
+          <Input
             type="text"
             name="name"
             id="name"
-            value={Create}
-            onChange={(e) => setCreate(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Name"
           />
         </ModalBody>
+      
+        <ModalBody>
+          <Input
+            type="text"
+            name="description"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Description"
+          />
+        </ModalBody>
+        <ModalBody>
+          <Input
+            type="number"
+            name="zodiac_id"
+            id="zodiac_id"
+            value={zodiac_id}
+            onChange={(e) => setZodiac(e.target.value)}
+            placeholder="Zodiac"
+          />
+        </ModalBody>
+
         <ModalFooter>
           <Button
-            color="danger"
+            className="btn-wd"
+            variant="info"
             onClick={() => {
-              addPerson();
-              setModalCreate(false);
+              createAstrologer();
+              setCreateModal(false);
             }}>
-            Add
-          </Button>{" "}
-          <Button color="secondary" onClick={toggleCreateModal}>
-            Cancel
+            Create
           </Button>
         </ModalFooter>
       </Modal>
@@ -384,7 +466,7 @@ function FamousPersonsTable() {
           style={{ color: "#B22222" }}
           close={closeBtn(toggEditModal)}
           toggle={toggEditModal}>
-          Add Famous Person
+          Edit Famous Person
         </ModalHeader>
         <ModalBody>
           <Input
@@ -397,11 +479,22 @@ function FamousPersonsTable() {
             // onChange={lnerror}
           />
         </ModalBody>
+        
+        <ModalBody>
+          <Input
+            type="text"
+            name="description"
+            id="description"
+            value={edtFamousPerson.description}
+            onChange={(e) => setEdtPerson({description: e.target.value})}
+            placeholder="Description"
+            // onChange={lnerror}
+          />
+        </ModalBody>
         <ModalFooter>
           <Button
             color="danger"
             onClick={() => {
-            
               editFamousPerson();
               setModelEdit(false);
             }}>
@@ -412,7 +505,31 @@ function FamousPersonsTable() {
           </Button>
         </ModalFooter>
       </Modal>
+
+      <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggleDeleteModal)}
+          toggle={toggleDeleteModal}>
+          Are you sure?
+        </ModalHeader>
+        <ModalBody>You want to delete this Famous Person</ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              deleteByID();
+              setDeleteModal(false);
+            }}>
+            Delete
+          </Button>{" "}
+          <Button color="secondary" onClick={toggleDeleteModal}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 }
+
 export default FamousPersonsTable;
