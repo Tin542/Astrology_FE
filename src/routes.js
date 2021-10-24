@@ -22,6 +22,7 @@ import CategoryTable from "views/Categories/CategoryTable.js";
 import PlanetTable from "views/Planets/PlanetTable.js";
 import ZodiacTable from "views/Zodiacs/ZodiacTable.js";
 import FamousPersonsTable from "views/FamousPersons/FamousPersonsTable.js";
+import Account from "views/Accounts/AccountPage.js";
 
 
 var routes = [
@@ -85,9 +86,17 @@ var routes = [
     path: "/FamousPersons/famousperson-table",
     name: "Famous Persons",
     layout: "/admin",
-    icon: "nc-icon nc-single-02",
+    icon: "nc-icon nc-bulb-63",
     component: FamousPersonsTable,
     
+  },
+
+  {
+    path: "/account",
+    layout: "/admin",
+    icon: "nc-icon nc-single-02",
+    name: "Account",
+    component: Account,
   },
 
 ];

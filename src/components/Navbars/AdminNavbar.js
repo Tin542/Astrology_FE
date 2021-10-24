@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
 
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { logout } from "../../firebase/firebaseConfig";
@@ -81,26 +82,21 @@ function AdminNavbar() {
                     <img
                       alt="..."
                       src={
-                        require("assets/img/faces/face-1.jpg").default
+                        require("assets/img/faces/face-8.png").default
                       }></img>
-                  </div>
+                  </div>{" "}
                   {localStorage.getItem("NAME")}
                 </Dropdown.Toggle>
                 <Dropdown.Menu
                   alignRight
                   aria-labelledby="navbarDropdownMenuLink">
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}>
-                    <i className="nc-icon nc-umbrella-13"></i>
-                    Help Center
+                  <Dropdown.Item>
+                    <Link to={"/admin/account"}>
+                      <i className="nc-icon nc-single-02"></i>
+                      Admin info
+                    </Link>
                   </Dropdown.Item>
-                  <Dropdown.Item
-                    href="#pablo"
-                    onClick={(e) => e.preventDefault()}>
-                    <i className="nc-icon nc-settings-90"></i>
-                    Settings
-                  </Dropdown.Item>
+
                   <div className="divider"></div>
 
                   <Dropdown.Item
