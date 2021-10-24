@@ -139,45 +139,6 @@ function Sidebar({ routes, image, background }) {
               <Link to={"/admin/dashboard"}>Spirit Astrology</Link>
             </a>
           </div>
-          {/* <div className="user">
-            <div className="photo">
-              <img
-                alt="..."
-                src={require("assets/img/faces/face-1.jpg").default}></img>
-            </div>
-            <div className="info">
-              <a
-                className={userCollapseState ? "collapsed" : ""}
-                data-toggle="collapse"
-                href="#pablo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setUserCollapseState(!userCollapseState);
-                }}
-                aria-expanded={userCollapseState}>
-               
-                 {localStorage.getItem("NAME")}
-                
-              </a>
-              <Collapse id="collapseExample" in={userCollapseState}>
-                <div>
-                  <Nav as="ul">
-                    <li>
-                      <a
-                        className="profile-dropdown"
-                        onClick={(e) => e.preventDefault()}>
-                        <Link to={"/admin/User-Page"}>
-                          <span className="sidebar-mini">MP</span>
-                          <span className="sidebar-normal">My Profile</span>
-                        </Link>
-                      </a>
-                    </li>
-                    
-                  </Nav>
-                </div>
-              </Collapse>
-            </div>
-          </div> */}
           <Nav as="ul">{createLinks(routes)}</Nav>
         </div>
         <div
