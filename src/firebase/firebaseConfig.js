@@ -38,10 +38,13 @@ const loginWithGoogle = async () => {
       console.log("authen token: ", t.data.data.token);
       console.log("respone", res);
       console.log("t: ", t);
-      console.log("name: ", res.user.displayName);
 
       localStorage.setItem("token", t.data.data.token);
       localStorage.setItem("NAME", res.user.displayName);
+      localStorage.setItem("EMAIL", res.user.email);
+      localStorage.setItem("IMAGE", res.user.photoURL);
+      localStorage.setItem("UID", res.user.uid);
+      localStorage.setItem("PHONE", res.user.phoneNumber);
       
     } catch (err) {
         console.log(err)

@@ -47,6 +47,7 @@ function PostTables() {
     getServiceList();
   }, []);
   const [useListServiceShowPage, setUseListServiceShowPage] = useState([]);
+  const [listCategory, setListCategory] = useState([]);
   const [categoryName, setCategoryName] = useState([]);
 
   //detail
@@ -218,7 +219,6 @@ function PostTables() {
                       <th className="text-center">Thumb</th>
                       <th>Title</th>
                       <th className="text-right">Posted By</th>
-                      <th className="text-right">Category</th>
                       <th className="text-right">Date</th>
                       <th className="text-right">Status</th>
                       <th></th>
@@ -252,7 +252,6 @@ function PostTables() {
                           </td>
 
                           <td className="td-number">{item.astrologer.name}</td>
-                          <td className="td-number">{item.category_id}</td>
                           <td className="td-number">
                             {moment(item.created_at).format("MM-DD-YYYY")}
                           </td>
