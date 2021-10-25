@@ -82,7 +82,7 @@ function AdminNavbar() {
                     <img
                       alt="..."
                       src={
-                        require("assets/img/faces/face-8.png").default
+                        localStorage.getItem("IMAGE")
                       }></img>
                   </div>{" "}
                   {localStorage.getItem("NAME")}

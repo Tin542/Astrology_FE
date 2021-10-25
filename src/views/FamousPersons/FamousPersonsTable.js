@@ -141,17 +141,16 @@ function FamousPersonsTable() {
   function createFamousPerson() {
     console.log("id: ", id);
     console.log("name: ", name);
-    console.log("long: ", zodiac_id);
+    console.log("zodiac_id: ", zodiac_id);
     console.log("image url: ", image);
 
     postWithToken(
       `/api/v1/famouspersons`,
       {
-        user_id: id,
         name: name,
         description: description,
         url_image: image,
-        longitude_of_birth: zodiac_id,
+        zodiac_id: zodiac_id,
         
       },
       localStorage.getItem("token")
@@ -408,17 +407,6 @@ function FamousPersonsTable() {
           toggle={toggleCreateModal}>
           Add Famous Person
         </ModalHeader>
-
-        <ModalBody>
-          <Input
-            type="number"
-            name="id"
-            id="id"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-            placeholder="User id"
-          />
-        </ModalBody>
 
         <ModalBody>
           <Input
