@@ -27,7 +27,7 @@ function AccountPage() {
                   <Card>
                     <Card.Header>
                       <Card.Header>
-                        <Card.Title as="h4">Edit Profile</Card.Title>
+                        <Card.Title as="h4">Profile</Card.Title>
                       </Card.Header>
                     </Card.Header>
                     <Card.Body>
