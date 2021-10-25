@@ -141,6 +141,7 @@ function FamousPersonsTable() {
   function createFamousPerson() {
     console.log("id: ", id);
     console.log("name: ", name);
+    console.log("description: ", description);
     console.log("zodiac_id: ", zodiac_id);
     console.log("image url: ", image);
 
@@ -149,8 +150,9 @@ function FamousPersonsTable() {
       {
         name: name,
         description: description,
-        url_image: image,
         zodiac_id: zodiac_id,
+        url_image: image,
+        
         
       },
       localStorage.getItem("token")
@@ -176,11 +178,16 @@ function FamousPersonsTable() {
     console.log("edt ID: ", edtID);
     console.log("wdt Name: ", edtFamousPerson.name);
     console.log("wdt Description: ", edtFamousPerson.description);
+    console.log("wdt Zodiac: ", edtFamousPerson.zodiac_id);
 
     putWithToken(
       `/api/v1/famouspersons${edtID}`,
-      { name: edtFamousPerson.name },
-      localStorage.getItem("token")
+      {
+        name: edtFamousPerson.name,
+        description: edtFamousPerson.description,
+        zodiac_id: edtFamousPerson.zodiac_id
+      },
+        localStorage.getItem("token")
     )
       .then((res) => {
         if (res.data.code === 0) {
@@ -290,7 +297,10 @@ function FamousPersonsTable() {
                                 onClick={() => {
                                   // setEdtId(item.id);
                                   setEdtPerson({
+                                    id: item.id,
                                     name: item.name,
+                                    description: item.description,
+                                    zodiac_id: item.zodiac_id,
                                   });
                                   setEdtId(item.id);
                                   setModelEdit(true);
@@ -465,6 +475,18 @@ function FamousPersonsTable() {
         <ModalBody>
           <Input
             type="text"
+            name="id"
+            id="id"
+            value={edtFamousPerson.id}
+            onChange={(e) => setEdtPerson({id: e.target.value})}
+            placeholder="ID"
+            // onChange={lnerror}
+          />
+        </ModalBody>
+
+        <ModalBody>
+          <Input
+            type="text"
             name="name"
             id="name"
             value={edtFamousPerson.name}
@@ -485,6 +507,20 @@ function FamousPersonsTable() {
             // onChange={lnerror}
           />
         </ModalBody>
+
+        <ModalBody>
+          <Input
+            type="text"
+            name="zodiac_id"
+            id="zodiac_id"
+            value={edtFamousPerson.zodiac_id}
+            onChange={(e) => setEdtPerson({zodiac_id: e.target.value})}
+            placeholder="Zodiac"
+            // onChange={lnerror}
+          />
+        </ModalBody>
+
+        
         
         <ModalFooter>
           <Button
