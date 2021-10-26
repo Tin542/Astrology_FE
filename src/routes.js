@@ -23,6 +23,7 @@ import PlanetTable from "views/Planets/PlanetTable.js";
 import ZodiacTable from "views/Zodiacs/ZodiacTable.js";
 import FamousPersonsTable from "views/FamousPersons/FamousPersonsTable.js";
 import Account from "views/Accounts/AccountPage.js";
+import Role from "views/UserRole/UserRole.js";
 
 
 var routes = [
@@ -97,6 +98,14 @@ var routes = [
     icon: "nc-icon nc-single-02",
     name: "Account",
     component: Account,
+  },
+
+  {
+    path: "/userRole",
+    layout: "/admin",
+    icon: "nc-icon nc-circle-09",
+    name: "Role",
+    component: Role,
   },
 
 ];

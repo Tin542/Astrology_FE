@@ -23,7 +23,7 @@ import {
 
 function ZodiacTable() {
   useEffect(() => {
-    getServiceList();
+    getServiceList()
     // displayFIeldName();
     // displayStateName();
     // get("​/api​/v1.0​/company​").then((res) => {
