@@ -33,10 +33,14 @@ import {
   PaginationLink,
   Input,
 } from "reactstrap";
+import { func } from "prop-types";
 
 function FamousPersonsTable() {
   //show page
   const [personList, setPersonList] = useState([]);
+
+  //listZodiac
+  const [listZodiac, setListZodiac] = useState([]);
 
   // Famous Person detail
   const [id, setId] = useState();
@@ -59,7 +63,11 @@ function FamousPersonsTable() {
 
   //Edit Person
   const [edtID, setEdtId] = useState();
-  const [edtFamousPerson, setEdtPerson] = useState([]);
+  const [edtName, setEdtName] = useState();
+  const [edtDes, setEdtDes] = useState();
+  const [edtZodiac, setEdtZodiac] = useState();
+  const [edtImage, setEdtImage] = useState();
+
   const [modalEdit, setModelEdit] = useState(false);
   const toggEditModal = () => setModelEdit(!modalEdit);
 
@@ -71,6 +79,7 @@ function FamousPersonsTable() {
 
   useEffect(() => {
     getFamousPersonList();
+    getAllZodiac();
   }, []);
 
   function getFamousPersonList() {
@@ -82,6 +91,18 @@ function FamousPersonsTable() {
         setTotalPage(totalPageNumber);
         setPersonList(temp);
         showPageList(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function getAllZodiac() {
+    get(`/api/v1/zodiacs?limit=12`)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("list zodiac: ", temp);
+        setListZodiac(temp);
       })
       .catch((err) => {
         console.log(err);
@@ -152,8 +173,6 @@ function FamousPersonsTable() {
         description: description,
         zodiac_id: zodiac_id,
         url_image: image,
-        
-        
       },
       localStorage.getItem("token")
     )
@@ -174,26 +193,28 @@ function FamousPersonsTable() {
       });
   }
 
-  function editFamousPerson(){
+  function editFamousPerson() {
     console.log("edt ID: ", edtID);
-    console.log("wdt Name: ", edtFamousPerson.name);
-    console.log("wdt Description: ", edtFamousPerson.description);
-    console.log("wdt Zodiac: ", edtFamousPerson.zodiac_id);
+    console.log("edt Name: ", edtName);
+    console.log("edt Description: ", edtDes);
+    console.log("edt Zodiac: ", edtZodiac);
+    console.log("edt Image: ", edtImage);
 
     putWithToken(
-      `/api/v1/famouspersons${edtID}`,
+      `/api/v1/famouspersons/${edtID}`,
       {
-        name: edtFamousPerson.name,
-        description: edtFamousPerson.description,
-        zodiac_id: edtFamousPerson.zodiac_id
+        name: edtName,
+        description: edtDes,
+        zodiac_id: edtZodiac,
+        url_image: edtImage
       },
-        localStorage.getItem("token")
+      localStorage.getItem("token")
     )
       .then((res) => {
         if (res.data.code === 0) {
           alert("Edit success");
           setCurrentPage(1);
-          getPersonList();
+          getFamousPersonList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -205,7 +226,7 @@ function FamousPersonsTable() {
         console.log(err);
       });
   }
-  
+
   function deleteByID() {
     console.log("delete: ", id);
 
@@ -244,22 +265,21 @@ function FamousPersonsTable() {
             <Card className="regular-table-with-color">
               <Card.Header>
                 <Card.Title as="h4">
-                  
-                    <Button
-                      className="btn-wd mr-1" variant="info"
-                      type="button"
-                      onClick={() => {
-                        setId(null);
-                        setName(null);
-                        setZodiac(null);
-                        setDescription(null);
-                        setImage("https://image.lag.vn/upload/news/21/08/16/236599595_1425452954506376_3110056547255537769_n_WOLP.jpg");
+                  <Button
+                    className="btn-wd mr-1"
+                    variant="info"
+                    type="button"
+                    onClick={() => {
+                      setId(null);
+                      setName(null);
+                      setZodiac(null);
+                      setDescription(null);
+                      setImage(null);
 
-                        setCreateModal(true);
-                      }}>
-                      Add Famous Person
-                    </Button>
-                  
+                      setCreateModal(true);
+                    }}>
+                    Add Famous Person
+                  </Button>
                 </Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
@@ -284,8 +304,7 @@ function FamousPersonsTable() {
                             {item.name}
                           </td>
                           <td>
-
-                          <OverlayTrigger
+                            <OverlayTrigger
                               overlay={
                                 <Tooltip id="tooltip-461494662">Edit</Tooltip>
                               }
@@ -296,13 +315,12 @@ function FamousPersonsTable() {
                                 variant="success"
                                 onClick={() => {
                                   // setEdtId(item.id);
-                                  setEdtPerson({
-                                    id: item.id,
-                                    name: item.name,
-                                    description: item.description,
-                                    zodiac_id: item.zodiac_id,
-                                  });
+                                  setEdtName(item.name);
+                                  setEdtDes(item.description);
+                                  setEdtZodiac(item.zodiac_id);
+                                  setEdtImage(item.url_image);
                                   setEdtId(item.id);
+
                                   setModelEdit(true);
                                 }}>
                                 <i className="fas fa-edit"></i>
@@ -354,7 +372,7 @@ function FamousPersonsTable() {
           </PaginationLink>
         </PaginationItem>
         {pageList.map((page, index) => (
-          <PaginationItem active={page+1 === currentPage}>
+          <PaginationItem active={page + 1 === currentPage}>
             <PaginationLink
               className="page"
               key={index}
@@ -392,7 +410,7 @@ function FamousPersonsTable() {
             <img alt="..." src={image}></img>
           </div>
         </ModalBody>
-        
+
         <ModalBody>
           <b>ID: </b>
           {id}
@@ -400,7 +418,7 @@ function FamousPersonsTable() {
           <b>Name: </b>
           {name}
           <br />
-          <b>Description: </b> 
+          <b>Description: </b>
           {description}
           <br />
           <b>Zodiac: </b>
@@ -428,7 +446,7 @@ function FamousPersonsTable() {
             placeholder="Name"
           />
         </ModalBody>
-      
+
         <ModalBody>
           <Input
             type="text"
@@ -439,16 +457,42 @@ function FamousPersonsTable() {
             placeholder="Description"
           />
         </ModalBody>
-
         <ModalBody>
           <Input
+            type="text"
+            name="image"
+            id="image"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            placeholder="Image URL"
+          />
+        </ModalBody>
+        <ModalBody>
+          {/* <Input
             type="number"
             name="zodiac_id"
             id="zodiac_id"
             value={zodiac_id}
             onChange={(e) => setZodiac(e.target.value)}
             placeholder="Zodiac"
-          />
+          /> */}
+          <select
+            name="subject"
+            id="subject_input"
+            value={zodiac_id}
+            name="zodiac_id"
+            onChange={(e) => setZodiac(e.target.value)}>
+            <option hidden selected>
+              ===Zodiac===
+            </option>
+            {listZodiac.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.id}
+                {"-"}
+                {item.name}
+              </option>
+            ))}
+          </select>
         </ModalBody>
 
         <ModalFooter>
@@ -475,41 +519,39 @@ function FamousPersonsTable() {
         <ModalBody>
           <Input
             type="text"
-            name="id"
-            id="id"
-            value={edtFamousPerson.id}
-            onChange={(e) => setEdtPerson({id: e.target.value})}
-            placeholder="ID"
-            // onChange={lnerror}
-          />
-        </ModalBody>
-
-        <ModalBody>
-          <Input
-            type="text"
             name="name"
             id="name"
-            value={edtFamousPerson.name}
-            onChange={(e) => setEdtPerson({name: e.target.value})}
+            value={edtName}
+            onChange={(e) => setEdtName(e.target.value)}
             placeholder="Name"
             // onChange={lnerror}
           />
         </ModalBody>
-        
+
         <ModalBody>
           <Input
             type="text"
             name="description"
             id="description"
-            value={edtFamousPerson.description}
-            onChange={(e) => setEdtPerson({description: e.target.value})}
+            value={edtDes}
+            onChange={(e) => setEdtDes(e.target.value)}
             placeholder="Description"
             // onChange={lnerror}
           />
         </ModalBody>
-
         <ModalBody>
           <Input
+            type="text"
+            name="image"
+            id="image"
+            value={edtImage}
+            onChange={(e) => setEdtImage(e.target.value)}
+            placeholder="Image Url"
+            // onChange={lnerror}
+          />
+        </ModalBody>
+        <ModalBody>
+          {/* <Input
             type="text"
             name="zodiac_id"
             id="zodiac_id"
@@ -517,11 +559,23 @@ function FamousPersonsTable() {
             onChange={(e) => setEdtPerson({zodiac_id: e.target.value})}
             placeholder="Zodiac"
             // onChange={lnerror}
-          />
+          /> */}
+          <select
+            name="subject"
+            id="subject_input"
+            value={edtZodiac}
+            name="edtZodiac"
+            onChange={(e) => setEdtZodiac(e.target.value)}>
+            {listZodiac.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.id}
+                {"-"}
+                {item.name}
+              </option>
+            ))}
+          </select>
         </ModalBody>
 
-        
-        
         <ModalFooter>
           <Button
             color="danger"
