@@ -77,9 +77,9 @@ function PostTables() {
   const [limit, setLimit] = useState(5);
 
   function getServiceList() {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsInJvbGVzIjoiODg4LDg4ODg4IiwiYnVmZmVyX3RpbWUiOiI4NjQwMCIsImV4cCI6MTYzNTY3Nzc5MywiaXNzIjoicW1QbHVzIiwibmJmIjoxNjM1MDcyOTkzLCJpYXQiOjE2MzUwNzI5OTN9.yocDlSYMrR00iDnlPr5U7g42WCTrfMMOo-ai1NpOm8U"    
     getWithToken(
-      `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,
-      localStorage.getItem("token")
+      `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,token
     )
       .then((res) => {
         var temp = res.data.data.list;
