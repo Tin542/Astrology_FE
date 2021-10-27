@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { del, post, get, put, getWithToken, postWithToken } from "../../service/ReadAPI";
-import Moment from 'react-moment';
+import {
+  del,
+  post,
+  get,
+  put,
+  getWithToken,
+  postWithToken,
+} from "../../service/ReadAPI";
+import Moment from "react-moment";
 import moment from "moment";
 
 // react-bootstrap components
@@ -20,56 +27,44 @@ import {
   Tooltip,
 } from "react-bootstrap";
 
-import { 
-  Input, ModalHeader, Modal,
+import {
+  Input,
+  ModalHeader,
+  Modal,
   ModalBody,
   ModalFooter,
   Pagination,
   PaginationItem,
-  PaginationLink, 
+  PaginationLink,
 } from "reactstrap";
 import Popup from "components/Popup/Popup";
 
-
 function UserRole() {
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    getServiceList()
-    // displayFIeldName();
-    // displayStateName();
-    // get("​/api​/v1.0​/company​").then((res) => {
-    //   if (res && res.status === 200) {
-    //     setListFilterState(res.data);
-    //   }
-    // });
-    // get("/api​/v1.0​/major_field​").then((res) => {
-    //   if (res && res.status === 200) {
-    //     setListFilterState(res.data);
-    //   }
-    // });
+    getServiceList();
   }, []);
   const [role, setRole] = useState([]);
-  const [userId, setUserId] = useState('')
-  const [roleId, setRoleId] = useState('')
+  const [userId, setUserId] = useState("");
+  const [roleId, setRoleId] = useState("");
   const [createModal, setCreateModal] = useState(false);
-
 
   const toggleCreateModal = () => setCreateModal(!createModal);
 
-    //paging
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPage, setTotalPage] = useState();
-    const [pageList, setPageList] = useState([]);
-    const [limit, setLimit] = useState(5);
+  //paging
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState();
+  const [pageList, setPageList] = useState([]);
+  const [limit, setLimit] = useState(5);
 
   const mapNumToRole = (num) => {
     let Role = {
-      '888': 'Customer',
-      '8888': 'Astrologer',
-      '88888': 'Admin'
-    }
-    return Role[String(num)]
-  }
+      888: "Customer",
+      8888: "Astrologer",
+      88888: "Admin",
+    };
+    return Role[String(num)];
+  };
 
   const closeBtn = (x) => (
     <button
@@ -80,15 +75,31 @@ function UserRole() {
     </button>
   );
 
-  const handleSumbit = async(e) => {
-    const user = userId
-    const role = roleId
-    console.log(userId)
-    console.log(roleId)
-    postWithToken(`/api/v1/userroles`, {"user_id": userId, "role_id": roleId}, token)
-    console.log("Added")
-}
-
+  const handleSumbit = async (e) => {
+    const user = userId;
+    const role = roleId;
+    console.log(userId);
+    console.log(roleId);
+    postWithToken(
+      `/api/v1/userroles`,
+      { user_id: userId, role_id: roleId },
+      token
+    ).then((res) => {
+      if (res.data.code === 0) {
+        alert("Add success");
+        setCurrentPage(1);
+        getCategoryList();
+      }
+      if (res.data.code === 7) {
+        console.log(res.data.msg);
+        alert(res.data.msg);
+      }
+    })
+    .catch((err) => {
+      alert(err);
+      console.log(err);
+    });
+  };
 
   function getServiceList() {
     getWithToken(`/api/v1/userroles?limit=${limit}&page=${currentPage}`, token)
@@ -99,11 +110,6 @@ function UserRole() {
         setTotalPage(totalPageNumber);
         setRole(temp);
         showPageList(res);
-        // setUseListCategoryShowPage(
-        //   temp.slice(numberPage * 5 - 5, numberPage * 5)
-        // );
-        // setTotalNumberPage(Math.ceil(temp.length / 5));
-        // setCount(count);
       })
       .catch((err) => {
         console.log(err);
@@ -111,7 +117,7 @@ function UserRole() {
   }
 
   function changePage(number) {
-    getWithToken(`/api/v1/userroles?limit=${limit}&page=${number}`,token)
+    getWithToken(`/api/v1/userroles?limit=${limit}&page=${number}`, token)
       .then((res) => {
         var temp1 = res.data.data.list;
         console.log(temp1);
@@ -147,14 +153,15 @@ function UserRole() {
             <Card className="table-big-boy">
               <Card.Header>
                 <Button
-                      className="btn-wd mr-1" variant="info"
-                      type="button"
-                      onClick={() => {
-                        setUserId(null);
-                        setRoleId(null);
-                        setCreateModal(true);
-                      }}>
-                      Add New User
+                  className="btn-wd mr-1"
+                  variant="info"
+                  type="button"
+                  onClick={() => {
+                    setUserId(null);
+                    setRoleId(null);
+                    setCreateModal(true);
+                  }}>
+                  Add New User
                 </Button>
                 <br></br>
               </Card.Header>
@@ -162,19 +169,23 @@ function UserRole() {
                 <Table className="table-bigboy">
                   <thead>
                     <tr>
+                    <th></th>
+                      <th></th>
+                      <th></th>
                       <th>ID</th>
                       <th>Role</th>
-                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {role?.map((rol, index) => {
                       return (
                         <tr key={index}>
-                          <td className="td-name">{rol.user_id}</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>{rol.user_id}</td>
                           <td>{mapNumToRole(rol.role_id)}</td>
                         </tr>
-                        
                       );
                     })}
                   </tbody>
@@ -198,9 +209,9 @@ function UserRole() {
             }}>
             «
           </PaginationLink>
-        </PaginationItem >
+        </PaginationItem>
         {pageList.map((page, index) => (
-          <PaginationItem active={page+1 === currentPage}>
+          <PaginationItem active={page + 1 === currentPage}>
             <PaginationLink
               className="page"
               key={index}
@@ -215,7 +226,6 @@ function UserRole() {
           <PaginationLink
             className="page"
             next
-            //disable={numberPage === totalNumberPage ? true : false}
             onClick={() => {
               if (currentPage + 1 <= totalPage) {
                 changePage(currentPage + 1);
@@ -225,51 +235,51 @@ function UserRole() {
           </PaginationLink>
         </PaginationItem>
       </Pagination>
-              <Modal isOpen={createModal} toggle={toggleCreateModal}>
-                  <ModalHeader
-                    style={{ color: "#B22222" }}
-                    close={closeBtn(toggleCreateModal)}
-                    toggle={toggleCreateModal}>
-                    Create Astrologer
-                  </ModalHeader>
-                  <ModalBody>
-                    <Input
-                      type="text"
-                      name="userID"
-                      id="userID"
-                      value={userId}
-                      onChange={(e) => setUserId(e.target.value)}
-                      placeholder="User ID"
-                    />
-                  </ModalBody>
-                  <ModalBody>
-                    <Input
-                      type="text"
-                      name="roleID"
-                      id="roleID"
-                      value={roleId}
-                      onChange={(e) => setRoleId(e.target.value)}
-                      placeholder="Role ID"
-                    />
-                  </ModalBody>
-                  <ModalBody>
-                    <p>888: Customer</p>
-                    <p>8888: Astrologer</p>
-                    <p>88888: Admin </p>
-                  </ModalBody>
+      <Modal isOpen={createModal} toggle={toggleCreateModal}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggleCreateModal)}
+          toggle={toggleCreateModal}>
+          Create Astrologer
+        </ModalHeader>
+        <ModalBody>
+          <Input
+            type="text"
+            name="userID"
+            id="userID"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            placeholder="User ID"
+          />
+        </ModalBody>
+        <ModalBody>
+          <Input
+            type="text"
+            name="roleID"
+            id="roleID"
+            value={roleId}
+            onChange={(e) => setRoleId(e.target.value)}
+            placeholder="Role ID"
+          />
+        </ModalBody>
+        <ModalBody>
+          <p>888: Customer</p>
+          <p>8888: Astrologer</p>
+          <p>88888: Admin </p>
+        </ModalBody>
 
-                  <ModalFooter>
-                    <Button
-                      className="btn-wd"
-                      variant="info"
-                      onClick={() => {
-                        handleSumbit();
-                        setCreateModal(false);
-                      }}>
-                      Add
-                    </Button>
-                  </ModalFooter>
-                </Modal>
+        <ModalFooter>
+          <Button
+            className="btn-wd"
+            variant="info"
+            onClick={() => {
+              handleSumbit();
+              setCreateModal(false);
+            }}>
+            Add
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 }

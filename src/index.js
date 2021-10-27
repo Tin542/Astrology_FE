@@ -34,7 +34,7 @@ ReactDOM.render(
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
       <Route exact path="/login" render={(props) => <Login {...props} />} />
       <Redirect from="/" to="/login" />
-      <Redirect from="/admin" to="/admin/dasboard" />
+      <Redirect from="/admin" to="/admin/dasboard" />z
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")
