@@ -551,15 +551,6 @@ function FamousPersonsTable() {
           />
         </ModalBody>
         <ModalBody>
-          {/* <Input
-            type="text"
-            name="zodiac_id"
-            id="zodiac_id"
-            value={edtFamousPerson.zodiac_id}
-            onChange={(e) => setEdtPerson({zodiac_id: e.target.value})}
-            placeholder="Zodiac"
-            // onChange={lnerror}
-          /> */}
           <select
             name="subject"
             id="subject_input"

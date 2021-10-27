@@ -25,7 +25,6 @@ import FamousPersonsTable from "views/FamousPersons/FamousPersonsTable.js";
 import Account from "views/Accounts/AccountPage.js";
 import Role from "views/UserRole/UserRole.js";
 
-
 var routes = [
   {
     path: "/dashboard",
@@ -43,12 +42,11 @@ var routes = [
     component: PostTable,
   },
   {
-    path: "/Categories/category-table",
-    name: "Category",
+    path: "/Customers/customer-table",
+    name: "Customer",
     layout: "/admin",
-    icon: "nc-icon nc-grid-45",
-    component: CategoryTable,
-    
+    icon: "nc-icon nc-single-02",
+    component: CustomTable,
   },
   {
     path: "/Astrologers/astrologer-table",
@@ -56,40 +54,51 @@ var routes = [
     layout: "/admin",
     icon: "nc-icon nc-circle-09",
     component: AstroTable,
-    
-  },
-  
-  {
-    path: "/Customers/customer-table",
-    name: "Customer",
-    layout: "/admin",
-    icon: "nc-icon nc-single-02",
-    component: CustomTable,
-    
-  },
-  {
-    path: "/Planets/planet",
-    name: "Planet",
-    layout: "/admin",
-    icon: "nc-icon nc-planet",
-    component: PlanetTable,
   },
 
   {
-    path: "/Zodiacs/zodiac",
-    name: "Zodiac",
-    layout: "/admin",
-    icon: "nc-icon nc-explore-2",
-    component: ZodiacTable,
-  },
-
-  {
-    path: "/FamousPersons/famousperson-table",
-    name: "Famous Persons",
-    layout: "/admin",
-    icon: "nc-icon nc-bulb-63",
-    component: FamousPersonsTable,
-    
+    collapse: true,
+    path: "/config",
+    name: "Config",
+    state: "openTables",
+    icon: "nc-icon nc-settings-gear-64",
+    views: [
+      {
+        path: "/category-table",
+        name: "Category",
+        layout: "/admin",
+        icon: "nc-icon nc-grid-45",
+        component: CategoryTable,
+      },
+      {
+        path: "/Planets/planet",
+        name: "Planet",
+        layout: "/admin",
+        icon: "nc-icon nc-planet",
+        component: PlanetTable,
+      },
+      {
+        path: "/Zodiacs/zodiac",
+        name: "Zodiac",
+        layout: "/admin",
+        icon: "nc-icon nc-explore-2",
+        component: ZodiacTable,
+      },
+      {
+        path: "/FamousPersons/famousperson-table",
+        name: "Famous Persons",
+        layout: "/admin",
+        icon: "nc-icon nc-bulb-63",
+        component: FamousPersonsTable,
+      },
+      {
+        path: "/userRole",
+        layout: "/admin",
+        icon: "nc-icon nc-circle-09",
+        name: "Role",
+        component: Role,
+      },
+    ],
   },
 
   {
@@ -99,14 +108,5 @@ var routes = [
     name: "Account",
     component: Account,
   },
-
-  {
-    path: "/userRole",
-    layout: "/admin",
-    icon: "nc-icon nc-circle-09",
-    name: "Role",
-    component: Role,
-  },
-
 ];
 export default routes;
