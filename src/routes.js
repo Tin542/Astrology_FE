@@ -24,7 +24,9 @@ import ZodiacTable from "views/Zodiacs/ZodiacTable.js";
 import FamousPersonsTable from "views/FamousPersons/FamousPersonsTable.js";
 import Account from "views/Accounts/AccountPage.js";
 import Role from "views/UserRole/UserRole.js";
+import PriceTable from "views/Prices/PriceTable.js";
 import PostDetail from "views/Posts/DetailPost.js";
+
 
 var routes = [
   {
@@ -92,6 +94,7 @@ var routes = [
         icon: "nc-icon nc-bulb-63",
         component: FamousPersonsTable,
       },
+
       {
         path: "/userRole",
         layout: "/admin",
@@ -99,6 +102,15 @@ var routes = [
         name: "Role",
         component: Role,
       },
+
+      {
+        path: "/Prices/price-table",
+        layout: "/admin",
+        icon: "nc-icon nc-circle-09",
+        name: "Price",
+        component: PriceTable,
+      },
+
     ],
   },
 
