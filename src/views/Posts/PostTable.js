@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
 import {
   del,
   patchWithToken,
@@ -6,8 +7,8 @@ import {
   put,
   getWithToken,
 } from "../../service/ReadAPI";
-import Moment from "react-moment";
 import moment from "moment";
+import "../../assets/css/customize.css";
 
 // react-bootstrap components
 import {
@@ -52,15 +53,7 @@ function PostTables() {
 
   //detail
   const [id, setId] = useState();
-  const [title, setittle] = useState();
-  const [description, setDescription] = useState();
-  const [approve, setAprove] = useState(false);
-  const [category, setCategory] = useState();
-  const [astrologer, setAstrologer] = useState();
-  const [zodiac, setZodiac] = useState([]);
-  const [createDate, setCreateDate] = useState();
-  const [updateDate, setUpdateDate] = useState();
-  const [image, setImage] = useState();
+  
 
   //modal Edit
   const [editModal, setEditModal] = useState(false);
@@ -77,9 +70,9 @@ function PostTables() {
   const [limit, setLimit] = useState(5);
 
   function getServiceList() {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNyIsInJvbGVzIjoiODg4LDg4ODg4IiwiYnVmZmVyX3RpbWUiOiI4NjQwMCIsImV4cCI6MTYzNTY3Nzc5MywiaXNzIjoicW1QbHVzIiwibmJmIjoxNjM1MDcyOTkzLCJpYXQiOjE2MzUwNzI5OTN9.yocDlSYMrR00iDnlPr5U7g42WCTrfMMOo-ai1NpOm8U"    
     getWithToken(
-      `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,token
+      `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,
+      localStorage.getItem("token")
     )
       .then((res) => {
         var temp = res.data.data.list;
@@ -127,35 +120,7 @@ function PostTables() {
     }
   }
 
-  function getPostByID(Id) {
-    console.log("id: ", Id);
-
-    get(`/api/v1/posts/${Id}`)
-      .then((res) => {
-        var temp = res.data.data;
-        console.log(temp);
-
-        //get name in list zodiac
-        var listZodiac = temp.zodiacs;
-        var zodiacName = listZodiac.map((zodiacs) => zodiacs.name);
-
-        setId(Id);
-        setittle(temp.title);
-        setDescription(temp.content);
-        setAprove(temp.is_approve);
-        setCategory(temp.category_id);
-        setAstrologer(temp.astrologer.name);
-        setZodiac(zodiacName + ", ");
-        setCreateDate(temp.created_at);
-        setUpdateDate(temp.updated_at);
-        setImage(temp.image_url);
-
-        console.log("zodiacs: ", zodiacName);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  
 
   function approvePost() {
     console.log("id: ", id);
@@ -177,13 +142,10 @@ function PostTables() {
     });
   }
 
-  function deletePost(){
+  function deletePost() {
     console.log("id: ", id);
     console.log("token: ", localStorage.getItem("token"));
-    del(
-      `/api/v1/posts/${id}`,
-      localStorage.getItem("token")
-    ).then((res) => {
+    del(`/api/v1/posts/${id}`, localStorage.getItem("token")).then((res) => {
       if (res.data.code === 0) {
         alert("delete success");
         setCurrentPage(1);
@@ -213,14 +175,14 @@ function PostTables() {
             <Card className="table-big-boy">
               <Card.Header></Card.Header>
               <Card.Body className="table-full-width">
-                <Table className="table-bigboy">
+                <Table className="table-hover">
                   <thead>
                     <tr>
-                      <th className="text-center">Thumb</th>
+                      <th className="text-center">Image</th>
                       <th>Title</th>
-                      <th className="text-right">Posted By</th>
-                      <th className="text-right">Date</th>
-                      <th className="text-right">Status</th>
+                      <th>Posted By</th>
+                      <th>Date</th>
+                      <th>Status</th>
                       <th></th>
                     </tr>
                   </thead>
@@ -229,26 +191,24 @@ function PostTables() {
                       return (
                         <tr key={index}>
                           <td>
-                            <div className="img-container">
-                              <img
-                                alt="..."
-                                src={item.image_url}
-                                onClick={() => {
-                                  // setserviceEdit(e.Id);
-                                  setId(item.id);
-                                  getPostByID(item.id);
-                                  setEditModal(true);
-                                }}></img>
+                            <div className="postImage">
+                              <Link to={"/admin/detail-post"}>
+                                <img
+                                  alt="..."
+                                  src={item.image_url}
+                                  onClick={() => {
+                                    localStorage.setItem("postId", item.id);
+                                  }}></img>
+                              </Link>
                             </div>
                           </td>
+
                           <td
                             className="td-name"
                             onClick={() => {
-                              // setserviceEdit(e.Id);
-                              getPostByID(item.id);
-                              setEditModal(true);
+                              localStorage.setItem("postId", item.id);
                             }}>
-                            {item.title}
+                            <Link to={"/admin/detail-post"}>{item.title}</Link>
                           </td>
 
                           <td className="td-number">{item.astrologer.name}</td>
@@ -290,7 +250,7 @@ function PostTables() {
         </PaginationItem>
 
         {pageList.map((page, index) => (
-          <PaginationItem active={page+1 === currentPage}>
+          <PaginationItem active={page + 1 === currentPage}>
             <PaginationLink
               className="page"
               key={index}
@@ -317,7 +277,7 @@ function PostTables() {
         </PaginationItem>
       </Pagination>
 
-      <Modal isOpen={editModal} toggle={toggleEdit}>
+      {/* <Modal isOpen={editModal} toggle={toggleEdit}>
         <ModalHeader
           style={{ color: "#B22222" }}
           close={closeBtn(toggleEdit)}
@@ -366,7 +326,7 @@ function PostTables() {
             Delete
           </Button>
         </ModalFooter>
-      </Modal>
+      </Modal> */}
 
       <Modal isOpen={deleteModal} toggle={toggleDelete}>
         <ModalHeader
@@ -383,7 +343,6 @@ function PostTables() {
               setDeleteModal(false);
               setEditModal(false);
               deletePost();
-              
             }}>
             Delete
           </Button>{" "}

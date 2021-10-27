@@ -99,7 +99,7 @@ function Sidebar({ routes, image, background }) {
           className={activeRoute(prop.layout + prop.path)}
           key={key}
           as="li">
-          {prop.path !== "/account" ? (
+          {prop.path !== "/account" && prop.path !== "/detail-post" && (
             <Nav.Link to={prop.layout + prop.path} as={Link}>
               {prop.icon ? (
                 <>
@@ -113,8 +113,6 @@ function Sidebar({ routes, image, background }) {
                 </>
               )}
             </Nav.Link>
-          ) : (
-            ""
           )}
         </Nav.Item>
       );
