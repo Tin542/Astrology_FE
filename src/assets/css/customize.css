@@ -5,3 +5,17 @@
     padding-top: 7px;
     border-radius: 4px;
 }
+.postImage img{
+    width: 100px;
+    margin-left: 100px;
+    margin-right: -50px;
+    padding-top: 7px;
+    border-radius: 4px;
+}
+.post-detail-Image img{
+    width: 500px;
+    margin-left: 100px;
+    margin-right: -50px;
+    padding-top: 7px;
+    border-radius: 4px;
+}

@@ -24,6 +24,7 @@ import ZodiacTable from "views/Zodiacs/ZodiacTable.js";
 import FamousPersonsTable from "views/FamousPersons/FamousPersonsTable.js";
 import Account from "views/Accounts/AccountPage.js";
 import Role from "views/UserRole/UserRole.js";
+import PostDetail from "views/Posts/DetailPost.js";
 
 var routes = [
   {
@@ -107,6 +108,13 @@ var routes = [
     icon: "nc-icon nc-single-02",
     name: "Account",
     component: Account,
+  },
+  {
+    path: "/detail-post",
+    layout: "/admin",
+    icon: "nc-icon nc-single-02",
+    name: "Post-Detail",
+    component: PostDetail,
   },
 ];
 export default routes;
