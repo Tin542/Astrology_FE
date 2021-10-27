@@ -46,7 +46,13 @@ function Admin() {
           />
         );
       } else {
-        return null;
+        return (
+          <Route
+            path={prop.layout + prop.path}
+            key={key}
+            component={prop.component}
+          />
+        );
       }
     });
   };
