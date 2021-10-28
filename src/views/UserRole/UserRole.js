@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { del, post, get, put, getWithToken, postWithToken, delWithToken } from "../../service/ReadAPI";
-import Moment from 'react-moment';
+import {
+  del,
+  post,
+  get,
+  put,
+  getWithToken,
+  postWithToken,
+  delWithToken,
+} from "../../service/ReadAPI";
+import Moment from "react-moment";
 import {
   del,
   post,
@@ -44,20 +52,19 @@ import axios, { Axios } from "axios";
 function UserRole() {
   const token = localStorage.getItem("token");
   useEffect(() => {
-    getRoleList()
+    getRoleList();
     setCurrentPage(1);
   }, []);
   const [role, setRole] = useState([]);
-  const [userId, setUserId] = useState('')
-  const [roleId, setRoleId] = useState('')
-  const [createModal, setCreateModal] = useState(false)
-  const tmp = ""
+  const [userId, setUserId] = useState("");
+  const [roleId, setRoleId] = useState("");
+  const [createModal, setCreateModal] = useState(false);
+  const tmp = "";
 
   const [roleModalDelete, setRoleModelDelete] = useState(false);
-  const toggleRoleDelete = () =>
-    setRoleModelDelete(!roleModalDelete);
+  const toggleRoleDelete = () => setRoleModelDelete(!roleModalDelete);
 
-  const toggleCreateModal = () => setCreateModal(!createModal)
+  const toggleCreateModal = () => setCreateModal(!createModal);
   const [role, setRole] = useState([]);
   const [userId, setUserId] = useState("");
   const [roleId, setRoleId] = useState("");
@@ -93,7 +100,11 @@ function UserRole() {
     console.log("userID: ", userId);
     console.log("roleID: ", roleId);
 
-    delWithToken(`/api/v1/userroles`, {"user_id": userId, "role_id": roleId}, token)
+    delWithToken(
+      `/api/v1/userroles`,
+      { user_id: userId, role_id: roleId },
+      token
+    )
       .then((res) => {
         if (res.data.code === 0) {
           alert("delete success");
@@ -120,21 +131,22 @@ function UserRole() {
       `/api/v1/userroles`,
       { user_id: userId, role_id: roleId },
       token
-    ).then((res) => {
-      if (res.data.code === 0) {
-        alert("Add success");
-        setCurrentPage(1);
-        getCategoryList();
-      }
-      if (res.data.code === 7) {
-        console.log(res.data.msg);
-        alert(res.data.msg);
-      }
-    })
-    .catch((err) => {
-      alert(err);
-      console.log(err);
-    });
+    )
+      .then((res) => {
+        if (res.data.code === 0) {
+          alert("Add success");
+          setCurrentPage(1);
+          getCategoryList();
+        }
+        if (res.data.code === 7) {
+          console.log(res.data.msg);
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+        console.log(err);
+      });
   };
 
   function getRoleList() {
@@ -181,7 +193,7 @@ function UserRole() {
       console.log("list page: " + list);
     }
   }
-  
+
   return (
     <>
       <Container fluid>
@@ -206,13 +218,12 @@ function UserRole() {
                 <Table className="table-bigboy">
                   <thead>
                     <tr>
-                    <th></th>
+                      <th></th>
                       <th></th>
                       <th></th>
                       <th>ID</th>
                       <th>Role</th>
                       <th className="text-right">Action</th>
-
                     </tr>
                   </thead>
                   <tbody>
@@ -235,11 +246,11 @@ function UserRole() {
                                 type="button"
                                 variant="danger"
                                 onClick={() => {
-                                  setUserId(rol.user_id)
-                                  setRoleId(rol.role_id)
-                                  console.log(rol.user_id)
-                                  console.log(rol.role_id)
-                                  setRoleModelDelete(true)
+                                  setUserId(rol.user_id);
+                                  setRoleId(rol.role_id);
+                                  console.log(rol.user_id);
+                                  console.log(rol.role_id);
+                                  setRoleModelDelete(true);
                                 }}>
                                 <i className="fas fa-times"></i>
                               </Button>
@@ -295,72 +306,73 @@ function UserRole() {
           </PaginationLink>
         </PaginationItem>
       </Pagination>
-        <Modal isOpen={createModal} toggle={toggleCreateModal}>
-          <ModalHeader
-            style={{ color: "#B22222" }}
-            close={closeBtn(toggleCreateModal)}
-            toggle={toggleCreateModal}>
-            Create Astrologer
-          </ModalHeader>
-          <ModalBody>
-            <Input
-              type="text"
-              name="userID"
-              id="userID"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              placeholder="User ID"
-            />
-          </ModalBody>
-          <ModalBody>
-            <Input
-              type="text"
-              name="roleID"
-              id="roleID"
-              value={roleId}
-              onChange={(e) => setRoleId(e.target.value)}
-              placeholder="Role ID"
-            />
-          </ModalBody>
-          <ModalBody>
-            <p>888: Customer</p>
-            <p>8888: Astrologer</p>
-            <p>88888: Admin </p>
-          </ModalBody>
+      <Modal isOpen={createModal} toggle={toggleCreateModal}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggleCreateModal)}
+          toggle={toggleCreateModal}>
+          Create Astrologer
+        </ModalHeader>
+        <ModalBody>
+          <Input
+            type="text"
+            name="userID"
+            id="userID"
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            placeholder="User ID"
+          />
+        </ModalBody>
+        <ModalBody>
+          <Input
+            type="text"
+            name="roleID"
+            id="roleID"
+            value={roleId}
+            onChange={(e) => setRoleId(e.target.value)}
+            placeholder="Role ID"
+          />
+        </ModalBody>
+        <ModalBody>
+          <p>888: Customer</p>
+          <p>8888: Astrologer</p>
+          <p>88888: Admin </p>
+        </ModalBody>
 
-          <ModalFooter>
-            <Button
-              className="btn-wd"
-              variant="info"
-              onClick={() => {
-                handleSumbit();
-                setCreateModal(false);
-              }}>
-              Add
-            </Button>
-          </ModalFooter>
-        </Modal>
-        <Modal isOpen={roleModalDelete} toggle={toggleRoleDelete}>
-          <ModalHeader
-            style={{ color: "#B22222" }}
-            close={closeBtn(toggleRoleDelete)}
-            toggle={toggleRoleDelete}>
-            Are you sure?
-          </ModalHeader>
-          <ModalBody>Do you want to delete this Role</ModalBody>
-          <ModalFooter>
-            <Button
-              color="danger"
-              onClick={() => {
-                deleteRole();
-                setRoleModelDelete(false);
-              }}>
-              Delete
-            </Button>{" "}
-            <Button color="secondary" onClick={toggleRoleDelete}>
-              Cancel
-            </Button>
-          </ModalFooter>
+        <ModalFooter>
+          <Button
+            className="btn-wd"
+            variant="info"
+            onClick={() => {
+              handleSumbit();
+              setCreateModal(false);
+            }}>
+            Add
+          </Button>
+        </ModalFooter>
+      </Modal>
+      <Modal isOpen={roleModalDelete} toggle={toggleRoleDelete}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggleRoleDelete)}
+          toggle={toggleRoleDelete}>
+          Are you sure?
+        </ModalHeader>
+        <ModalBody>Do you want to delete this Role</ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              deleteRole();
+              setRoleModelDelete(false);
+            }}>
+            Delete
+          </Button>{" "}
+          <Button color="secondary" onClick={toggleRoleDelete}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
       <Modal isOpen={createModal} toggle={toggleCreateModal}>
         <ModalHeader
           style={{ color: "#B22222" }}
