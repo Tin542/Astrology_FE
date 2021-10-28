@@ -103,7 +103,7 @@ var routes = [
   {
     path: "/userRole",
     layout: "/admin",
-    icon: "nc-icon nc-circle-09",
+    icon: "nc-icon nc-circle-09 ",
     name: "Role",
     component: Role,
   },

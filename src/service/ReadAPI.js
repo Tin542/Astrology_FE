@@ -50,6 +50,24 @@ export async function del(url, token) {
   });
 }
 
+export async function delWithToken(url, body, token) {
+  console.log("token: ", token);
+  console.log("url: ", url);
+  console.log("body", body)
+
+  return await axios.delete(endpoint + url,{
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-type": "application/json-patch+json",
+      "x-token": `${token}`,
+    },
+    data:{
+      user_id: body.user_id,
+      role_id: body.role_id
+    }
+  });
+}
+
 export async function getWithToken(url, token) {
   return await axios.get(endpoint + url, {
     headers: {
