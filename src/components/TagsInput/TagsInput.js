@@ -81,7 +81,6 @@ function defaultPasteSplit(data) {
 
 const defaultInputProps = {
   className: "react-tagsinput-input",
-  placeholder: "Add a tag",
 };
 
 const TagsInput = React.forwardRef((props, ref) => {

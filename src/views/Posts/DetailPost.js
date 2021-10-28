@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import TagsInput from "components/TagsInput/TagsInput.js";
+import moment from "moment";
 import {
-    del,
-    patchWithToken,
-    get,
-    put,
-    getWithToken,
-  } from "../../service/ReadAPI";
+  del,
+  patchWithToken,
+  get,
+  put,
+  getWithToken,
+} from "../../service/ReadAPI";
 // react-bootstrap components
 import {
   Badge,
@@ -51,14 +54,27 @@ function DetailPost() {
         setittle(temp.title);
         setDescription(temp.content);
         setAprove(temp.is_approve);
-        setCategory(temp.category_id);
+        // setCategory(temp.category_id);
         setAstrologer(temp.astrologer.name);
-        setZodiac(zodiacName + ", ");
+        setZodiac(zodiacName);
         setCreateDate(temp.created_at);
         setUpdateDate(temp.updated_at);
         setImage(temp.image_url);
 
+        getCategory(temp.category_id);
         console.log("zodiacs: ", zodiacName);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function getCategory(cateId) {
+    get(`/api/v1/categories/${cateId}`)
+      .then((res) => {
+        var name = res.data.data.name;
+        console.log(name);
+        setCategory(name);
       })
       .catch((err) => {
         console.log(err);
@@ -68,7 +84,6 @@ function DetailPost() {
     <>
       <Container fluid>
         <div className="section-image" data-image="../../assets/img/bg5.jpg">
-          {/* you can change the color of the filter page using: data-color="blue | purple | green | orange | red | rose " */}
           <Container>
             <Row>
               <Col md="8" sm="6">
@@ -83,11 +98,11 @@ function DetailPost() {
                     </Card.Header>
                     <Card.Body>
                       <Row>
-                        <Col className="pr-1" md="5">
+                        <Col className="pr-1" md="4">
                           <Form.Group>
-                            <label>Full name</label>
+                            Title
                             <Form.Control
-                              defaultValue={localStorage.getItem("NAME")}
+                              defaultValue={title}
                               disabled
                               type="text"></Form.Control>
                           </Form.Group>
@@ -95,69 +110,53 @@ function DetailPost() {
 
                         <Col className="pl-1" md="4">
                           <Form.Group>
-                            <label htmlFor="exampleInputEmail1">
-                              Email address
-                            </label>
+                            Posted by
                             <Form.Control
-                              defaultValue={localStorage.getItem("EMAIL")}
+                              defaultValue={astrologer}
+                              disabled
+                              type="text"></Form.Control>
+                          </Form.Group>
+                        </Col>
+                        <Col className="pl-1" md="4">
+                          <Form.Group>
+                            Category
+                            <Form.Control
+                              defaultValue={category}
                               disabled
                               type="text"></Form.Control>
                           </Form.Group>
                         </Col>
                       </Row>
-
                       <Row>
-                        <Col md="12">
+                        <Col className="pr-1" md="5">
                           <Form.Group>
-                            <label>Uid</label>
-                            <Form.Control
+                            Zodiac
+                            <TagsInput
                               disabled
-                              defaultValue={localStorage.getItem("UID")}
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col className="pr-1" md="4">
-                          <Form.Group>
-                            <label>City</label>
-                            <Form.Control
-                              disabled
-                              defaultValue="Ho Chi Minh"
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                        <Col className="px-1" md="4">
-                          <Form.Group>
-                            <label>Country</label>
-                            <Form.Control
-                              disabled
-                              defaultValue="Vietnam"
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                        <Col className="px-1" md="4">
-                          <Form.Group>
-                            <label>Phone number</label>
-                            <Form.Control
-                              disabled
-                              defaultValue={localStorage.getItem("PHONE")}
-                              type="text"></Form.Control>
+                              value={zodiac}
+                              tagProps={{
+                                className:
+                                  "react-tagsinput-tag tag-fill tag-azure",
+                              }}
+                            />
                           </Form.Group>
                         </Col>
                       </Row>
                       <Row>
                         <Col md="12">
-                          <Form.Group>
-                            <label>About Me</label>
-                            <Form.Control
+                          <div class="form-group">
+                            Content
+                            <textarea
                               disabled
-                              cols="80"
-                              defaultValue="..."
-                              rows="4"></Form.Control>
-                          </Form.Group>
+                              class="form-control"
+                              id="exampleFormControlTextarea1"
+                              rows="10"
+                              defaultValue={description}></textarea>
+                          </div>
                         </Col>
                       </Row>
+                      <Row></Row>
+                      <Row></Row>
 
                       <div className="clearfix"></div>
                     </Card.Body>
@@ -166,20 +165,30 @@ function DetailPost() {
               </Col>
               <Col md="4">
                 <Card className="card-user">
-                  <Card.Header className="no-padding">
-                    
-                  </Card.Header>
+                  <Card.Header className="no-padding"></Card.Header>
                   <Card.Body>
-                  <div className="post-detail-Image">
-                      <img
-                        alt="..."
-                        src={
-                          image
-                        }></img>
+                    <div className="post-detail-Image">
+                      <img alt="..." src={image}></img>
                     </div>
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>
+                    <p>
+                      <strong>Create date: </strong>
+                      {moment(createDate).format("MM-DD-YYYY")}
+                    </p>
+                    <p>
+                      <strong>Update date: </strong>
+                      {moment(updateDate).format("MM-DD-YYYY")}
+                    </p>
+                    <p>
+                      <strong>Status: </strong>
+                      {approve ? (
+                        <b style={{ color: "green" }}>Approved</b>
+                      ) : (
+                        <b style={{ color: "red" }}>Waiting</b>
+                      )}
+                    </p>
                   </Card.Footer>
                 </Card>
               </Col>
