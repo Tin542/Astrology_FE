@@ -130,15 +130,22 @@ function PriceTable() {
 
   function addCategory() {
     console.log("add: ", Create);
+    console.log("Price 1: ", Create.price1);
+    console.log("Duration 1: ", Create.duration1);
+    console.log("Price 2: ", Create.price2);
+    console.log("Duration 2: ", Create.duration2);
+    console.log("Price 3: ", Create.price3);
+    console.log("Duration 3: ", Create.duration3);
+
 
     postWithToken(
       `/api/v1/pricetables`,
-      { price1: Create,
-        duration1: Create,
-        price2: Create,
-        duration2: Create,
-        price3: Create,
-        duration3: Create,},
+      { price1: Create.price1,
+        duration1: Create.duration1,
+        price2: Create.price2,
+        duration2: Create.duration2,
+        price3: Create.price3,
+        duration3: Create.duration3,},
       localStorage.getItem("token")
     )
       .then((res) => {
@@ -387,7 +394,7 @@ function PriceTable() {
             type="text"
             name="price1"
             id="price1"
-            value={Create}
+            value={Create.price1}
             onChange={(e) => setCreate(e.target.value)}
             placeholder="Price 1"
           />
@@ -397,7 +404,7 @@ function PriceTable() {
             type="text"
             name="duration1"
             id="duration1"
-            value={Create}
+            value={Create.duration1}
             onChange={(e) => setCreate(e.target.value)}
             placeholder="Duration 1"
           />
@@ -407,7 +414,7 @@ function PriceTable() {
             type="text"
             name="price2"
             id="price2"
-            value={Create}
+            value={Create.price2}
             onChange={(e) => setCreate(e.target.value)}
             placeholder="Price 2"
           />
@@ -417,7 +424,7 @@ function PriceTable() {
             type="text"
             name="duration2"
             id="duration2"
-            value={Create}
+            value={Create.duration2}
             onChange={(e) => setCreate(e.target.value)}
             placeholder="Duration 2"
           />
@@ -427,7 +434,7 @@ function PriceTable() {
             type="text"
             name="price3"
             id="price3"
-            value={Create}
+            value={Create.price3}
             onChange={(e) => setCreate(e.target.value)}
             placeholder="Price 3"
           />
@@ -437,7 +444,7 @@ function PriceTable() {
             type="text"
             name="duration3"
             id="duration3"
-            value={Create}
+            value={Create.duration3}
             onChange={(e) => setCreate(e.target.value)}
             placeholder="Duration 3"
           />
