@@ -9,14 +9,6 @@ import {
   delWithToken,
 } from "../../service/ReadAPI";
 import Moment from "react-moment";
-import {
-  del,
-  post,
-  get,
-  put,
-  getWithToken,
-  postWithToken,
-} from "../../service/ReadAPI";
 import moment from "moment";
 
 // react-bootstrap components
@@ -63,12 +55,6 @@ function UserRole() {
 
   const [roleModalDelete, setRoleModelDelete] = useState(false);
   const toggleRoleDelete = () => setRoleModelDelete(!roleModalDelete);
-
-  const toggleCreateModal = () => setCreateModal(!createModal);
-  const [role, setRole] = useState([]);
-  const [userId, setUserId] = useState("");
-  const [roleId, setRoleId] = useState("");
-  const [createModal, setCreateModal] = useState(false);
 
   const toggleCreateModal = () => setCreateModal(!createModal);
 

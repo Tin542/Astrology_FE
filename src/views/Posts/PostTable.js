@@ -48,16 +48,9 @@ function PostTables() {
     getServiceList();
   }, []);
   const [useListServiceShowPage, setUseListServiceShowPage] = useState([]);
-  const [listCategory, setListCategory] = useState([]);
-  const [categoryName, setCategoryName] = useState([]);
 
   //detail
   const [id, setId] = useState();
-  
-
-  //modal Edit
-  const [editModal, setEditModal] = useState(false);
-  const toggleEdit = () => setEditModal(!editModal);
 
   //delete
   const [deleteModal, setDeleteModal] = useState(false);
