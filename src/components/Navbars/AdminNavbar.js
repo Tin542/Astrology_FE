@@ -34,7 +34,7 @@ function AdminNavbar() {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return "Config";
   };
   return (
     <>
