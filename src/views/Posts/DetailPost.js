@@ -22,9 +22,26 @@ import {
   Container,
   Row,
   Col,
+  
 } from "react-bootstrap";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+  InputGroupButtonDropdown,
+  Input,
+  FormGroup,
+} from "reactstrap";
 
 function DetailPost() {
+  const id = localStorage.getItem('postId');
   const [title, setittle] = useState();
   const [description, setDescription] = useState();
   const [approve, setAprove] = useState(false);
@@ -35,8 +52,12 @@ function DetailPost() {
   const [updateDate, setUpdateDate] = useState();
   const [image, setImage] = useState();
 
+  //delete
+  const [deleteModal, setDeleteModal] = useState(false);
+  const toggleDelete = () => setDeleteModal(!deleteModal);
+
   useEffect(() => {
-    getPostByID(localStorage.getItem("postId"));
+    getPostByID(id);
   }, []);
 
   function getPostByID(Id) {
@@ -54,7 +75,6 @@ function DetailPost() {
         setittle(temp.title);
         setDescription(temp.content);
         setAprove(temp.is_approve);
-        // setCategory(temp.category_id);
         setAstrologer(temp.astrologer.name);
         setZodiac(zodiacName);
         setCreateDate(temp.created_at);
@@ -80,6 +100,48 @@ function DetailPost() {
         console.log(err);
       });
   }
+
+  function deletePost() {
+    console.log("id: ", id);
+    console.log("token: ", localStorage.getItem("token"));
+    del(`/api/v1/posts/${id}`, localStorage.getItem("token")).then((res) => {
+      if (res.data.code === 0) {
+        alert("delete success");
+        setCurrentPage(1);
+        getServiceList();
+      }
+      if (res.data.code === 7) {
+        console.log(res.data.msg);
+        alert(res.data.msg);
+      }
+    });
+  }
+  function approvePost() {
+    console.log("id: ", id);
+    console.log("token: ", localStorage.getItem("token"));
+    patchWithToken(
+      `/api/v1/posts/approve?id=${id}`,
+      { id: id },
+      localStorage.getItem("token")
+    ).then((res) => {
+      if (res.data.code === 0) {
+        alert("approve success");
+        getPostByID(id);
+      }
+      if (res.data.code === 7) {
+        console.log(res.data.msg);
+        alert(res.data.msg);
+      }
+    });
+  }
+  const closeBtn = (x) => (
+    <button
+      className="btn border border-danger"
+      style={{ color: "#B22222" }}
+      onClick={x}>
+      X
+    </button>
+  );
   return (
     <>
       <Container fluid>
@@ -91,16 +153,16 @@ function DetailPost() {
                   <Card>
                     <Card.Header>
                       <Card.Header>
-                        <Card.Title as="h4">
-                          POST ID: {localStorage.getItem("postId")}
+                        <Card.Title as="h4" className="text-post-detail">
+                          ID: {localStorage.getItem("postId")}
                         </Card.Title>
                       </Card.Header>
                     </Card.Header>
                     <Card.Body>
                       <Row>
                         <Col className="pr-1" md="4">
-                          <Form.Group>
-                            Title
+                          <Form.Group >
+                            <strong className="text-post-detail">Title</strong>
                             <Form.Control
                               defaultValue={title}
                               disabled
@@ -110,7 +172,7 @@ function DetailPost() {
 
                         <Col className="pl-1" md="4">
                           <Form.Group>
-                            Posted by
+                          <strong className="text-post-detail">Posted By</strong>
                             <Form.Control
                               defaultValue={astrologer}
                               disabled
@@ -119,7 +181,7 @@ function DetailPost() {
                         </Col>
                         <Col className="pl-1" md="4">
                           <Form.Group>
-                            Category
+                          <strong className="text-post-detail">Category</strong>
                             <Form.Control
                               defaultValue={category}
                               disabled
@@ -130,7 +192,7 @@ function DetailPost() {
                       <Row>
                         <Col className="pr-1" md="5">
                           <Form.Group>
-                            Zodiac
+                          <strong className="text-post-detail">Zodiac</strong>
                             <TagsInput
                               disabled
                               value={zodiac}
@@ -145,7 +207,7 @@ function DetailPost() {
                       <Row>
                         <Col md="12">
                           <div class="form-group">
-                            Content
+                          <strong className="text-post-detail">Content</strong>
                             <textarea
                               disabled
                               class="form-control"
@@ -174,21 +236,39 @@ function DetailPost() {
                   <Card.Footer>
                     <hr></hr>
                     <p>
-                      <strong>Create date: </strong>
+                      <strong className="text-post-detail">Create date: </strong>
                       {moment(createDate).format("MM-DD-YYYY")}
                     </p>
                     <p>
-                      <strong>Update date: </strong>
+                      <strong className="text-post-detail">Update date: </strong>
                       {moment(updateDate).format("MM-DD-YYYY")}
                     </p>
                     <p>
-                      <strong>Status: </strong>
+                      <strong className="text-post-detail">Status: </strong>
                       {approve ? (
                         <b style={{ color: "green" }}>Approved</b>
                       ) : (
                         <b style={{ color: "red" }}>Waiting</b>
                       )}
                     </p>
+                    <hr></hr>
+                    <Row style={{ flexDirection: "row" , justifyContent: 'space-evenly'}}>
+                      <Button
+                        disabled={approve}
+                        variant="success"
+                        onClick={() => {
+                          approvePost();
+                        }}>
+                        Approve
+                      </Button>{" "}
+                      <Button
+                        variant="danger"
+                        onClick={() => {
+                          setDeleteModal(true);
+                        }}>
+                        Reject
+                      </Button>
+                    </Row>
                   </Card.Footer>
                 </Card>
               </Col>
@@ -196,6 +276,28 @@ function DetailPost() {
           </Container>
         </div>
       </Container>
+      <Modal isOpen={deleteModal} toggle={toggleDelete}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggleDelete)}
+          toggle={toggleDelete}>
+          Are you sure?
+        </ModalHeader>
+        <ModalBody>Do you want to reject this Post</ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            onClick={() => {
+              setDeleteModal(false);
+              deletePost();
+            }}>
+            Reject
+          </Button>{" "}
+          <Button color="secondary" onClick={toggleDelete}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 }

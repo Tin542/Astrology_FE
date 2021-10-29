@@ -52,10 +52,6 @@ function PostTables() {
   //detail
   const [id, setId] = useState();
 
-  //delete
-  const [deleteModal, setDeleteModal] = useState(false);
-  const toggleDelete = () => setDeleteModal(!deleteModal);
-
   //paging
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
@@ -112,53 +108,6 @@ function PostTables() {
       console.log("list page: " + list);
     }
   }
-
-  
-
-  function approvePost() {
-    console.log("id: ", id);
-    console.log("token: ", localStorage.getItem("token"));
-    patchWithToken(
-      `/api/v1/posts/approve?id=${id}`,
-      { id: id },
-      localStorage.getItem("token")
-    ).then((res) => {
-      if (res.data.code === 0) {
-        alert("approve success");
-        setCurrentPage(1);
-        getServiceList();
-      }
-      if (res.data.code === 7) {
-        console.log(res.data.msg);
-        alert(res.data.msg);
-      }
-    });
-  }
-
-  function deletePost() {
-    console.log("id: ", id);
-    console.log("token: ", localStorage.getItem("token"));
-    del(`/api/v1/posts/${id}`, localStorage.getItem("token")).then((res) => {
-      if (res.data.code === 0) {
-        alert("delete success");
-        setCurrentPage(1);
-        getServiceList();
-      }
-      if (res.data.code === 7) {
-        console.log(res.data.msg);
-        alert(res.data.msg);
-      }
-    });
-  }
-
-  const closeBtn = (x) => (
-    <button
-      className="btn border border-danger"
-      style={{ color: "#B22222" }}
-      onClick={x}>
-      X
-    </button>
-  );
 
   return (
     <>
@@ -269,81 +218,6 @@ function PostTables() {
           </PaginationLink>
         </PaginationItem>
       </Pagination>
-
-      {/* <Modal isOpen={editModal} toggle={toggleEdit}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-          close={closeBtn(toggleEdit)}
-          toggle={toggleEdit}>
-          Post detail
-        </ModalHeader>
-        <ModalBody>
-          <div className="img-container">
-            <img alt="..." src={image}></img>
-          </div>
-        </ModalBody>
-        <ModalBody>
-          <b>Title:</b> {title}
-          <br />
-          <b>Content:</b> {description}
-          <br />
-          <b>Posted by:</b> {astrologer}
-          <br />
-          <b>Zodiac:</b> {zodiac}
-          <br />
-          <b>Category:</b> {category}
-          <br />
-          <b>Create at:</b> {moment(createDate).format("MM-DD-YYYY")}
-          <br />
-          <b>Update at:</b> {moment(updateDate).format("MM-DD-YYYY")}
-          <br />
-          <b>Status:</b>{" "}
-          {approve ? (
-            <b style={{ color: "green" }}>Approved</b>
-          ) : (
-            <b style={{ color: "red" }}>Waiting</b>
-          )}
-          <br />
-        </ModalBody>
-
-        <ModalFooter>
-          <Button
-            disabled={approve}
-            variant="success"
-            onClick={() => {
-              approvePost();
-            }}>
-            Approve
-          </Button>{" "}
-          <Button variant="danger" onClick={() => {setDeleteModal(true)}}>
-            Delete
-          </Button>
-        </ModalFooter>
-      </Modal> */}
-
-      <Modal isOpen={deleteModal} toggle={toggleDelete}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-          close={closeBtn(toggleDelete)}
-          toggle={toggleDelete}>
-          Are you sure?
-        </ModalHeader>
-        <ModalBody>Do you want to delete this Category</ModalBody>
-        <ModalFooter>
-          <Button
-            color="danger"
-            onClick={() => {
-              setDeleteModal(false);
-              setEditModal(false);
-              deletePost();
-            }}>
-            Delete
-          </Button>{" "}
-          <Button color="secondary" onClick={toggleDelete}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
     </>
   );
 }
