@@ -51,6 +51,7 @@ function UserRole() {
   const [userId, setUserId] = useState("");
   const [roleId, setRoleId] = useState("");
   const [createModal, setCreateModal] = useState(false);
+  const [uid, setUid] = useState("");
   const tmp = "";
 
   const [roleModalDelete, setRoleModelDelete] = useState(false);
@@ -121,8 +122,7 @@ function UserRole() {
       .then((res) => {
         if (res.data.code === 0) {
           alert("Add success");
-          setCurrentPage(1);
-          getCategoryList();
+          getRoleList();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -196,20 +196,19 @@ function UserRole() {
                     setRoleId(null);
                     setCreateModal(true);
                   }}>
-                  Add New User
+                  Add New Role For User
                 </Button>
                 <br></br>
               </Card.Header>
               <Card.Body className="table-full-width">
-                <Table className="table-bigboy">
+                <Table className="table-hover">
                   <thead>
                     <tr>
                       <th></th>
                       <th></th>
-                      <th></th>
                       <th>ID</th>
+                      <th>uid</th>
                       <th>Role</th>
-                      <th className="text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -218,8 +217,8 @@ function UserRole() {
                         <tr key={index}>
                           <td></td>
                           <td></td>
-                          <td></td>
                           <td>{rol.user_id}</td>
+                          <td>{rol.user.uid}</td>
                           <td>{mapNumToRole(rol.role_id)}</td>
                           <td className="td-number">
                             <OverlayTrigger

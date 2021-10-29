@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ReactDatetime from "react-datetime";
 import moment from "moment";
+import { Link, useHistory } from "react-router-dom";
 import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
-import DateTimeOffset from "datetime-offset";
-import ImageUploading from "react-images-uploading";
-import ImageUploader from "react-images-upload";
 
 // react-bootstrap components
 import {
@@ -57,10 +55,6 @@ function AstrologerTables() {
   //create modal
   const [createModal, setCreateModal] = useState(false);
   const toggleCreateModal = () => setCreateModal(!createModal);
-
-  //delete modal
-  const [deleteModal, setDeleteModal] = useState(false);
-  const toggleDeleteModal = () => setDeleteModal(!deleteModal);
 
   //paging
   const [currentPage, setCurrentPage] = useState(1);
@@ -117,31 +111,6 @@ function AstrologerTables() {
     }
   }
 
-  function getAstrologerByID(Id) {
-    console.log("id: ", Id);
-    get(`/api/v1/astrologers/${Id}`)
-      .then((res) => {
-        var temp = res.data.data;
-        console.log(temp);
-
-        setId(Id);
-        setName(temp.name);
-        setPhone(temp.phone_number);
-        setGender(temp.gender);
-        setDateOfBirth(temp.time_of_birth);
-        setLatitude(temp.latitude_of_birth);
-        setLongitude(temp.longitude_of_birth);
-        setDescription(temp.description);
-        setImage(temp.image_url);
-        setFollowers(temp.followers_count);
-
-        console.log("name: ", temp.name);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
   function createAstrologer() {
     console.log("id: ", id);
     console.log("name: ", name);
@@ -185,27 +154,6 @@ function AstrologerTables() {
       });
   }
 
-  function deleteByID() {
-    console.log("delete: ", id);
-
-    del(`/api/v1/astrologers/${id}`, localStorage.getItem("token"))
-      .then((res) => {
-        if (res.data.code === 0) {
-          alert("delete success");
-          setCurrentPage(1);
-          getAstrologerList();
-        }
-        if (res.data.code === 7) {
-          console.log(res.data.msg);
-          alert(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        alert(err);
-        console.log(err);
-      });
-  }
-
   const closeBtn = (x) => (
     <button
       className="btn border border-danger"
@@ -223,7 +171,7 @@ function AstrologerTables() {
             <Card className="regular-table-with-color">
               <Card.Header>
                 <Card.Title as="h4">
-                  
+                <Link to={"/admin/create-astrologer"}>
                     <Button
                       className="btn-wd mr-1" variant="info"
                       type="button"
@@ -240,9 +188,10 @@ function AstrologerTables() {
 
                         setCreateModal(true);
                       }}>
+                       
                       Add Astrologer
                     </Button>
-                  
+                    </Link>
                 </Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
@@ -261,53 +210,22 @@ function AstrologerTables() {
                       return (
                         <tr key={index}>
                           <td>{item.id}</td>
-                          <td
-                            onClick={() => {
-                              getAstrologerByID(item.id);
-                              setDetailModal(true);
+                          <td onClick={() => {
+                              localStorage.setItem("astrologer", item.id);
+                              localStorage.setItem("genderAstro", item.gender ? "Male" : "Female");
                             }}>
-                            {item.name}
-                          </td>
-                          <td
-                            onClick={() => {
-                              getAstrologerByID(item.id);
-                              setDetailModal(true);
-                            }}>
-                            {item.gender ? "Male" : "Female"}
-                          </td>
-                          <td
-                            onClick={() => {
-                              getAstrologerByID(item.id);
-                              setDetailModal(true);
-                            }}>
-                            {item.phone_number}
-                          </td>
-                          <td
-                            onClick={() => {
-                              getAstrologerByID(item.id);
-                              setDetailModal(true);
-                            }}>
-                            {moment(item.time_of_birth).format("MM-DD-YYYY")}
+                          <Link to={"/admin/detail-astrologer"}>{item.name}</Link>
                           </td>
                           <td>
-                            <OverlayTrigger
-                              overlay={
-                                <Tooltip id="tooltip-461494662">Edit</Tooltip>
-                              }
-                              placement="left">
-                              <Button
-                                className="btn-link btn-icon"
-                                type="button"
-                                variant="danger"
-                                onClick={() => {
-                                  setId(item.id);
-
-                                  setDeleteModal(true);
-                                }}>
-                                <i className="fas fa-times"></i>
-                              </Button>
-                            </OverlayTrigger>
+                            {item.gender ? "Male" : "Female"}
                           </td>
+                          <td>
+                            {item.phone_number}
+                          </td>
+                          <td>
+                            {moment(item.time_of_birth).format("MM-DD-YYYY")}
+                          </td>
+                         
                         </tr>
                       );
                     })}
@@ -360,49 +278,6 @@ function AstrologerTables() {
           </PaginationLink>
         </PaginationItem>
       </Pagination>
-
-      <Modal isOpen={detailModal} toggle={toggleDetailModal}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-          close={closeBtn(toggleDetailModal)}
-          toggle={toggleDetailModal}>
-          Astrologer detail
-        </ModalHeader>
-        <ModalBody>
-          <div className="img-container">
-            <img alt="..." src={image}></img>
-          </div>
-        </ModalBody>
-        <ModalBody>
-          <b>ID: </b>
-          {id}
-          <br />
-          <b>Name: </b>
-          {name}
-          <br />
-          <b>Gender: </b>
-          {gender ? "Male" : "Female"}
-          <br />
-          <b>Phone: </b>
-          {phone}
-          <br />
-          <b>Date of birth: </b>
-          {moment(dateOfBirth).format("MM-DD-YYYY")}
-          <br />
-          <b>Description: </b> {description}
-          <br />
-          <b>Followers: </b> {flowwers}
-          <br />
-          <b>Latitude: </b>
-          {latitude}
-          <br />
-          <b>Longitude: </b>
-          {longitude}
-          <br />
-        </ModalBody>
-
-        <ModalFooter></ModalFooter>
-      </Modal>
 
       {/* Modal Create */}
       <Modal isOpen={createModal} toggle={toggleCreateModal}>
@@ -539,28 +414,7 @@ function AstrologerTables() {
         </ModalFooter>
       </Modal>
 
-      <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-          close={closeBtn(toggleDeleteModal)}
-          toggle={toggleDeleteModal}>
-          Are you sure?
-        </ModalHeader>
-        <ModalBody>Do you want to delete this Astrologer</ModalBody>
-        <ModalFooter>
-          <Button
-            color="danger"
-            onClick={() => {
-              deleteByID();
-              setDeleteModal(false);
-            }}>
-            Delete
-          </Button>{" "}
-          <Button color="secondary" onClick={toggleDeleteModal}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
+      
     </>
   );
 }

@@ -26,6 +26,8 @@ import Account from "views/Accounts/AccountPage.js";
 import Role from "views/UserRole/UserRole.js";
 import PriceTable from "views/Prices/PriceTable.js";
 import PostDetail from "views/Posts/DetailPost.js";
+import AstrologerDetail from "views/Astrologers/DetailAstrologer.js";
+import AstrologerCreate from "views/Astrologers/CreateAstrologer.js";
 
 
 var routes = [
@@ -106,7 +108,7 @@ var routes = [
       {
         path: "/Prices/price-table",
         layout: "/admin",
-        icon: "nc-icon nc-circle-09",
+        icon: "nc-icon nc-money-coins",
         name: "Price",
         component: PriceTable,
       },
@@ -127,6 +129,20 @@ var routes = [
     icon: "nc-icon nc-single-02",
     name: "Post-Detail",
     component: PostDetail,
+  },
+  {
+    path: "/detail-astrologer",
+    layout: "/admin",
+    icon: "nc-icon nc-single-02",
+    name: "Astrologer-Detail",
+    component: AstrologerDetail,
+  },
+  {
+    path: "/create-astrologer",
+    layout: "/admin",
+    icon: "nc-icon nc-single-02",
+    name: "Astrologer-Create",
+    component: AstrologerCreate,
   },
 ];
 export default routes;

@@ -99,21 +99,24 @@ function Sidebar({ routes, image, background }) {
           className={activeRoute(prop.layout + prop.path)}
           key={key}
           as="li">
-          {prop.path !== "/account" && prop.path !== "/detail-post" && (
-            <Nav.Link to={prop.layout + prop.path} as={Link}>
-              {prop.icon ? (
-                <>
-                  <i className={prop.icon} />
-                  <p>{prop.name}</p>
-                </>
-              ) : (
-                <>
-                  <span className="sidebar-mini">{prop.mini}</span>
-                  <span className="sidebar-normal">{prop.name}</span>
-                </>
-              )}
-            </Nav.Link>
-          )}
+          {prop.path !== "/account" &&
+            prop.path !== "/detail-post" &&
+            prop.path !== "/detail-astrologer" && 
+            prop.path !== "/create-astrologer" && (
+              <Nav.Link to={prop.layout + prop.path} as={Link}>
+                {prop.icon ? (
+                  <>
+                    <i className={prop.icon} />
+                    <p>{prop.name}</p>
+                  </>
+                ) : (
+                  <>
+                    <span className="sidebar-mini">{prop.mini}</span>
+                    <span className="sidebar-normal">{prop.name}</span>
+                  </>
+                )}
+              </Nav.Link>
+            )}
         </Nav.Item>
       );
     });
