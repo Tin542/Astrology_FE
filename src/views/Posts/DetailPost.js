@@ -3,6 +3,7 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import TagsInput from "components/TagsInput/TagsInput.js";
 import moment from "moment";
+import { Link, useHistory } from "react-router-dom";
 import {
   del,
   patchWithToken,
@@ -56,6 +57,8 @@ function DetailPost() {
   const [deleteModal, setDeleteModal] = useState(false);
   const toggleDelete = () => setDeleteModal(!deleteModal);
 
+  const history = useHistory();
+
   useEffect(() => {
     getPostByID(id);
   }, []);
@@ -107,8 +110,7 @@ function DetailPost() {
     del(`/api/v1/posts/${id}`, localStorage.getItem("token")).then((res) => {
       if (res.data.code === 0) {
         alert("delete success");
-        setCurrentPage(1);
-        getServiceList();
+        history.push("/admin/Posts/post-table");
       }
       if (res.data.code === 7) {
         console.log(res.data.msg);
