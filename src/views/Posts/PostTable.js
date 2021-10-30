@@ -115,7 +115,9 @@ function PostTables() {
         <Row>
           <Col md="12">
             <Card className="table-big-boy">
-              <Card.Header></Card.Header>
+              <Card.Header>
+                
+              </Card.Header>
               <Card.Body className="table-full-width">
                 <Table className="table-hover">
                   <thead>

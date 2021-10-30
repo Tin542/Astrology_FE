@@ -103,7 +103,9 @@ function Sidebar({ routes, image, background }) {
             prop.path !== "/detail-post" &&
             prop.path !== "/astrologer-info" && 
             prop.path !== "/astrologer-create" && 
-            prop.path !== "/customer-info" && (
+            prop.path !== "/customer-info" &&
+            prop.path !== "/famousperson-info" &&
+            prop.path !== "/famousperson-create" &&(
               <Nav.Link to={prop.layout + prop.path} as={Link}>
                 {prop.icon ? (
                   <>

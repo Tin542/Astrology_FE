@@ -468,14 +468,6 @@ function FamousPersonsTable() {
           />
         </ModalBody>
         <ModalBody>
-          {/* <Input
-            type="number"
-            name="zodiac_id"
-            id="zodiac_id"
-            value={zodiac_id}
-            onChange={(e) => setZodiac(e.target.value)}
-            placeholder="Zodiac"
-          /> */}
           <select
             name="subject"
             id="subject_input"
