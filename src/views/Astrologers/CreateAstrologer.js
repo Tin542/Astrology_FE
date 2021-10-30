@@ -263,7 +263,7 @@ function CreateAstrologer() {
                         <Col md="12">
                           <div class="form-group">
                             <label className="text-post-detail">
-                              About Astrologer
+                              More About Astrologer
                             </label>
                             <textarea
                               class="form-control"

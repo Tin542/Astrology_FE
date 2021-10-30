@@ -29,6 +29,8 @@ import PostDetail from "views/Posts/DetailPost.js";
 import AstrologerDetail from "views/Astrologers/DetailAstrologer.js";
 import AstrologerCreate from "views/Astrologers/CreateAstrologer.js";
 import CustomerDetail from "views/Customers/DetailCustomer.js";
+import FamousDetail from "views/FamousPersons/DetailFamousPerson.js";
+import FamousCreate from "views/FamousPersons/CreateFamousPerson.js";
 
 
 var routes = [
@@ -151,6 +153,20 @@ var routes = [
     icon: "nc-icon nc-single-02",
     name: "Customer",
     component: CustomerDetail,
+  },
+  {
+    path: "/famousperson-info",
+    name: "Famous Persons",
+    layout: "/admin",
+    icon: "nc-icon nc-bulb-63",
+    component: FamousDetail,
+  },
+  {
+    path: "/famousperson-create",
+    name: "Famous Persons",
+    layout: "/admin",
+    icon: "nc-icon nc-bulb-63",
+    component: FamousCreate,
   },
 ];
 export default routes;
