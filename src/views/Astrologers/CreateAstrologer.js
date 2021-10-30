@@ -36,7 +36,6 @@ function CreateAstrologer() {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [description, setDescription] = useState(null);
-  const [flowwers, setFollowers] = useState();
   const [image, setImage] = useState(
     "https://image.lag.vn/upload/news/21/08/16/236599595_1425452954506376_3110056547255537769_n_WOLP.jpg"
   );
@@ -99,7 +98,7 @@ function CreateAstrologer() {
       .then((res) => {
         if (res.data.code === 0) {
           alert("Add success");
-          history.push("/admin/Astrologers/astrologer-table");
+          history.push("/admin/astrologer-table");
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -191,7 +190,7 @@ function CreateAstrologer() {
                                   name="gender"
                                   type="radio"
                                   onChange={(e) =>
-                                    setGender(e.target.value)
+                                    setGender(true)
                                   }></Form.Check.Input>
                                 <span className="checkbox-inline"></span>
                                 Male
@@ -205,7 +204,7 @@ function CreateAstrologer() {
                                   name="gender"
                                   type="radio"
                                   onChange={(e) =>
-                                    setGender(e.target.value)
+                                    setGender(false)
                                   }></Form.Check.Input>
                                 <span className="checkbox-inline"></span>
                                 Female
