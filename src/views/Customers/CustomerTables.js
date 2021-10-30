@@ -5,6 +5,7 @@ import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
 import DateTimeOffset from "datetime-offset";
 import ImageUploading from "react-images-uploading";
 import ImageUploader from "react-images-upload";
+import { Link, useHistory } from "react-router-dom";
 
 // react-bootstrap components
 import {
@@ -111,52 +112,6 @@ function CustomTable() {
     }
   }
 
-  function getAstrologerByID(Id) {
-    console.log("id: ", Id);
-    get(`/api/v1/customers/${Id}`)
-      .then((res) => {
-        var temp = res.data.data;
-        console.log(temp);
-
-        setId(Id);
-        setName(temp.name);
-        setPhone(temp.phone_number);
-        setGender(temp.gender);
-        setDateOfBirth(temp.time_of_birth);
-        setLatitude(temp.latitude_of_birth);
-        setLongitude(temp.longitude_of_birth);
-        setImage(temp.url_image);
-
-        console.log("name: ", temp.name);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  
-
-  function deleteByID() {
-    console.log("delete: ", id);
-
-    del(`/api/v1/customers/${id}`, localStorage.getItem("token"))
-      .then((res) => {
-        if (res.data.code === 0) {
-          alert("delete success");
-          setCurrentPage(1);
-          getAstrologerList();
-        }
-        if (res.data.code === 7) {
-          console.log(res.data.msg);
-          alert(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        alert(err);
-        console.log(err);
-      });
-  }
-
   const closeBtn = (x) => (
     <button
       className="btn border border-danger"
@@ -173,9 +128,7 @@ function CustomTable() {
           <Col md="12">
             <Card className="regular-table-with-color">
               <Card.Header>
-                <Card.Title as="h4">
-                  
-                </Card.Title>
+                <Card.Title as="h4"></Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
                 <Table className="table-hover">
@@ -195,51 +148,22 @@ function CustomTable() {
                           <td>{item.id}</td>
                           <td
                             onClick={() => {
-                              getAstrologerByID(item.id);
-                              setDetailModal(true);
+                              localStorage.setItem("customerId", item.id);
+                              localStorage.setItem(
+                                "genderCus",
+                                item.gender ? "Male" : "Female"
+                              );
                             }}>
-                            {item.name}
+                            <Link to={"/admin/customer-info"}>{item.name}</Link>
                           </td>
-                          <td
-                            onClick={() => {
-                              getAstrologerByID(item.id);
-                              setDetailModal(true);
-                            }}>
+                          <td onClick={() => {}}>
                             {item.gender ? "Male" : "Female"}
                           </td>
-                          <td
-                            onClick={() => {
-                              getAstrologerByID(item.id);
-                              setDetailModal(true);
-                            }}>
-                            {item.phone_number}
-                          </td>
-                          <td
-                            onClick={() => {
-                              getAstrologerByID(item.id);
-                              setDetailModal(true);
-                            }}>
+                          <td onClick={() => {}}>{item.phone_number}</td>
+                          <td onClick={() => {}}>
                             {moment(item.time_of_birth).format("MM-DD-YYYY")}
                           </td>
-                          <td>
-                            <OverlayTrigger
-                              overlay={
-                                <Tooltip id="tooltip-461494662">Remove</Tooltip>
-                              }
-                              placement="left">
-                              <Button
-                                className="btn-link btn-icon"
-                                type="button"
-                                variant="danger"
-                                onClick={() => {
-                                  setId(item.id);
-
-                                  setDeleteModal(true);
-                                }}>
-                                <i className="fas fa-times"></i>
-                              </Button>
-                            </OverlayTrigger>
-                          </td>
+                         
                         </tr>
                       );
                     })}
@@ -267,7 +191,7 @@ function CustomTable() {
           </PaginationLink>
         </PaginationItem>
         {pageList.map((page, index) => (
-          <PaginationItem active={page+1 === currentPage}>
+          <PaginationItem active={page + 1 === currentPage}>
             <PaginationLink
               className="page"
               key={index}
@@ -293,7 +217,7 @@ function CustomTable() {
         </PaginationItem>
       </Pagination>
 
-      <Modal isOpen={detailModal} toggle={toggleDetailModal}>
+      {/* <Modal isOpen={detailModal} toggle={toggleDetailModal}>
         <ModalHeader
           style={{ color: "#B22222" }}
           close={closeBtn(toggleDetailModal)}
@@ -353,7 +277,7 @@ function CustomTable() {
             Cancel
           </Button>
         </ModalFooter>
-      </Modal>
+      </Modal> */}
     </>
   );
 }

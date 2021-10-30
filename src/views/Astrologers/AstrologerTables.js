@@ -171,27 +171,15 @@ function AstrologerTables() {
             <Card className="regular-table-with-color">
               <Card.Header>
                 <Card.Title as="h4">
-                <Link to={"/admin/create-astrologer"}>
+                  <Link to={"/admin/astrologer-create"}>
                     <Button
-                      className="btn-wd mr-1" variant="info"
+                      className="btn-wd mr-1"
+                      variant="info"
                       type="button"
-                      onClick={() => {
-                        setId(null);
-                        setName(null);
-                        setDateOfBirth(null);
-                        setPhone(null);
-                        setLatitude(null);
-                        setLongitude(null);
-                        setGender(true);
-                        setDescription(null);
-                        setImage("https://image.lag.vn/upload/news/21/08/16/236599595_1425452954506376_3110056547255537769_n_WOLP.jpg");
-
-                        setCreateModal(true);
-                      }}>
-                       
+                      onClick={() => {}}>
                       Add Astrologer
                     </Button>
-                    </Link>
+                  </Link>
                 </Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
@@ -210,22 +198,23 @@ function AstrologerTables() {
                       return (
                         <tr key={index}>
                           <td>{item.id}</td>
-                          <td onClick={() => {
+                          <td
+                            onClick={() => {
                               localStorage.setItem("astrologer", item.id);
-                              localStorage.setItem("genderAstro", item.gender ? "Male" : "Female");
+                              localStorage.setItem(
+                                "genderAstro",
+                                item.gender ? "Male" : "Female"
+                              );
                             }}>
-                          <Link to={"/admin/detail-astrologer"}>{item.name}</Link>
+                            <Link to={"/admin/astrologer-info"}>
+                              {item.name}
+                            </Link>
                           </td>
-                          <td>
-                            {item.gender ? "Male" : "Female"}
-                          </td>
-                          <td>
-                            {item.phone_number}
-                          </td>
+                          <td>{item.gender ? "Male" : "Female"}</td>
+                          <td>{item.phone_number}</td>
                           <td>
                             {moment(item.time_of_birth).format("MM-DD-YYYY")}
                           </td>
-                         
                         </tr>
                       );
                     })}
@@ -251,9 +240,9 @@ function AstrologerTables() {
             }}>
             «
           </PaginationLink>
-        </PaginationItem >
+        </PaginationItem>
         {pageList.map((page, index) => (
-          <PaginationItem active={page+1 === currentPage}>
+          <PaginationItem active={page + 1 === currentPage}>
             <PaginationLink
               className="page"
               key={index}
@@ -413,8 +402,6 @@ function AstrologerTables() {
           </Button>
         </ModalFooter>
       </Modal>
-
-      
     </>
   );
 }

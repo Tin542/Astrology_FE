@@ -304,10 +304,10 @@ function CreateAstrologer() {
                                 Phone is required
                               </small>
                             );
-                          } else if (phone.length < 9) {
+                          } else if (phone.length < 9 || phone.length > 11) {
                             setPhoneError(
                               <small className="text-danger">
-                                Phone is required atleast 9 numbers
+                                Phone is required atleast 9 numbers and maximum 11 number
                               </small>
                             );
                           } else {

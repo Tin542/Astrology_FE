@@ -101,8 +101,9 @@ function Sidebar({ routes, image, background }) {
           as="li">
           {prop.path !== "/account" &&
             prop.path !== "/detail-post" &&
-            prop.path !== "/detail-astrologer" && 
-            prop.path !== "/create-astrologer" && (
+            prop.path !== "/astrologer-info" && 
+            prop.path !== "/astrologer-create" && 
+            prop.path !== "/customer-info" && (
               <Nav.Link to={prop.layout + prop.path} as={Link}>
                 {prop.icon ? (
                   <>

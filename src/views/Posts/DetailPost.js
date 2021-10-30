@@ -110,7 +110,7 @@ function DetailPost() {
     del(`/api/v1/posts/${id}`, localStorage.getItem("token")).then((res) => {
       if (res.data.code === 0) {
         alert("delete success");
-        history.push("/admin/Posts/post-table");
+        history.push("/admin/post-table");
       }
       if (res.data.code === 7) {
         console.log(res.data.msg);
