@@ -28,6 +28,7 @@ import PriceTable from "views/Prices/PriceTable.js";
 import PostDetail from "views/Posts/DetailPost.js";
 import AstrologerDetail from "views/Astrologers/DetailAstrologer.js";
 import AstrologerCreate from "views/Astrologers/CreateAstrologer.js";
+import CustomerDetail from "views/Customers/DetailCustomer.js";
 
 
 var routes = [
@@ -40,21 +41,21 @@ var routes = [
   },
 
   {
-    path: "/Posts/post-table",
+    path: "/post-table",
     name: "Post",
     layout: "/admin",
     icon: "nc-icon nc-notes",
     component: PostTable,
   },
   {
-    path: "/Customers/customer-table",
+    path: "/customer-table",
     name: "Customer",
     layout: "/admin",
     icon: "nc-icon nc-single-02",
     component: CustomTable,
   },
   {
-    path: "/Astrologers/astrologer-table",
+    path: "/astrologer-table",
     name: "Astrologer",
     layout: "/admin",
     icon: "nc-icon nc-circle-09",
@@ -76,21 +77,21 @@ var routes = [
         component: CategoryTable,
       },
       {
-        path: "/Planets/planet",
+        path: "/planet",
         name: "Planet",
         layout: "/admin",
         icon: "nc-icon nc-planet",
         component: PlanetTable,
       },
       {
-        path: "/Zodiacs/zodiac",
+        path: "/zodiac",
         name: "Zodiac",
         layout: "/admin",
         icon: "nc-icon nc-explore-2",
         component: ZodiacTable,
       },
       {
-        path: "/FamousPersons/famousperson-table",
+        path: "/famousperson-table",
         name: "Famous Persons",
         layout: "/admin",
         icon: "nc-icon nc-bulb-63",
@@ -106,7 +107,7 @@ var routes = [
       },
 
       {
-        path: "/Prices/price-table",
+        path: "/price-table",
         layout: "/admin",
         icon: "nc-icon nc-money-coins",
         name: "Price",
@@ -127,22 +128,29 @@ var routes = [
     path: "/detail-post",
     layout: "/admin",
     icon: "nc-icon nc-single-02",
-    name: "Post-Detail",
+    name: "Post",
     component: PostDetail,
   },
   {
-    path: "/detail-astrologer",
+    path: "/astrologer-info",
     layout: "/admin",
     icon: "nc-icon nc-single-02",
-    name: "Astrologer-Detail",
+    name: "Astrologer",
     component: AstrologerDetail,
   },
   {
-    path: "/create-astrologer",
+    path: "/astrologer-create",
     layout: "/admin",
     icon: "nc-icon nc-single-02",
-    name: "Astrologer-Create",
+    name: "Astrologer",
     component: AstrologerCreate,
+  },
+  {
+    path: "/customer-info",
+    layout: "/admin",
+    icon: "nc-icon nc-single-02",
+    name: "Customer",
+    component: CustomerDetail,
   },
 ];
 export default routes;

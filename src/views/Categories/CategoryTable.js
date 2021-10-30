@@ -153,7 +153,7 @@ function CategoryTable() {
       });
   }
 
-  function editCategory(){
+  function editCategory() {
     console.log("edt ID: ", edtID);
     console.log("wdt Name: ", edtCategory.name);
 
@@ -196,30 +196,27 @@ function CategoryTable() {
             <Card className="table-big-boy">
               <Card.Header>
                 <Card.Title as="h4">
-                 
-                  
-                    
-                    <Button
-                      className="btn-wd mr-1" variant="info"
-                      type="button"
-                      onClick={() => {
-                        setModalCreate(true);
-                      }}>
-                      Add Category
-                    </Button>
-                  
+                  <Button
+                    className="btn-wd mr-1"
+                    variant="info"
+                    type="button"
+                    onClick={() => {
+                      setModalCreate(true);
+                    }}>
+                    Add Category
+                  </Button>
                 </Card.Title>
 
                 <br></br>
               </Card.Header>
               <Card.Body className="table-full-width">
-                <Table className="table-bigboy">
+                <Table className="table-hover">
                   <thead>
                     <tr>
                       <th>No.</th>
-                      <th className="text-right">ID</th>
-                      <th className="text-right">Name</th>
-                      <th className="text-right">Action</th>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -284,7 +281,6 @@ function CategoryTable() {
 
       <Pagination aria-label="Page navigation example" className="page-center">
         <PaginationItem disabled={currentPage === 1}>
-      
           <PaginationLink
             className="page"
             previous
@@ -299,7 +295,7 @@ function CategoryTable() {
           </PaginationLink>
         </PaginationItem>
         {pageList.map((page, index) => (
-          <PaginationItem active={page+1 === currentPage}>
+          <PaginationItem active={page + 1 === currentPage}>
             <PaginationLink
               className="page"
               key={index}
@@ -311,7 +307,6 @@ function CategoryTable() {
           </PaginationItem>
         ))}
         <PaginationItem disabled={currentPage === totalPage}>
-        
           <PaginationLink
             className="page"
             next
@@ -394,7 +389,7 @@ function CategoryTable() {
             name="name"
             id="name"
             value={edtCategory.name}
-            onChange={(e) => setEdtCategory({name: e.target.value})}
+            onChange={(e) => setEdtCategory({ name: e.target.value })}
             placeholder="Name"
             // onChange={lnerror}
           />
@@ -403,7 +398,6 @@ function CategoryTable() {
           <Button
             color="danger"
             onClick={() => {
-            
               editCategory();
               setModelEdit(false);
             }}>

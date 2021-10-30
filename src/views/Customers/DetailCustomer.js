@@ -19,17 +19,14 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Input } from "reactstrap";
 
 function DetailAstrologer() {
   //Astrologer detail
-  const id = localStorage.getItem("astrologer");
-  const gender = localStorage.getItem("genderAstro");
+  const id = localStorage.getItem("customerId");
+  const gender = localStorage.getItem("genderCus");
   const [name, setName] = useState();
   const [phone, setPhone] = useState();
-
   const [dateOfBirth, setDateOfBirth] = useState();
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
-  const [description, setDescription] = useState();
   const [image, setImage] = useState("");
-  const [flowwers, setFollowers] = useState();
 
   const history = useHistory();
 
@@ -43,36 +40,33 @@ function DetailAstrologer() {
 
   function getAstrologerByID(Id) {
     console.log("id: ", Id);
-    get(`/api/v1/astrologers/${Id}`)
+    get(`/api/v1/customers/${Id}`)
       .then((res) => {
         var temp = res.data.data;
         console.log(temp);
 
         setName(temp.name);
         setPhone(temp.phone_number);
-        // setGender(temp.gender);
         setDateOfBirth(temp.time_of_birth);
         setLatitude(temp.latitude_of_birth);
         setLongitude(temp.longitude_of_birth);
-        setDescription(temp.description);
-        setImage(temp.image_url);
-        setFollowers(temp.followers_count);
+        setImage(temp.url_image);
 
         console.log("name: ", temp.name);
-        console.log("gender: ", gender);
       })
       .catch((err) => {
         console.log(err);
       });
   }
+  
   function deleteByID() {
     console.log("delete: ", id);
 
-    del(`/api/v1/astrologers/${id}`, localStorage.getItem("token"))
+    del(`/api/v1/customers/${id}`, localStorage.getItem("token"))
       .then((res) => {
         if (res.data.code === 0) {
           alert("delete success");
-          history.push("/admin/astrologer-table");
+          history.push("/admin/customer-table");
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -84,6 +78,7 @@ function DetailAstrologer() {
         console.log(err);
       });
   }
+
   const closeBtn = (x) => (
     <button
       className="btn border border-danger"
@@ -167,21 +162,6 @@ function DetailAstrologer() {
                           </Form.Group>
                         </Col>
                       </Row>
-                      <Row>
-                        <Col md="12">
-                          <div class="form-group">
-                            <strong className="text-post-detail">
-                              About me
-                            </strong>
-                            <textarea
-                              disabled
-                              class="form-control"
-                              id="exampleFormControlTextarea1"
-                              rows="10"
-                              defaultValue={description}></textarea>
-                          </div>
-                        </Col>
-                      </Row>
 
                       <div className="clearfix"></div>
                     </Card.Body>
@@ -205,14 +185,7 @@ function DetailAstrologer() {
                       {moment(dateOfBirth).format("MM-DD-YYYY")}
                     </p>
 
-                    <p>
-                      <strong
-                        className="text-post-detail"
-                        style={{ color: "purple" }}>
-                        Followers:{" "}
-                      </strong>
-                      {flowwers}
-                    </p>
+                    
                     <hr></hr>
                     <Row
                       style={{

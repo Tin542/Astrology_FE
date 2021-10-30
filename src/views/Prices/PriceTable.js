@@ -233,7 +233,7 @@ function PriceTable() {
                 <br></br>
               </Card.Header>
               <Card.Body className="table-full-width">
-                <Table className="table-bigboy">
+                <Table className="table-hover">
                   <thead>
                     <tr>
                       <th>ID</th>
