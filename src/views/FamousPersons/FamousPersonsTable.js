@@ -5,6 +5,7 @@ import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
 import DateTimeOffset from "datetime-offset";
 import ImageUploading from "react-images-uploading";
 import ImageUploader from "react-images-upload";
+import { Link, useHistory } from "react-router-dom";
 
 // react-bootstrap components
 import {
@@ -288,7 +289,8 @@ function FamousPersonsTable() {
                     <tr>
                       <th>ID</th>
                       <th>Name</th>
-                      <th>Action</th>
+                      <th>Gender</th>
+                      <th>Zodiac</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -298,53 +300,24 @@ function FamousPersonsTable() {
                           <td>{item.id}</td>
                           <td
                             onClick={() => {
-                              getFamousPersonByID(item.id);
-                              setDetailModal(true);
+                              localStorage.setItem('fmID', item.id);
+                              localStorage.setItem('fmGender', item.gender===0 ? "Male" : "Female");
                             }}>
-                            {item.name}
+                            <Link to={"/admin/famousperson-info"}>{item.name}</Link>
                           </td>
-                          <td>
-                            <OverlayTrigger
-                              overlay={
-                                <Tooltip id="tooltip-461494662">Edit</Tooltip>
-                              }
-                              placement="left">
-                              <Button
-                                className="btn-link btn-icon"
-                                type="button"
-                                variant="success"
-                                onClick={() => {
-                                  // setEdtId(item.id);
-                                  setEdtName(item.name);
-                                  setEdtDes(item.description);
-                                  setEdtZodiac(item.zodiac_id);
-                                  setEdtImage(item.url_image);
-                                  setEdtId(item.id);
-
-                                  setModelEdit(true);
-                                }}>
-                                <i className="fas fa-edit"></i>
-                              </Button>
-                            </OverlayTrigger>
-
-                            <OverlayTrigger
-                              overlay={
-                                <Tooltip id="tooltip-461494662">Remove</Tooltip>
-                              }
-                              placement="left">
-                              <Button
-                                className="btn-link btn-icon"
-                                type="button"
-                                variant="danger"
-                                onClick={() => {
-                                  setId(item.id);
-
-                                  setDeleteModal(true);
-                                }}>
-                                <i className="fas fa-times"></i>
-                              </Button>
-                            </OverlayTrigger>
+                          <td
+                            onClick={() => {
+                             
+                            }}>
+                            {item.gender===0 ? "Male" : "Female"}
                           </td>
+                          <td
+                            onClick={() => {
+                              
+                            }}>
+                            {item.zodiac_name}
+                          </td>
+                          
                         </tr>
                       );
                     })}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select";
 import moment from "moment";
 import { Link, useHistory } from "react-router-dom";
 import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
@@ -15,21 +16,27 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Input } from "reactstrap";
+import {
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  FormGroup,
+} from "reactstrap";
 
 function DetailFamous() {
   //Astrologer detail
-  const id = localStorage.getItem("astrologer");
-  const gender = localStorage.getItem("genderAstro");
+  const id = localStorage.getItem("fmID");
+  const gender = localStorage.getItem("fmGender");
   const [name, setName] = useState();
-  const [phone, setPhone] = useState();
-
-  const [dateOfBirth, setDateOfBirth] = useState();
-  const [latitude, setLatitude] = useState();
-  const [longitude, setLongitude] = useState();
+  const [zodiac, setZodiac] = useState();
+  const [edtGender, setEdtGender] = useState(0);
+  const [zodiacID, setZodiacID] = useState();
   const [description, setDescription] = useState();
   const [image, setImage] = useState("");
-  const [flowwers, setFollowers] = useState();
+
+  const [listZodiac, setListZodiac] = useState([]);
 
   const history = useHistory();
 
@@ -38,41 +45,84 @@ function DetailFamous() {
   const toggleDeleteModal = () => setDeleteModal(!deleteModal);
 
   useEffect(() => {
-    getAstrologerByID(id);
+    getFamousPersonByID(id);
+    getAllZodiac();
   }, []);
 
-  function getAstrologerByID(Id) {
+  function getFamousPersonByID(Id) {
     console.log("id: ", Id);
-    get(`/api/v1/astrologers/${Id}`)
+    get(`/api/v1/famouspersons/${Id}`)
       .then((res) => {
         var temp = res.data.data;
         console.log(temp);
 
         setName(temp.name);
-        setPhone(temp.phone_number);
-        // setGender(temp.gender);
-        setDateOfBirth(temp.time_of_birth);
-        setLatitude(temp.latitude_of_birth);
-        setLongitude(temp.longitude_of_birth);
+        setZodiac(temp.zodiac_name);
+        setZodiacID(temp.zodiac_id);
         setDescription(temp.description);
-        setImage(temp.image_url);
-        setFollowers(temp.followers_count);
+        setImage(temp.url_image);
+        setEdtGender(temp.gender);
 
         console.log("name: ", temp.name);
-        console.log("gender: ", gender);
       })
       .catch((err) => {
+        console.log(err);
+      });
+  }
+  function getAllZodiac() {
+    get(`/api/v1/zodiacs?limit=12`)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("list zodiac: ", temp);
+        setListZodiac(temp);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  function editFamousPerson() {
+    console.log("edt ID: ", id);
+    console.log("edt Name: ", name);
+    console.log("edt Description: ", description);
+    console.log("edt Zodiac: ", zodiac);
+    console.log("edt Image: ", image);
+    console.log("edt Gender: ", edtGender);
+
+    
+    putWithToken(
+      `/api/v1/famouspersons/${id}`,
+      {
+        name: name,
+        description: description,
+        zodiac_id: zodiacID,
+        gender: edtGender,
+        url_image: image,
+      },
+      localStorage.getItem("token")
+    )
+      .then((res) => {
+        if (res.data.code === 0) {
+          alert("Edit success");
+          history.push("/admin/famousperson-table");
+        }
+        if (res.data.code === 7) {
+          console.log(res.data.msg);
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        alert(err);
         console.log(err);
       });
   }
   function deleteByID() {
     console.log("delete: ", id);
 
-    del(`/api/v1/astrologers/${id}`, localStorage.getItem("token"))
+    del(`/api/v1/famouspersons/${id}`, localStorage.getItem("token"))
       .then((res) => {
         if (res.data.code === 0) {
           alert("delete success");
-          history.push("/admin/astrologer-table");
+          history.push("/admin/famousperson-table");
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -105,7 +155,7 @@ function DetailFamous() {
                     <Card.Header>
                       <Card.Header>
                         <Card.Title as="h4" className="text-post-detail">
-                          Astrologer ID: {id}
+                          Famous Person ID: {id}
                         </Card.Title>
                       </Card.Header>
                     </Card.Header>
@@ -116,69 +166,52 @@ function DetailFamous() {
                             <strong className="text-post-detail">Name</strong>
                             <Form.Control
                               defaultValue={name}
-                              disabled
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
                               type="text"></Form.Control>
                           </Form.Group>
                         </Col>
 
                         <Col className="pl-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Phone Number
-                            </strong>
-                            <Form.Control
-                              defaultValue={phone}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
+                          <FormGroup>
+                            <strong className="text-post-detail">Zodiac</strong>
+                            <Input
+                              type="select"
+                              value={zodiacID}
+                              onChange={(e) => setZodiacID(e.target.value)}>
+                              {listZodiac.map((item) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.name}
+                                </option>
+                              ))}
+                            </Input>
+                          </FormGroup>
                         </Col>
                         <Col className="pl-1" md="4">
                           <Form.Group>
                             <strong className="text-post-detail">Gender</strong>
-                            <Form.Control
-                              defaultValue={gender}
-                              disabled
-                              type="text"></Form.Control>
+                            <Input
+                              type="select"
+                              value={edtGender}
+                              onChange={(e) => setEdtGender(e.target.value)}>
+                              <option value="0">Male</option>
+                              <option value="1">Female</option>
+                            </Input>
                           </Form.Group>
                         </Col>
                       </Row>
-                      <Row>
-                        <Col className="pr-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Latitude
-                            </strong>
-                            <Form.Control
-                              disabled
-                              defaultValue={latitude}
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-
-                        <Col className="px-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Longitude
-                            </strong>
-                            <Form.Control
-                              disabled
-                              defaultValue={longitude}
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                      </Row>
+                      <Row></Row>
                       <Row>
                         <Col md="12">
                           <div class="form-group">
                             <strong className="text-post-detail">
-                              About me
+                              About Person
                             </strong>
                             <textarea
-                              disabled
                               class="form-control"
                               id="exampleFormControlTextarea1"
                               rows="10"
-                              defaultValue={description}></textarea>
+                              value={description}></textarea>
                           </div>
                         </Col>
                       </Row>
@@ -198,27 +231,21 @@ function DetailFamous() {
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>
-                    <p>
-                      <strong className="text-post-detail">
-                        Date of Birth:{" "}
-                      </strong>
-                      {moment(dateOfBirth).format("MM-DD-YYYY")}
-                    </p>
 
-                    <p>
-                      <strong
-                        className="text-post-detail"
-                        style={{ color: "purple" }}>
-                        Followers:{" "}
-                      </strong>
-                      {flowwers}
-                    </p>
                     <hr></hr>
                     <Row
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-evenly",
                       }}>
+                      <Button
+                        className="btn-wd"
+                        variant="success"
+                        onClick={() => {
+                          editFamousPerson();
+                        }}>
+                        Edit
+                      </Button>
                       <Button
                         className="btn-wd"
                         variant="danger"
@@ -248,7 +275,6 @@ function DetailFamous() {
             color="danger"
             onClick={() => {
               deleteByID();
-              setDeleteModal(false);
             }}>
             Delete
           </Button>{" "}
