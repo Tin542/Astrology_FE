@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select";
+import { Editor } from "react-draft-wysiwyg";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import TagsInput from "components/TagsInput/TagsInput.js";
 import moment from "moment";
 import { Link, useHistory } from "react-router-dom";
-import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
+import Dropzone from "dropzone";
+import {
+  del,
+  postWithToken,
+  get,
+  put,
+  getWithToken,
+} from "../../service/ReadAPI";
 // react-bootstrap components
 import {
   Badge,
@@ -15,83 +26,62 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Input } from "reactstrap";
+import { Input, FormGroup } from "reactstrap";
+Dropzone.autoDiscover = false;
+function CreateAstrologer() {
+  const [zodiacId, setZodiacId] = useState(null);
+  const [name, setName] = useState(null);
+  const [description, setDescription] = useState(null);
+  const [image, setImage] = useState(
+    "https://image.lag.vn/upload/news/21/08/16/236599595_1425452954506376_3110056547255537769_n_WOLP.jpg"
+  );
 
-function CreateFamous() {
-  //Astrologer detail
-  const id = localStorage.getItem("astrologer");
-  const gender = localStorage.getItem("genderAstro");
-  const [name, setName] = useState();
-  const [phone, setPhone] = useState();
-
-  const [dateOfBirth, setDateOfBirth] = useState();
-  const [latitude, setLatitude] = useState();
-  const [longitude, setLongitude] = useState();
-  const [description, setDescription] = useState();
-  const [image, setImage] = useState("");
-  const [flowwers, setFollowers] = useState();
+  const [listZodiac, setListZodiac] = useState([]);
+  const [comboboxError, setComboboxError] = useState(null);
+  const [emptyNameError, setEmptyNameError] = useState(null);
+  const [desError, setDesError] = useState(null);
 
   const history = useHistory();
 
-  //delete modal
-  const [deleteModal, setDeleteModal] = useState(false);
-  const toggleDeleteModal = () => setDeleteModal(!deleteModal);
-
   useEffect(() => {
-    getAstrologerByID(id);
+    getAllZodiac();
+
+    let currentSingleFile = undefined;
+    new Dropzone(document.getElementById("dropzone-single"), {
+      url: "/",
+      thumbnailWidth: null,
+      thumbnailHeight: null,
+      previewsContainer:
+        document.getElementsByClassName("dz-preview-single")[0],
+      previewTemplate:
+        document.getElementsByClassName("dz-preview-single")[0].innerHTML,
+      maxFiles: 1,
+      acceptedFiles: "image/*",
+      init: function () {
+        this.on("addedfile", function (file) {
+          if (currentSingleFile) {
+            this.removeFile(currentSingleFile);
+          }
+          currentSingleFile = file;
+        });
+      },
+    });
   }, []);
 
-  function getAstrologerByID(Id) {
-    console.log("id: ", Id);
-    get(`/api/v1/astrologers/${Id}`)
+  
+
+  function getAllZodiac() {
+    get(`/api/v1/zodiacs?limit=12`)
       .then((res) => {
-        var temp = res.data.data;
-        console.log(temp);
-
-        setName(temp.name);
-        setPhone(temp.phone_number);
-        // setGender(temp.gender);
-        setDateOfBirth(temp.time_of_birth);
-        setLatitude(temp.latitude_of_birth);
-        setLongitude(temp.longitude_of_birth);
-        setDescription(temp.description);
-        setImage(temp.image_url);
-        setFollowers(temp.followers_count);
-
-        console.log("name: ", temp.name);
-        console.log("gender: ", gender);
+        var temp = res.data.data.list;
+        console.log("list zodiac: ", temp);
+        setListZodiac(temp);
       })
       .catch((err) => {
         console.log(err);
       });
   }
-  function deleteByID() {
-    console.log("delete: ", id);
-
-    del(`/api/v1/astrologers/${id}`, localStorage.getItem("token"))
-      .then((res) => {
-        if (res.data.code === 0) {
-          alert("delete success");
-          history.push("/admin/astrologer-table");
-        }
-        if (res.data.code === 7) {
-          console.log(res.data.msg);
-          alert(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        alert(err);
-        console.log(err);
-      });
-  }
-  const closeBtn = (x) => (
-    <button
-      className="btn border border-danger"
-      style={{ color: "#B22222" }}
-      onClick={x}>
-      X
-    </button>
-  );
+  
   return (
     <>
       <Container fluid>
@@ -105,84 +95,131 @@ function CreateFamous() {
                     <Card.Header>
                       <Card.Header>
                         <Card.Title as="h4" className="text-post-detail">
-                          Astrologer ID: {id}
+                          Create Famous Person
                         </Card.Title>
                       </Card.Header>
                     </Card.Header>
                     <Card.Body>
                       <Row>
                         <Col className="pr-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">Name</strong>
-                            <Form.Control
-                              defaultValue={name}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
+                          <FormGroup>
+                            <label className="text-post-detail">Zodiac</label>
+                            <Select
+                              name="userId"
+                              value={zodiacId}
+                              options={listZodiac.map((item) => ({
+                                value: item.id,
+                                label: item.name,
+                              }))}
+                              palceholder="- language -"
+                              onChange={(value) => setZodiacId(value)}
+                            />
+                            {comboboxError}
+                          </FormGroup>
                         </Col>
 
                         <Col className="pl-1" md="4">
                           <Form.Group>
-                            <strong className="text-post-detail">
-                              Phone Number
-                            </strong>
-                            <Form.Control
-                              defaultValue={phone}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                        <Col className="pl-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">Gender</strong>
-                            <Form.Control
-                              defaultValue={gender}
-                              disabled
-                              type="text"></Form.Control>
+                            <label className="text-post-detail">Name</label>
+                            <Input
+                              type="text"
+                              name="name"
+                              id="name"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                            />
+                            {emptyNameError}
                           </Form.Group>
                         </Col>
                       </Row>
+
                       <Row>
-                        <Col className="pr-1" md="4">
+                        <Col className="pl-1" md="5">
                           <Form.Group>
-                            <strong className="text-post-detail">
-                              Latitude
-                            </strong>
-                            <Form.Control
-                              disabled
-                              defaultValue={latitude}
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-
-                        <Col className="px-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Longitude
-                            </strong>
-                            <Form.Control
-                              disabled
-                              defaultValue={longitude}
-                              type="text"></Form.Control>
+                            <Form.Check className="checkbox-inline">
+                              <Form.Check.Label>
+                                <Form.Check.Input
+                                  value="true"
+                                  id="gender"
+                                  name="gender"
+                                  type="radio"
+                                  onChange={(e) =>
+                                    setGender(true)
+                                  }></Form.Check.Input>
+                                <span className="checkbox-inline"></span>
+                                Male
+                              </Form.Check.Label>
+                            </Form.Check>
+                            <Form.Check className="checkbox-inline">
+                              <Form.Check.Label>
+                                <Form.Check.Input
+                                  value="false"
+                                  id="gemder"
+                                  name="gender"
+                                  type="radio"
+                                  onChange={(e) =>
+                                    setGender(false)
+                                  }></Form.Check.Input>
+                                <span className="checkbox-inline"></span>
+                                Female
+                              </Form.Check.Label>
+                            </Form.Check>
                           </Form.Group>
                         </Col>
                       </Row>
+
                       <Row>
                         <Col md="12">
                           <div class="form-group">
-                            <strong className="text-post-detail">
-                              About me
-                            </strong>
+                            <label className="text-post-detail">
+                              More About Astrologer
+                            </label>
                             <textarea
-                              disabled
                               class="form-control"
                               id="exampleFormControlTextarea1"
                               rows="10"
-                              defaultValue={description}></textarea>
+                              defaultValue={description}
+                              value={description}
+                              onChange={(e) =>
+                                setDescription(e.target.value)
+                              }></textarea>
+                            {desError}
                           </div>
                         </Col>
                       </Row>
-
+                      <Button
+                        onClick={() => {
+                          if (userId === null) {
+                            setComboboxError(
+                              <small className="text-danger">
+                                Plese select user-id
+                              </small>
+                            );
+                          } else {
+                            setComboboxError(null);
+                          }
+                          if (name === null) {
+                            setEmptyNameError(
+                              <small className="text-danger">
+                                Name is required
+                              </small>
+                            );
+                          } else {
+                            setEmptyNameError(null);
+                          }
+                          if (description === null) {
+                            setDesError(
+                              <small className="text-danger">
+                                Description is required
+                              </small>
+                            );
+                          } else {
+                            setDesError(null);
+                          }
+                          
+                        }}>
+                        Create Astrologer
+                      </Button>
                       <div className="clearfix"></div>
                     </Card.Body>
                   </Card>
@@ -192,42 +229,38 @@ function CreateFamous() {
                 <Card className="card-user">
                   <Card.Header className="no-padding"></Card.Header>
                   <Card.Body>
-                    <div className="post-detail-Image">
-                      <img alt="..." src={image}></img>
+                  <div
+                    className="dropzone dropzone-single mb-3"
+                    id="dropzone-single"
+                  >
+                    <div className="fallback">
+                      <div className="custom-file">
+                        <input
+                          className="custom-file-input"
+                          id="projectCoverUploads"
+                          type="file"
+                        />
+                        <label
+                          className="custom-file-label"
+                          htmlFor="projectCoverUploads"
+                        >
+                          Choose file
+                        </label>
+                      </div>
                     </div>
+                    <div className="dz-preview dz-preview-single">
+                      <div className="dz-preview-cover">
+                        <img
+                          alt="..."
+                          className="dz-preview-img"
+                          data-dz-thumbnail=""
+                        />
+                      </div>
+                    </div>
+                  </div>
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>
-                    <p>
-                      <strong className="text-post-detail">
-                        Date of Birth:{" "}
-                      </strong>
-                      {moment(dateOfBirth).format("MM-DD-YYYY")}
-                    </p>
-
-                    <p>
-                      <strong
-                        className="text-post-detail"
-                        style={{ color: "purple" }}>
-                        Followers:{" "}
-                      </strong>
-                      {flowwers}
-                    </p>
-                    <hr></hr>
-                    <Row
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-evenly",
-                      }}>
-                      <Button
-                        className="btn-wd"
-                        variant="danger"
-                        onClick={() => {
-                          setDeleteModal(true);
-                        }}>
-                        Delete
-                      </Button>
-                    </Row>
                   </Card.Footer>
                 </Card>
               </Col>
@@ -235,30 +268,8 @@ function CreateFamous() {
           </Container>
         </div>
       </Container>
-      <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-          close={closeBtn(toggleDeleteModal)}
-          toggle={toggleDeleteModal}>
-          Are you sure?
-        </ModalHeader>
-        <ModalBody>Do you want to delete this Astrologer</ModalBody>
-        <ModalFooter>
-          <Button
-            color="danger"
-            onClick={() => {
-              deleteByID();
-              setDeleteModal(false);
-            }}>
-            Delete
-          </Button>{" "}
-          <Button color="secondary" onClick={toggleDeleteModal}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal>
     </>
   );
 }
 
-export default CreateFamous;
+export default CreateAstrologer;

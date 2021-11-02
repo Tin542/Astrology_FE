@@ -21,3 +21,8 @@
     font-family: "Lucida Handwriting";
     color: black;
 }
+.circle-avatar img{
+    width: 50; 
+    height: 50;
+    borderRadius: 400/ 2
+}
