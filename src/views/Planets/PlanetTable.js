@@ -84,7 +84,7 @@ function PlanetTable() {
                               <img
                                 alt="..."
                                 src={
-                                  require("assets/img/blog-1.jpg").default
+                                  plan.image_url
                                 }></img>
                             </div>
                           </td>
