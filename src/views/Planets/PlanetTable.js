@@ -69,7 +69,7 @@ function PlanetTable() {
                 <Table className="table-bigboy">
                   <thead>
                     <tr>
-                      <th className="text-center">Thumb</th>
+                      <th className="text-center">Image</th>
                       <th>Name</th>
                       <th className="th-description">Description</th>
                       <th></th>

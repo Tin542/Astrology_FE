@@ -266,21 +266,15 @@ function FamousPersonsTable() {
             <Card className="regular-table-with-color">
               <Card.Header>
                 <Card.Title as="h4">
-                  <Button
-                    className="btn-wd mr-1"
-                    variant="info"
-                    type="button"
-                    onClick={() => {
-                      setId(null);
-                      setName(null);
-                      setZodiac(null);
-                      setDescription(null);
-                      setImage(null);
-
-                      setCreateModal(true);
-                    }}>
-                    Add Famous Person
-                  </Button>
+                <Link to={"/admin/famousperson-create"}>
+                    <Button
+                      className="btn-wd mr-1"
+                      variant="info"
+                      type="button"
+                      onClick={() => {}}>
+                      Add Famous Person
+                    </Button>
+                  </Link>
                 </Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
