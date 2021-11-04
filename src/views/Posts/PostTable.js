@@ -246,51 +246,45 @@ function PostTables() {
                     </tr>
                   </thead>
                   <tbody>
-                    {
-                      useListServiceShowPage.map((item, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>
-                              <div className="postImage">
-                                <Link to={"/admin/detail-post"}>
-                                  <img
-                                    alt="..."
-                                    src={item.image_url}
-                                    onClick={() => {
-                                      localStorage.setItem("postId", item.id);
-                                    }}></img>
-                                </Link>
-                              </div>
-                            </td>
+                    {useListServiceShowPage.map((item, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>
+                            <div className="postImage">
+                              
+                                <img
+                                  alt="..."
+                                  src={item.image_url}
+                                  onClick={() => {
+                                    localStorage.setItem("postId", item.id);
+                                  }}></img>
+                              
+                            </div>
+                          </td>
 
-                            <td
-                              className="td-name"
-                              onClick={() => {
-                                localStorage.setItem("postId", item.id);
-                              }}>
-                              <Link to={"/admin/detail-post"}>
-                                {item.title}
-                              </Link>
-                            </td>
+                          <td
+                            className="td-name"
+                            onClick={() => {
+                              localStorage.setItem("postId", item.id);
+                            }}>
+                            <Link to={"/admin/detail-post"}>{item.title}</Link>
+                          </td>
 
-                            <td className="td-number">
-                              {item.astrologer.name}
-                            </td>
-                            <td className="td-number">
-                              {moment(item.created_at).format("MM-DD-YYYY")}
-                            </td>
-                            <td className="td-number">
-                              {item.is_approve ? (
-                                <b style={{ color: "green" }}>Approved</b>
-                              ) : (
-                                <b style={{ color: "red" }}>Waiting</b>
-                              )}
-                            </td>
-                            <td className="td-actions"></td>
-                          </tr>
-                        );
-                      })
-                   }
+                          <td className="td-number">{item.astrologer.name}</td>
+                          <td className="td-number">
+                            {moment(item.created_at).format("MM-DD-YYYY")}
+                          </td>
+                          <td className="td-number">
+                            {item.is_approve ? (
+                              <b style={{ color: "green" }}>Approved</b>
+                            ) : (
+                              <b style={{ color: "red" }}>Waiting</b>
+                            )}
+                          </td>
+                          <td className="td-actions"></td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </Table>
               </Card.Body>
