@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactDatetime from "react-datetime";
 import moment from "moment";
+import Select from "react-select";
 import { Link, useHistory } from "react-router-dom";
 import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
 
@@ -56,10 +57,16 @@ function AstrologerTables() {
   const [createModal, setCreateModal] = useState(false);
   const toggleCreateModal = () => setCreateModal(!createModal);
 
+  //Search
+  const [search, setSearch] = useState(null);
+  const [singleSelect, setSingleSelect] = React.useState("");
+  const [isSearch, setIsSearch] = useState(true);
+
   //paging
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
   const [pageList, setPageList] = useState([]);
+  const [searchPageList, setSearchPageList] = useState([]);
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
@@ -67,18 +74,37 @@ function AstrologerTables() {
   }, []);
 
   function getAstrologerList() {
-    get(`/api/v1/astrologers?limit=${limit}&&page=${currentPage}`)
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log("temp: ", temp);
-        var totalPageNumber = Math.ceil(res.data.data.total / 5);
-        setTotalPage(totalPageNumber);
-        setAstrologerList(temp);
-        showPageList(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (search === null || search === "") {
+      get(`/api/v1/astrologers?limit=${limit}&&page=${currentPage}`)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("temp: ", temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setIsSearch(false);
+          setAstrologerList(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      get(
+        `/api/v1/astrologers?limit=${limit}&&page=${currentPage}&name=${search}`
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("temp: ", temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setIsSearch(true);
+          setAstrologerList(temp);
+          showPageListSearch(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 
   function changePage(number) {
@@ -88,6 +114,22 @@ function AstrologerTables() {
         console.log(temp);
         setAstrologerList(temp);
         setCurrentPage(number);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  function changePageSearch(crrPage) {
+    getWithToken(
+      `/api/v1/astrologers?limit=${limit}&&page=${crrPage}&name=${search}`,
+      localStorage.getItem("token")
+    )
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("paging with search post: ", temp);
+
+        setUseListServiceShowPage(temp);
+        setCurrentPage(crrPage);
       })
       .catch((err) => {
         console.log(err);
@@ -107,6 +149,22 @@ function AstrologerTables() {
     console.log("list: ", list);
     if (list.length >= 1) {
       setPageList(list);
+      console.log("list page: " + list);
+    }
+  }
+
+  function showPageListSearch(res) {
+    var list = [];
+    var totalPageNumber = Math.ceil(res.data.data.total / 5);
+    console.log("total: ", totalPageNumber);
+
+    setTotalPage(totalPageNumber);
+
+    for (let i = 0; i < totalPageNumber; i++) {
+      list.push(i);
+    }
+    if (list.length >= 1) {
+      setSearchPageList(list);
       console.log("list page: " + list);
     }
   }
@@ -171,18 +229,65 @@ function AstrologerTables() {
             <Card className="regular-table-with-color">
               <Card.Header>
                 <Card.Title as="h4">
-                  <Link to={"/admin/astrologer-create"}>
-                    <Button
-                      className="btn-wd mr-1"
-                      variant="info"
-                      type="button"
-                      onClick={() => {}}>
-                      Add Astrologer
-                    </Button>
-                  </Link>
+                  
                 </Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
+                <Row>
+                  <Col className="pl-4" sm="2">
+                    <Select
+                      className="react-select primary"
+                      classNamePrefix="react-select"
+                      name="singleSelect"
+                      value={singleSelect}
+                      onChange={(value) => setSingleSelect(value)}
+                      options={[
+                        {
+                          value: "",
+                          isDisabled: true,
+                        },
+                        { value: true, label: "Active" },
+                        { value: false, label: "Banned" },
+                      ]}
+                      placeholder="Status"
+                    />
+                  </Col>
+
+                  <Col className="pl-2" md="3">
+                    <InputGroup>
+                      <Input
+                        placeholder="Search title..."
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}></Input>
+                      <Button
+                        className="btn-outline"
+                        type="button"
+                        variant="info"
+                        onClick={() => {
+                          getAstrologerList();
+                        }}>
+                        <span className="btn-label">
+                          <i className="fas fa-search"></i>
+                        </span>
+                      </Button>
+                    </InputGroup>
+                  </Col>
+                  <Col></Col>
+
+                  <Col className="pl-7">
+                    <Link to={"/admin/astrologer-create"}>
+                      <Button
+                        className="btn-wd mr-1"
+                        variant="info"
+                        type="button"
+                        onClick={() => {}}>
+                        Add Astrologer
+                      </Button>
+                    </Link>
+                  </Col>
+                </Row>
+                <hr></hr>
                 <Table className="table-hover">
                   <thead>
                     <tr>
@@ -213,7 +318,9 @@ function AstrologerTables() {
                           <td>{item.gender ? "Male" : "Female"}</td>
                           <td>{item.phone_number}</td>
                           <td>
-                            {moment(item.time_of_birth).format("MM-DD-YYYY HH:mm:ss")}
+                            {moment(item.time_of_birth).format(
+                              "MM-DD-YYYY HH:mm:ss"
+                            )}
                           </td>
                         </tr>
                       );
@@ -226,7 +333,7 @@ function AstrologerTables() {
         </Row>
       </Container>
 
-      <Pagination aria-label="Page navigation example" className="page-center">
+      <Pagination aria-label="Page navigation example" className="page-right">
         <PaginationItem disabled={currentPage === 1}>
           <PaginationLink
             className="page"
@@ -235,24 +342,44 @@ function AstrologerTables() {
 
             onClick={() => {
               if (currentPage - 1 > 0) {
-                changePage(currentPage - 1);
+                if (isSearch === false) {
+                  changePage(currentPage - 1);
+                } else {
+                  changePageSearch(currentPage - 1);
+                }
               }
             }}>
             «
           </PaginationLink>
         </PaginationItem>
-        {pageList.map((page, index) => (
-          <PaginationItem active={page + 1 === currentPage}>
-            <PaginationLink
-              className="page"
-              key={index}
-              onClick={() => {
-                changePage(page + 1);
-              }}>
-              {page + 1}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
+
+        {isSearch === false &&
+          pageList.map((page, index) => (
+            <PaginationItem active={page + 1 === currentPage}>
+              <PaginationLink
+                className="page"
+                key={index}
+                onClick={() => {
+                  changePage(page + 1);
+                }}>
+                {page + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+        {isSearch === true &&
+          searchPageList.map((page, index) => (
+            <PaginationItem active={page + 1 === currentPage}>
+              <PaginationLink
+                className="page"
+                key={index}
+                onClick={() => {
+                  changePageSearch(page + 1);
+                }}>
+                {page + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
         <PaginationItem disabled={currentPage === totalPage}>
           <PaginationLink
             className="page"
@@ -260,7 +387,11 @@ function AstrologerTables() {
             //disable={numberPage === totalNumberPage ? true : false}
             onClick={() => {
               if (currentPage + 1 <= totalPage) {
-                changePage(currentPage + 1);
+                if (isSearch === false) {
+                  changePage(currentPage + 1);
+                } else {
+                  changePageSearch(currentPage + 1);
+                }
               }
             }}>
             »
