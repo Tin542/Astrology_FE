@@ -17,9 +17,13 @@
     padding-top: 20px;
     border-radius: 4px;
 }
-.text-post-detail {
+/* .text-post-detail {
     font-family: "Lucida Handwriting";
     color: black;
+} */
+.header-table{
+    font-weight: bold;
+    colro: black
 }
 .circle-avatar img{
     width: 50; 

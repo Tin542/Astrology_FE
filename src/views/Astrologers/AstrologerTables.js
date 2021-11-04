@@ -213,7 +213,7 @@ function AstrologerTables() {
                           <td>{item.gender ? "Male" : "Female"}</td>
                           <td>{item.phone_number}</td>
                           <td>
-                            {moment(item.time_of_birth).format("MM-DD-YYYY")}
+                            {moment(item.time_of_birth).format("MM-DD-YYYY HH:mm:ss")}
                           </td>
                         </tr>
                       );
