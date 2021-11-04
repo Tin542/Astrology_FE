@@ -53,21 +53,7 @@ function PostTables() {
   const [searchPageList, setSearchPageList] = useState([]);
   const [limit, setLimit] = useState(5);
   useEffect(() => {
-    getWithToken(
-      `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,
-      localStorage.getItem("token")
-    )
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log(temp);
-        console.log("data: ", res.data);
-        setIsSearch(false);
-        setUseListServiceShowPage(temp);
-        showPageList(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    getServiceList();
   }, []);
   function getServiceList() {
     console.log("search: ", search);
