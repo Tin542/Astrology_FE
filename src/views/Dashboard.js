@@ -320,14 +320,14 @@ function Dashboard() {
                           <Form.Check className="mb-1 pl-0">
                             <Form.Check.Label>
                               <Form.Check.Input
-                                defaultChecked
+                                
                                 defaultValue=""
                                 type="checkbox"></Form.Check.Input>
                               <span className="form-check-sign"></span>
                             </Form.Check.Label>
                           </Form.Check>
                         </td>
-                        <td>fix Edit Famous Person API</td>
+                        <td>Approve rich text for description</td>
                         <td className="td-actions text-right">
                           <OverlayTrigger
                             overlay={
@@ -362,14 +362,14 @@ function Dashboard() {
                           <Form.Check className="mb-1 pl-0">
                             <Form.Check.Label>
                               <Form.Check.Input
-                                defaultChecked
+                                
                                 defaultValue=""
                                 type="checkbox"></Form.Check.Input>
                               <span className="form-check-sign"></span>
                             </Form.Check.Label>
                           </Form.Check>
                         </td>
-                        <td>Approve Credit for api</td>
+                        <td>Approve search for post, user</td>
                         <td className="td-actions text-right">
                           <OverlayTrigger
                             overlay={

@@ -202,7 +202,7 @@ function DetailAstrologer() {
                       <strong className="text-post-detail">
                         Date of Birth:{" "}
                       </strong>
-                      {moment(dateOfBirth).format("MM-DD-YYYY")}
+                      {moment(dateOfBirth).format("MM-DD-YYYY HH:mm:ss")}
                     </p>
 
                     <p>
