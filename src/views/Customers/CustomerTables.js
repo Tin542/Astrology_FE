@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
-import ReactDatetime from "react-datetime";
 import moment from "moment";
 import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
-import DateTimeOffset from "datetime-offset";
-import ImageUploading from "react-images-uploading";
-import ImageUploader from "react-images-upload";
 import { Link, useHistory } from "react-router-dom";
+import Select from "react-select";
 
 // react-bootstrap components
 import {
@@ -39,28 +36,16 @@ function CustomTable() {
   //show page
   const [astrologerList, setAstrologerList] = useState([]);
 
-  //Astrologer detail
-  const [id, setId] = useState();
-  const [name, setName] = useState();
-  const [phone, setPhone] = useState();
-  const [gender, setGender] = useState(false);
-  const [dateOfBirth, setDateOfBirth] = useState();
-  const [latitude, setLatitude] = useState();
-  const [longitude, setLongitude] = useState();
-  const [image, setImage] = useState("");
-
-  //detail modal
-  const [detailModal, setDetailModal] = useState(false);
-  const toggleDetailModal = () => setDetailModal(!detailModal);
-
-  //delete modal
-  const [deleteModal, setDeleteModal] = useState(false);
-  const toggleDeleteModal = () => setDeleteModal(!deleteModal);
+  //Search
+  const [search, setSearch] = useState(null);
+  const [singleSelect, setSingleSelect] = React.useState("");
+  const [isSearch, setIsSearch] = useState(true);
 
   //paging
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
   const [pageList, setPageList] = useState([]);
+  const [searchPageList, setSearchPageList] = useState([]);
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
@@ -68,20 +53,37 @@ function CustomTable() {
   }, []);
 
   function getAstrologerList() {
-    get(`/api/v1/customers?limit=${limit}&&page=${currentPage}`)
+    if(search === null || search === ""){
+      get(`/api/v1/customers?limit=${limit}&&page=${currentPage}`)
       .then((res) => {
         var temp = res.data.data.list;
         console.log("temp: ", temp);
         var totalPageNumber = Math.ceil(res.data.data.total / 5);
         setTotalPage(totalPageNumber);
+        setIsSearch(false);
         setAstrologerList(temp);
         showPageList(res);
       })
       .catch((err) => {
         console.log(err);
       });
+    }else{
+      get(`/api/v1/customers?limit=${limit}&&page=${currentPage}&name=${search}`)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("temp: ", temp);
+        var totalPageNumber = Math.ceil(res.data.data.total / 5);
+        setTotalPage(totalPageNumber);
+        setIsSearch(true);
+        setAstrologerList(temp);
+        showPageListSearch(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+    
   }
-
   function changePage(number) {
     get(`/api/v1/customers?limit=${limit}&&page=${number}`)
       .then((res) => {
@@ -94,7 +96,22 @@ function CustomTable() {
         console.log(err);
       });
   }
+  function changePageSearch(crrPage) {
+    getWithToken(
+      `/api/v1/customers?limit=${limit}&&page=${crrPage}&name=${search}`,
+      localStorage.getItem("token")
+    )
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("paging with search post: ", temp);
 
+        setUseListServiceShowPage(temp);
+        setCurrentPage(crrPage);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   function showPageList(res) {
     var list = [];
     var totalPageNumber = Math.ceil(res.data.data.total / 5);
@@ -111,15 +128,21 @@ function CustomTable() {
       console.log("list page: " + list);
     }
   }
+  function showPageListSearch(res) {
+    var list = [];
+    var totalPageNumber = Math.ceil(res.data.data.total / 5);
+    console.log("total: ", totalPageNumber);
 
-  const closeBtn = (x) => (
-    <button
-      className="btn border border-danger"
-      style={{ color: "#B22222" }}
-      onClick={x}>
-      X
-    </button>
-  );
+    setTotalPage(totalPageNumber);
+
+    for (let i = 0; i < totalPageNumber; i++) {
+      list.push(i);
+    }
+    if (list.length >= 1) {
+      setSearchPageList(list);
+      console.log("list page: " + list);
+    }
+  }
 
   return (
     <>
@@ -131,6 +154,48 @@ function CustomTable() {
                 <Card.Title as="h4"></Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
+              <Row>
+                  <Col className="pl-4" sm="2">
+                    <Select
+                      className="react-select primary"
+                      classNamePrefix="react-select"
+                      name="singleSelect"
+                      value={singleSelect}
+                      onChange={(value) => setSingleSelect(value)}
+                      options={[
+                        {
+                          value: "",
+                          isDisabled: true,
+                        },
+                        { value: true, label: "Approve" },
+                        { value: false, label: "Wating" },
+                      ]}
+                      placeholder="Status"
+                    />
+                  </Col>
+                  
+                  <Col className="pl-2" md="3">
+                    <InputGroup>
+                      <Input
+                        placeholder="Search title..."
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}></Input>
+                      <Button
+                        className="btn-outline"
+                        type="button"
+                        variant="info"
+                        onClick={() => {
+                          getAstrologerList();
+                        }}>
+                        <span className="btn-label">
+                          <i className="fas fa-search"></i>
+                        </span>
+                      </Button>
+                    </InputGroup>
+                  </Col>
+                </Row>
+                <hr></hr>
                 <Table className="table-hover">
                   <thead>
                     <tr>
@@ -175,7 +240,7 @@ function CustomTable() {
         </Row>
       </Container>
 
-      <Pagination aria-label="Page navigation example" className="page-center">
+      <Pagination aria-label="Page navigation example" className="page-right">
         <PaginationItem disabled={currentPage === 1}>
           <PaginationLink
             className="page"
@@ -184,24 +249,44 @@ function CustomTable() {
 
             onClick={() => {
               if (currentPage - 1 > 0) {
-                changePage(currentPage - 1);
+                if (isSearch === false) {
+                  changePage(currentPage - 1);
+                } else {
+                  changePageSearch(currentPage - 1);
+                }
               }
             }}>
             «
           </PaginationLink>
         </PaginationItem>
-        {pageList.map((page, index) => (
-          <PaginationItem active={page + 1 === currentPage}>
-            <PaginationLink
-              className="page"
-              key={index}
-              onClick={() => {
-                changePage(page + 1);
-              }}>
-              {page + 1}
-            </PaginationLink>
-          </PaginationItem>
-        ))}
+
+        {isSearch === false &&
+          pageList.map((page, index) => (
+            <PaginationItem active={page + 1 === currentPage}>
+              <PaginationLink
+                className="page"
+                key={index}
+                onClick={() => {
+                  changePage(page + 1);
+                }}>
+                {page + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+        {isSearch === true &&
+          searchPageList.map((page, index) => (
+            <PaginationItem active={page + 1 === currentPage}>
+              <PaginationLink
+                className="page"
+                key={index}
+                onClick={() => {
+                  changePageSearch(page + 1);
+                }}>
+                {page + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+
         <PaginationItem disabled={currentPage === totalPage}>
           <PaginationLink
             className="page"
@@ -209,7 +294,11 @@ function CustomTable() {
             //disable={numberPage === totalNumberPage ? true : false}
             onClick={() => {
               if (currentPage + 1 <= totalPage) {
-                changePage(currentPage + 1);
+                if (isSearch === false) {
+                  changePage(currentPage + 1);
+                } else {
+                  changePageSearch(currentPage + 1);
+                }
               }
             }}>
             »
@@ -217,67 +306,7 @@ function CustomTable() {
         </PaginationItem>
       </Pagination>
 
-      {/* <Modal isOpen={detailModal} toggle={toggleDetailModal}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-          close={closeBtn(toggleDetailModal)}
-          toggle={toggleDetailModal}>
-          Customer detail
-        </ModalHeader>
-        <ModalBody>
-          <div className="img-container">
-            <img alt="..." src={image}></img>
-          </div>
-        </ModalBody>
-        <ModalBody>
-          <b>ID: </b>
-          {id}
-          <br />
-          <b>Name: </b>
-          {name}
-          <br />
-          <b>Gender: </b>
-          {gender ? "Male" : "Female"}
-          <br />
-          <b>Phone: </b>
-          {phone}
-          <br />
-          <b>Date of birth: </b>
-          {moment(dateOfBirth).format("MM-DD-YYYY")}
-          <br />
-          <b>Latitude: </b>
-          {latitude}
-          <br />
-          <b>Longitude: </b>
-          {longitude}
-          <br />
-        </ModalBody>
-
-        <ModalFooter></ModalFooter>
-      </Modal>
-
-      <Modal isOpen={deleteModal} toggle={toggleDeleteModal}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-          close={closeBtn(toggleDeleteModal)}
-          toggle={toggleDeleteModal}>
-          Are you sure?
-        </ModalHeader>
-        <ModalBody>Do you want to delete this Customer</ModalBody>
-        <ModalFooter>
-          <Button
-            color="danger"
-            onClick={() => {
-              deleteByID();
-              setDeleteModal(false);
-            }}>
-            Delete
-          </Button>{" "}
-          <Button color="secondary" onClick={toggleDeleteModal}>
-            Cancel
-          </Button>
-        </ModalFooter>
-      </Modal> */}
+      
     </>
   );
 }

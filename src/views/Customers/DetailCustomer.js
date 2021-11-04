@@ -100,7 +100,7 @@ function DetailCustomer() {
                     <Card.Header>
                       <Card.Header>
                         <Card.Title as="h4" className="text-post-detail">
-                          Astrologer ID: {id}
+                          Customer ID: {id}
                         </Card.Title>
                       </Card.Header>
                     </Card.Header>

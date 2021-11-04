@@ -246,7 +246,7 @@ function PostTables() {
                     </tr>
                   </thead>
                   <tbody>
-                    {useListServiceShowPage !== null ? (
+                    {
                       useListServiceShowPage.map((item, index) => {
                         return (
                           <tr key={index}>
@@ -290,9 +290,7 @@ function PostTables() {
                           </tr>
                         );
                       })
-                    ) : (
-                      <h1>Not Found</h1>
-                    )}
+                   }
                   </tbody>
                 </Table>
               </Card.Body>
