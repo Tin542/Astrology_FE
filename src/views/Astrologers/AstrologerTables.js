@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import ReactDatetime from "react-datetime";
 import moment from "moment";
 import Select from "react-select";
+import "../../assets/css/customize.css";
 import { Link, useHistory } from "react-router-dom";
 import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
 
@@ -228,9 +228,7 @@ function AstrologerTables() {
           <Col md="12">
             <Card className="regular-table-with-color">
               <Card.Header>
-                <Card.Title as="h4">
-                  
-                </Card.Title>
+                <Card.Title as="h4"></Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
                 <Row>
@@ -291,18 +289,17 @@ function AstrologerTables() {
                 <Table className="table-hover">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Gender</th>
-                      <th>Phone</th>
-                      <th>Date of birth</th>
+                      <th style={{ color: "black" }}><strong>Astrologer</strong></th>
+
+                      <th style={{ color: "black" }}><strong>Gender</strong></th>
+                      <th style={{ color: "black" }}><strong>Phone</strong></th>
+                      <th style={{ color: "black" }}><strong>Date of birth</strong></th>
                     </tr>
                   </thead>
                   <tbody>
                     {astrologerList.map((item, index) => {
                       return (
                         <tr key={index}>
-                          <td>{item.id}</td>
                           <td
                             onClick={() => {
                               localStorage.setItem("astrologer", item.id);
@@ -311,10 +308,25 @@ function AstrologerTables() {
                                 item.gender ? "Male" : "Female"
                               );
                             }}>
-                            <Link to={"/admin/astrologer-info"}>
-                              {item.name}
-                            </Link>
+                            <Row className="align-items-center">
+                              <Col className="col-auto">
+                                <img
+                                  alt="..."
+                                  style={{
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: 400 / 2,
+                                  }}
+                                  src={item.image_url}></img>{" "}
+                              </Col>
+                              <div className="col ml--2">
+                                <Link to={"/admin/astrologer-info"}>
+                                  {item.name}
+                                </Link>
+                              </div>
+                            </Row>
                           </td>
+
                           <td>{item.gender ? "Male" : "Female"}</td>
                           <td>{item.phone_number}</td>
                           <td>

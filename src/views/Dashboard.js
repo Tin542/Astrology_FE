@@ -19,6 +19,7 @@ import {
   Container,
   Row,
   Col,
+  ProgressBar,
 } from "react-bootstrap";
 import { ListGroupItem, ListGroup, Progress } from "reactstrap";
 
@@ -320,7 +321,6 @@ function Dashboard() {
                           <Form.Check className="mb-1 pl-0">
                             <Form.Check.Label>
                               <Form.Check.Input
-                                
                                 defaultValue=""
                                 type="checkbox"></Form.Check.Input>
                               <span className="form-check-sign"></span>
@@ -362,7 +362,6 @@ function Dashboard() {
                           <Form.Check className="mb-1 pl-0">
                             <Form.Check.Label>
                               <Form.Check.Input
-                                
                                 defaultValue=""
                                 type="checkbox"></Form.Check.Input>
                               <span className="form-check-sign"></span>
@@ -410,46 +409,24 @@ function Dashboard() {
               </Card.Header>
               <Card.Body>
                 <ListGroup className="list my--3" flush>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h5>Backend</h5>
-                        <Progress
-                          className="progress-xs mb-0"
-                          color="orange"
-                          max="100"
-                          value="90"
-                        />
-                      </div>
-                    </Row>
-                  </ListGroupItem>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h5>Mobile</h5>
-                        <Progress
-                          className="progress-xs mb-0"
-                          color="success"
-                          max="100"
-                          value="95"
-                        />
-                      </div>
-                    </Row>
-                  </ListGroupItem>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <div className="col">
-                        <h5>Frontend</h5>
-                        <Progress
-                          className="progress-xs mb-0"
-                          color="info"
-                          max="100"
-                          value="80"
-                        />
-                      </div>
-                    </Row>
-                  </ListGroupItem>
-                  
+                  <h5>Backend</h5>
+                  <ProgressBar>
+                    <ProgressBar max="100" min="0" now="90" variant="success">
+                      <span className="sr-only">60% Complete</span>
+                    </ProgressBar>
+                  </ProgressBar>
+                  <h5>Mobile</h5>
+                  <ProgressBar>
+                    <ProgressBar max="100" min="0" now="95" variant="success">
+                      <span className="sr-only">60% Complete</span>
+                    </ProgressBar>
+                  </ProgressBar>
+                  <h5>Frontend</h5>
+                  <ProgressBar>
+                    <ProgressBar max="100" min="0" now="85" variant="success">
+                      <span className="sr-only">60% Complete</span>
+                    </ProgressBar>
+                  </ProgressBar>
                 </ListGroup>
               </Card.Body>
             </Card>

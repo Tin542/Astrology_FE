@@ -53,36 +53,37 @@ function CustomTable() {
   }, []);
 
   function getAstrologerList() {
-    if(search === null || search === ""){
+    if (search === null || search === "") {
       get(`/api/v1/customers?limit=${limit}&&page=${currentPage}`)
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log("temp: ", temp);
-        var totalPageNumber = Math.ceil(res.data.data.total / 5);
-        setTotalPage(totalPageNumber);
-        setIsSearch(false);
-        setAstrologerList(temp);
-        showPageList(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    }else{
-      get(`/api/v1/customers?limit=${limit}&&page=${currentPage}&name=${search}`)
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log("temp: ", temp);
-        var totalPageNumber = Math.ceil(res.data.data.total / 5);
-        setTotalPage(totalPageNumber);
-        setIsSearch(true);
-        setAstrologerList(temp);
-        showPageListSearch(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("temp: ", temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setIsSearch(false);
+          setAstrologerList(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      get(
+        `/api/v1/customers?limit=${limit}&&page=${currentPage}&name=${search}`
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("temp: ", temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setIsSearch(true);
+          setAstrologerList(temp);
+          showPageListSearch(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-    
   }
   function changePage(number) {
     get(`/api/v1/customers?limit=${limit}&&page=${number}`)
@@ -154,7 +155,7 @@ function CustomTable() {
                 <Card.Title as="h4"></Card.Title>
               </Card.Header>
               <Card.Body className="table-responsive p-0">
-              <Row>
+                <Row>
                   <Col className="pl-4" sm="2">
                     <Select
                       className="react-select primary"
@@ -173,7 +174,7 @@ function CustomTable() {
                       placeholder="Status"
                     />
                   </Col>
-                  
+
                   <Col className="pl-2" md="3">
                     <InputGroup>
                       <Input
@@ -199,8 +200,8 @@ function CustomTable() {
                 <Table className="table-hover">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Name</th>
+                      <th>Customer</th>
+
                       <th>Gender</th>
                       <th>Phone</th>
                       <th>Date of birth</th>
@@ -210,7 +211,6 @@ function CustomTable() {
                     {astrologerList.map((item, index) => {
                       return (
                         <tr key={index}>
-                          <td>{item.id}</td>
                           <td
                             onClick={() => {
                               localStorage.setItem("customerId", item.id);
@@ -219,16 +219,34 @@ function CustomTable() {
                                 item.gender ? "Male" : "Female"
                               );
                             }}>
-                            <Link to={"/admin/customer-info"}>{item.name}</Link>
+                            <Row className="align-items-center">
+                              <Col className="col-auto">
+                                <img
+                                  alt="..."
+                                  style={{
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: 400 / 2,
+                                  }}
+                                  src={item.url_image}></img>{" "}
+                              </Col>
+                              <div className="col ml--2">
+                                <Link to={"/admin/customer-info"}>
+                                  {item.name}
+                                </Link>
+                              </div>
+                            </Row>
                           </td>
+
                           <td onClick={() => {}}>
                             {item.gender ? "Male" : "Female"}
                           </td>
                           <td onClick={() => {}}>{item.phone_number}</td>
                           <td onClick={() => {}}>
-                            {moment(item.time_of_birth).format("DD-MM-YYYY HH:mm:ss")}
+                            {moment(item.time_of_birth).format(
+                              "DD-MM-YYYY HH:mm:ss"
+                            )}
                           </td>
-                         
                         </tr>
                       );
                     })}
@@ -305,8 +323,6 @@ function CustomTable() {
           </PaginationLink>
         </PaginationItem>
       </Pagination>
-
-      
     </>
   );
 }
