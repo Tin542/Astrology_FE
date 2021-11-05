@@ -43,7 +43,7 @@ function PostTables() {
 
   //Search
   const [search, setSearch] = useState(null);
-  const [singleSelect, setSingleSelect] = React.useState("");
+  const [states, setStates] = React.useState({ value: null });
   const [isSearch, setIsSearch] = useState(true);
 
   //paging
@@ -55,9 +55,14 @@ function PostTables() {
   useEffect(() => {
     getServiceList();
   }, []);
+
   function getServiceList() {
     console.log("search: ", search);
-    if (search === null || search === "") {
+    console.log("state: ", states);
+    if (
+      (search === null || search === "") &&
+      (states.value === null || states.value === "")
+    ) {
       getWithToken(
         `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,
         localStorage.getItem("token")
@@ -73,7 +78,10 @@ function PostTables() {
         .catch((err) => {
           console.log(err);
         });
-    } else {
+    } else if (
+      (states.value === null || states.value === "") &&
+      (search !== null || search !== "")
+    ) {
       getWithToken(
         `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&title=${search}`,
         localStorage.getItem("token")
@@ -89,9 +97,43 @@ function PostTables() {
         .catch((err) => {
           console.log(err);
         });
+    } else if (
+      (states.value !== null || states.value !== "") &&
+      (search === null || search === "")
+    ) {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&is-approve=${states.value}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          console.log("data: ", res.data);
+          setIsSearch(true);
+          setUseListServiceShowPage(temp);
+          showPageListSearch(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&title=${search}&is-approve=${states.value}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          console.log("data: ", res.data);
+          setIsSearch(true);
+          setUseListServiceShowPage(temp);
+          showPageListSearch(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
-
   function changePage(crrPage) {
     getWithToken(
       `/api/v1/posts/admin?limit=${limit}&&page=${crrPage}`,
@@ -108,7 +150,6 @@ function PostTables() {
         console.log(err);
       });
   }
-
   function changePageSearch(crrPage) {
     getWithToken(
       `/api/v1/posts/admin?limit=${limit}&page=${crrPage}&title=${search}`,
@@ -125,7 +166,6 @@ function PostTables() {
         console.log(err);
       });
   }
-
   function showPageList(res) {
     var list = [];
     var totalPageNumber = Math.ceil(res.data.data.total / 5);
@@ -156,6 +196,85 @@ function PostTables() {
       console.log("list page: " + list);
     }
   }
+  function handleSelectSates(value) {
+    console.log("search: ", search);
+    console.log("state: ", states);
+    setStates(value);
+    if (
+      (search === null || search === "") &&
+      (value.value === null || value.value === "")
+    ) {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          console.log("data: ", res.data);
+          setIsSearch(false);
+          setUseListServiceShowPage(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (
+      (value.value === null || value.value === "") &&
+      (search !== null || search !== "")
+    ) {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&title=${search}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          console.log("data: ", res.data);
+          setIsSearch(true);
+          setUseListServiceShowPage(temp);
+          showPageListSearch(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (
+      (value.value !== null || value.value !== "") &&
+      (search === null || search === "")
+    ) {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&is-approve=${value.value}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          console.log("data: ", res.data);
+          setIsSearch(true);
+          setUseListServiceShowPage(temp);
+          showPageListSearch(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&title=${search}&is-approve=${value.value}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          console.log("data: ", res.data);
+          setIsSearch(true);
+          setUseListServiceShowPage(temp);
+          showPageListSearch(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }
 
   return (
     <>
@@ -171,13 +290,16 @@ function PostTables() {
                       className="react-select primary"
                       classNamePrefix="react-select"
                       name="singleSelect"
-                      value={singleSelect}
-                      onChange={(value) => setSingleSelect(value)}
+                      value={states}
+                      onChange={(value) => {
+                        handleSelectSates(value);
+                      }}
                       options={[
                         {
                           value: "",
                           isDisabled: true,
                         },
+                        { value: null, label: "All States" },
                         { value: true, label: "Approve" },
                         { value: false, label: "Wating" },
                       ]}
@@ -237,14 +359,12 @@ function PostTables() {
                         <tr key={index}>
                           <td>
                             <div className="postImage">
-                              
-                                <img
-                                  alt="..."
-                                  src={item.image_url}
-                                  onClick={() => {
-                                    localStorage.setItem("postId", item.id);
-                                  }}></img>
-                              
+                              <img
+                                alt="..."
+                                src={item.image_url}
+                                onClick={() => {
+                                  localStorage.setItem("postId", item.id);
+                                }}></img>
                             </div>
                           </td>
 
@@ -258,7 +378,7 @@ function PostTables() {
 
                           <td className="td-number">{item.astrologer.name}</td>
                           <td className="td-number">
-                            {moment(item.created_at).format("MM-DD-YYYY")}
+                            {moment(item.created_at).format("DD-MM-YYYY")}
                           </td>
                           <td className="td-number">
                             {item.is_approve ? (

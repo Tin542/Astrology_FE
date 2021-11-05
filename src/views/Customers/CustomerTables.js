@@ -226,7 +226,7 @@ function CustomTable() {
                           </td>
                           <td onClick={() => {}}>{item.phone_number}</td>
                           <td onClick={() => {}}>
-                            {moment(item.time_of_birth).format("MM-DD-YYYY HH:mm:ss")}
+                            {moment(item.time_of_birth).format("DD-MM-YYYY HH:mm:ss")}
                           </td>
                          
                         </tr>
