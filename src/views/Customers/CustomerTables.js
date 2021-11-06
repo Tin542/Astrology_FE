@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
+import { del, getWithToken, putWithToken, postWithToken } from "../../service/ReadAPI";
 import { Link, useHistory } from "react-router-dom";
 import Select from "react-select";
 
@@ -33,6 +33,10 @@ import {
 } from "reactstrap";
 
 function CustomTable() {
+
+  //tokens
+  const token = localStorage.getItem("token");
+
   //show page
   const [astrologerList, setAstrologerList] = useState([]);
 
@@ -54,7 +58,7 @@ function CustomTable() {
 
   function getAstrologerList() {
     if (search === null || search === "") {
-      get(`/api/v1/customers?limit=${limit}&&page=${currentPage}`)
+      getWithToken(`/api/v1/customers/admin?limit=${limit}&&page=${currentPage}`, token)
         .then((res) => {
           var temp = res.data.data.list;
           console.log("temp: ", temp);
@@ -68,8 +72,8 @@ function CustomTable() {
           console.log(err);
         });
     } else {
-      get(
-        `/api/v1/customers?limit=${limit}&&page=${currentPage}&name=${search}`
+      getWithToken(
+        `/api/v1/customers/admin?limit=${limit}&&page=${currentPage}&name=${search}`, token
       )
         .then((res) => {
           var temp = res.data.data.list;
@@ -86,7 +90,7 @@ function CustomTable() {
     }
   }
   function changePage(number) {
-    get(`/api/v1/customers?limit=${limit}&&page=${number}`)
+    getWithToken(`/api/v1/customers/admin?limit=${limit}&&page=${number}`, token)
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
@@ -99,8 +103,8 @@ function CustomTable() {
   }
   function changePageSearch(crrPage) {
     getWithToken(
-      `/api/v1/customers?limit=${limit}&&page=${crrPage}&name=${search}`,
-      localStorage.getItem("token")
+      `/api/v1/customers/admin?limit=${limit}&&page=${crrPage}&name=${search}`,
+      token
     )
       .then((res) => {
         var temp = res.data.data.list;
