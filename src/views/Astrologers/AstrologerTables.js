@@ -9,6 +9,10 @@ import {
   putWithToken,
   postWithToken,
 } from "../../service/ReadAPI";
+import {
+  getListAstrologer,
+  getLsitAstrologerSearchAndFilter,
+} from "../../service/astrologer.service.js";
 
 // react-bootstrap components
 import {
@@ -45,46 +49,24 @@ function AstrologerTables() {
   //show page
   const [astrologerList, setAstrologerList] = useState([]);
 
-  //Astrologer detail
-  const [id, setId] = useState();
-  const [name, setName] = useState();
-  const [phone, setPhone] = useState();
-  const [gender, setGender] = useState(false);
-  const [dateOfBirth, setDateOfBirth] = useState();
-  const [latitude, setLatitude] = useState();
-  const [longitude, setLongitude] = useState();
-  const [description, setDescription] = useState();
-  const [image, setImage] = useState("");
-  const [flowwers, setFollowers] = useState();
-
   //Search
   const [search, setSearch] = useState(null);
-  const [states, setStates] = React.useState({ value: null });
+  const [states, setStates] = React.useState({value: null});
   const [isSearch, setIsSearch] = useState(true);
 
   //paging
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
   const [pageList, setPageList] = useState([]);
-  const [searchPageList, setSearchPageList] = useState([]);
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
-    getAstrologerList();
-  }, []);
+    loadData();
+  }, [currentPage, limit, search, states]);
 
-  function getAstrologerList() {
-    console.log("search: ", search);
-    console.log("state: ", states);
-
-    if (
-      (search === null || search === "") &&
-      (states.value === null || states.value === "")
-    ) {
-      getWithToken(
-        `/api/v1/astrologers/admin?limit=${limit}&&page=${currentPage}`,
-        token
-      )
+  const loadData = () => {
+    if (search && search.trim() === "" && states.value && states.value.trim() === "All") {
+      getListAstrologer(currentPage, limit)
         .then((res) => {
           var temp = res.data.data.list;
           console.log("temp: ", temp);
@@ -97,77 +79,48 @@ function AstrologerTables() {
         .catch((err) => {
           console.log(err);
         });
-    } else if (
-      (states.value === null || states.value === "") &&
-      (search !== null || search !== "")
-    ) {
-      getWithToken(
-        `/api/v1/astrologers/admin?limit=${limit}&&page=${currentPage}&name=${search}`,
-        token
-      )
+    } else {
+      getLsitAstrologerSearchAndFilter(currentPage, limit, search, states.value)
         .then((res) => {
           var temp = res.data.data.list;
           console.log("temp: ", temp);
           var totalPageNumber = Math.ceil(res.data.data.total / 5);
           setTotalPage(totalPageNumber);
-          setIsSearch(true);
+          setIsSearch(false);
           setAstrologerList(temp);
-          showPageListSearch(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }else if((states.value !== null || states.value !== "") &&
-    (search === null || search === "")){
-      getWithToken(
-        `/api/v1/astrologers/admin?limit=${limit}&&page=${currentPage}&name=${search}is-deleted=${states.value}`,
-        token
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log("temp: ", temp);
-          var totalPageNumber = Math.ceil(res.data.data.total / 5);
-          setTotalPage(totalPageNumber);
-          setIsSearch(true);
-          setAstrologerList(temp);
-          showPageListSearch(res);
+          showPageList(res);
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }
-
+  };
+  
   function changePage(number) {
-    getWithToken(
-      `/api/v1/astrologers/admin?limit=${limit}&&page=${number}`,
-      token
-    )
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log(temp);
-        setAstrologerList(temp);
-        setCurrentPage(number);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-  function changePageSearch(crrPage) {
-    getWithToken(
-      `/api/v1/astrologers/admin?limit=${limit}&&page=${crrPage}&name=${search}`,
-      token
-    )
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log("paging with search post: ", temp);
-
-        setUseListServiceShowPage(temp);
-        setCurrentPage(crrPage);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (search && search.trim() === "" && states && states.trim() === "") {
+      getListAstrologer(number, limit)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          setAstrologerList(temp);
+          setCurrentPage(number);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }else{
+      getLsitAstrologerSearchAndFilter(number, limit, search, states.value)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          setAstrologerList(temp);
+          setCurrentPage(number);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    
   }
 
   function showPageList(res) {
@@ -183,22 +136,6 @@ function AstrologerTables() {
     console.log("list: ", list);
     if (list.length >= 1) {
       setPageList(list);
-      console.log("list page: " + list);
-    }
-  }
-
-  function showPageListSearch(res) {
-    var list = [];
-    var totalPageNumber = Math.ceil(res.data.data.total / 5);
-    console.log("total: ", totalPageNumber);
-
-    setTotalPage(totalPageNumber);
-
-    for (let i = 0; i < totalPageNumber; i++) {
-      list.push(i);
-    }
-    if (list.length >= 1) {
-      setSearchPageList(list);
       console.log("list page: " + list);
     }
   }
@@ -227,8 +164,8 @@ function AstrologerTables() {
                           isDisabled: true,
                         },
                         { value: null, label: "All States" },
-                        { value: true, label: "Active" },
-                        { value: false, label: "Banned" },
+                        { value: false, label: "Active" },
+                        { value: true, label: "Banned" },
                       ]}
                       placeholder="Status"
                     />
@@ -246,7 +183,7 @@ function AstrologerTables() {
                         type="button"
                         variant="info"
                         onClick={() => {
-                          getAstrologerList();
+                          loadData();
                         }}>
                         <span className="btn-label">
                           <i className="fas fa-search"></i>
@@ -355,43 +292,25 @@ function AstrologerTables() {
 
             onClick={() => {
               if (currentPage - 1 > 0) {
-                if (isSearch === false) {
-                  changePage(currentPage - 1);
-                } else {
-                  changePageSearch(currentPage - 1);
-                }
+                changePage(currentPage - 1);
               }
             }}>
             «
           </PaginationLink>
         </PaginationItem>
 
-        {isSearch === false &&
-          pageList.map((page, index) => (
-            <PaginationItem active={page + 1 === currentPage}>
-              <PaginationLink
-                className="page"
-                key={index}
-                onClick={() => {
-                  changePage(page + 1);
-                }}>
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-        {isSearch === true &&
-          searchPageList.map((page, index) => (
-            <PaginationItem active={page + 1 === currentPage}>
-              <PaginationLink
-                className="page"
-                key={index}
-                onClick={() => {
-                  changePageSearch(page + 1);
-                }}>
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
+        {pageList.map((page, index) => (
+          <PaginationItem active={page + 1 === currentPage}>
+            <PaginationLink
+              className="page"
+              key={index}
+              onClick={() => {
+                changePage(page + 1);
+              }}>
+              {page + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
 
         <PaginationItem disabled={currentPage === totalPage}>
           <PaginationLink
@@ -400,11 +319,7 @@ function AstrologerTables() {
             //disable={numberPage === totalNumberPage ? true : false}
             onClick={() => {
               if (currentPage + 1 <= totalPage) {
-                if (isSearch === false) {
-                  changePage(currentPage + 1);
-                } else {
-                  changePageSearch(currentPage + 1);
-                }
+                changePage(currentPage + 1);
               }
             }}>
             »

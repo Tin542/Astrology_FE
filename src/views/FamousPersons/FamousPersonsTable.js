@@ -45,7 +45,7 @@ function FamousPersonsTable() {
 
   //Search
   const [search, setSearch] = useState("");
-  const [selectedZodiac, setSelectedZodiac] = useState([]);
+  const [selectedZodiac, setSelectedZodiac] = useState({value: null});
   const [isSearch, setIsSearch] = useState(true);
 
   //paging
@@ -69,8 +69,8 @@ function FamousPersonsTable() {
     if (
       search &&
       search.trim() === "" &&
-      selectedZodiac &&
-      selectedZodiac.trim() === ""
+      selectedZodiac.value &&
+      selectedZodiac.value.trim() === ""
     ) {
       getListFamousPerson(currentPage, limit).then((res) => {
         var temp = res.data.data.list;
@@ -97,7 +97,7 @@ function FamousPersonsTable() {
         setIsSearch(true);
 
         setPersonList(temp);
-        showPageListSearch(res);
+        showPageList(res);
       });
     }
   };
@@ -163,21 +163,6 @@ function FamousPersonsTable() {
       console.log("list page: " + list);
     }
   }
-  function showPageListSearch(res) {
-    var list = [];
-    var totalPageNumber = Math.ceil(res.data.data.total / 5);
-    console.log("total: ", totalPageNumber);
-
-    setTotalPage(totalPageNumber);
-
-    for (let i = 0; i < totalPageNumber; i++) {
-      list.push(i);
-    }
-    if (list.length >= 1) {
-      setSearchPageList(list);
-      console.log("list page: " + list);
-    }
-  }
 
   return (
     <>
@@ -200,10 +185,13 @@ function FamousPersonsTable() {
                         setSelectedZodiac(value);
                         setCurrentPage(1);
                       }}
-                      options={listZodiac.map((item) => ({
-                        value: item.id,
-                        label: item.name,
-                      }))}
+                      options={
+                        (
+                        listZodiac.map((item) => ({
+                          value: item.id,
+                          label: item.name,
+                        })))
+                      }
                       placeholder="Zodiac"
                     />
                   </Col>
@@ -249,10 +237,18 @@ function FamousPersonsTable() {
                 <Table className="table-hover">
                   <thead>
                     <tr>
-                      <th  style={{ color: "black" }}><strong>ID</strong></th>
-                      <th  style={{ color: "black" }}><strong>Name</strong></th>
-                      <th  style={{ color: "black" }}><strong>Gender</strong></th>
-                      <th  style={{ color: "black" }}><strong>Zodiac</strong></th>
+                      <th style={{ color: "black" }}>
+                        <strong>ID</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Name</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Gender</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Zodiac</strong>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -303,32 +299,18 @@ function FamousPersonsTable() {
           </PaginationLink>
         </PaginationItem>
 
-        {isSearch === false &&
-          pageList.map((page, index) => (
-            <PaginationItem active={page + 1 === currentPage}>
-              <PaginationLink
-                className="page"
-                key={index}
-                onClick={() => {
-                  changePage(page + 1);
-                }}>
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-        {isSearch === true &&
-          searchPageList.map((page, index) => (
-            <PaginationItem active={page + 1 === currentPage}>
-              <PaginationLink
-                className="page"
-                key={index}
-                onClick={() => {
-                  changePage(page + 1);
-                }}>
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
+        {pageList.map((page, index) => (
+          <PaginationItem active={page + 1 === currentPage}>
+            <PaginationLink
+              className="page"
+              key={index}
+              onClick={() => {
+                changePage(page + 1);
+              }}>
+              {page + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
 
         <PaginationItem disabled={currentPage === totalPage}>
           <PaginationLink

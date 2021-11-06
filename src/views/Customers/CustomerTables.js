@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import {
-  del,
-  getWithToken,
-  putWithToken,
-  postWithToken,
-} from "../../service/ReadAPI";
 import { Link, useHistory } from "react-router-dom";
 import Select from "react-select";
 import {
@@ -50,8 +44,7 @@ function CustomTable() {
 
   //Search
   const [search, setSearch] = useState(null);
-  const [states, setStates] = React.useState("");
-  const [singleSelect, setSingleSelect] = React.useState("");
+  const [states, setStates] = React.useState({value: null});
   const [isSearch, setIsSearch] = useState(true);
 
   //paging
@@ -67,7 +60,7 @@ function CustomTable() {
   const loadData = () => {
     console.log("search: ", search);
     console.log("status: ", states);
-    if (search && search.trim() === "" && states && states.trim() === "") {
+    if (search && search.trim() === "" && states.value && states.value.trim() === "") {
       getListCustomer(currentPage, limit)
         .then((res) => {
           var temp = res.data.data.list;
@@ -165,8 +158,9 @@ function CustomTable() {
                           value: "",
                           isDisabled: true,
                         },
-                        { value: true, label: "Banned" },
+                        { value: null, label: "All States" },
                         { value: false, label: "Active" },
+                        { value: true, label: "Banned" },
                       ]}
                       placeholder="Status"
                     />
@@ -200,12 +194,22 @@ function CustomTable() {
                 <Table className="table-hover">
                   <thead>
                     <tr>
-                      <th>Customer</th>
+                      <th style={{ color: "black" }}>
+                        <strong>Customer</strong>
+                      </th>
 
-                      <th>Gender</th>
-                      <th>Phone</th>
-                      <th>Date of birth</th>
-                      <th>Status</th>
+                      <th style={{ color: "black" }}>
+                        <strong>Gender</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Phone</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Date of birth</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Status</strong>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
