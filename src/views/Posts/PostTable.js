@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Select from "react-select";
-import { getWithToken } from "../../service/ReadAPI";
+import { get } from "../../service/ReadAPI";
 import moment from "moment";
 import "../../assets/css/customize.css";
+import {
+  getListPost,
+  getLsitPostSearchAndFilter,
+} from "../../service/post.service.js";
 
 // react-bootstrap components
 import {
@@ -39,164 +43,105 @@ import {
 } from "reactstrap";
 
 function PostTables() {
-  const [useListServiceShowPage, setUseListServiceShowPage] = useState([]);
+  const [listPost, setListPost] = useState([]);
+  //listZodiac
+  const [listZodiac, setListZodiac] = useState([]);
 
   //Search
   const [search, setSearch] = useState(null);
   const [states, setStates] = React.useState({ value: null });
-  const [isSearch, setIsSearch] = useState(true);
+  const [selectedZodiac, setSelectedZodiac] = React.useState({ value: null });
 
   //paging
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
   const [pageList, setPageList] = useState([]);
-  const [searchPageList, setSearchPageList] = useState([]);
   const [limit, setLimit] = useState(5);
+
   useEffect(() => {
-    getServiceList();
+    loadData();
+  }, [currentPage, limit, search, states, selectedZodiac]);
+
+  useEffect(() => {
+    getAllZodiac();
   }, []);
 
-  function getServiceList() {
-    console.log("search: ", search);
-    console.log("state: ", states);
-    if (
-      (search === null || search === "") &&
-      (states.value === null || states.value === "")
-    ) {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log(temp);
-          console.log("data: ", res.data);
-          setIsSearch(false);
-          setUseListServiceShowPage(temp);
-          showPageList(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else if (
-      (states.value === null || states.value === "") &&
-      (search !== null || search !== "")
-    ) {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&title=${search}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log(temp);
-          console.log("data: ", res.data);
-          setIsSearch(true);
-          setUseListServiceShowPage(temp);
-          showPageListSearch(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else if (
-      (states.value !== null || states.value !== "") &&
-      (search === null || search === "")
-    ) {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&is-approve=${states.value}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log(temp);
-          console.log("data: ", res.data);
-          setIsSearch(true);
-          setUseListServiceShowPage(temp);
-          showPageListSearch(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&title=${search}&is-approve=${states.value}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log(temp);
-          console.log("data: ", res.data);
-          setIsSearch(true);
-          setUseListServiceShowPage(temp);
-          showPageListSearch(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }
-  function changePage(crrPage) {
-    getWithToken(
-      `/api/v1/posts/admin?limit=${limit}&&page=${crrPage}`,
-      localStorage.getItem("token")
-    )
+  function getAllZodiac() {
+    get(`/api/v1/zodiacs?limit=12`)
       .then((res) => {
         var temp = res.data.data.list;
-        console.log("paging post: ", temp);
-
-        setUseListServiceShowPage(temp);
-        setCurrentPage(crrPage);
+        console.log("list zodiac: ", temp);
+        setListZodiac(temp);
       })
       .catch((err) => {
         console.log(err);
       });
   }
-  function changePageSearch(crrPage) {
+  const loadData = () => {
+    console.log("search: ", search);
+    console.log("states: ", states);
+    console.log("zodiacs: ", selectedZodiac);
     if (
-      (states.value === null || states.value === "") &&
-      (search !== null || search !== "")
+      search &&
+      search.trim() === "" &&
+      states.value &&
+      states.value.trim() === "" &&
+      selectedZodiac.value &&
+      selectedZodiac.value.trim() === ""
     ) {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${crrPage}&title=${search}`,
-        localStorage.getItem("token")
-      )
+      getListPost(currentPage, limit)
         .then((res) => {
           var temp = res.data.data.list;
-          console.log("paging with search post: ", temp);
+          console.log(temp);
+          console.log("data: ", res.data);
+          setListPost(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      getLsitPostSearchAndFilter(currentPage, limit, search, states.value, selectedZodiac.value)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          console.log("data: ", res.data);
+          setListPost(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
 
-          setUseListServiceShowPage(temp);
+  function changePage(crrPage) {
+    if (
+      search &&
+      search.trim() === "" &&
+      states.value &&
+      states.value.trim() === null &&
+      zodiacs.value &&
+      zodiacs.value.trim() === null
+    ) {
+      getListPost(crrPage, limit)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("paging post: ", temp);
+
+          setListPost(temp);
           setCurrentPage(crrPage);
         })
         .catch((err) => {
           console.log(err);
         });
-    } else if (
-      (states.value !== null || states.value !== "") &&
-      (search === null || search === "")
-    ) {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${crrPage}&is-approve=${states.value}`,
-        localStorage.getItem("token")
-      )
+    } else {
+      getLsitPostSearchAndFilter(crrPage, limit, search, states.value, selectedZodiac.value)
         .then((res) => {
           var temp = res.data.data.list;
-          console.log("paging with search post: ", temp);
+          console.log("paging post: ", temp);
 
-          setUseListServiceShowPage(temp);
-          setCurrentPage(crrPage);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }else {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${crrPage}&title=${search}&is-approve=${states.value}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log("paging with search post: ", temp);
-
-          setUseListServiceShowPage(temp);
+          setListPost(temp);
           setCurrentPage(crrPage);
         })
         .catch((err) => {
@@ -204,6 +149,7 @@ function PostTables() {
         });
     }
   }
+
   function showPageList(res) {
     var list = [];
     var totalPageNumber = Math.ceil(res.data.data.total / 5);
@@ -214,106 +160,9 @@ function PostTables() {
     for (let i = 0; i < totalPageNumber; i++) {
       list.push(i);
     }
-    if (list.length > 1) {
+    if (list.length >= 1) {
       setPageList(list);
       console.log("list page: " + list);
-    }
-  }
-  function showPageListSearch(res) {
-    var list = [];
-    var totalPageNumber = Math.ceil(res.data.data.total / 5);
-    console.log("total: ", totalPageNumber);
-
-    setTotalPage(totalPageNumber);
-
-    for (let i = 0; i < totalPageNumber; i++) {
-      list.push(i);
-    }
-    if (list.length >= 1) {
-      setSearchPageList(list);
-      console.log("list page: " + list);
-    }
-  }
-  function handleSelectSates(value) {
-    console.log("search: ", search);
-    console.log("state: ", states);
-    setStates(value);
-    if (
-      (search === null || search === "") &&
-      (value.value === null || value.value === "")
-    ) {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&&page=${currentPage}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log(temp);
-          console.log("data: ", res.data);
-          setIsSearch(false);
-          setUseListServiceShowPage(temp);
-          showPageList(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else if (
-      (value.value === null || value.value === "") &&
-      (search !== null || search !== "")
-    ) {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&title=${search}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log(temp);
-          console.log("data: ", res.data);
-          setIsSearch(true);
-          setCurrentPage(1);
-          setUseListServiceShowPage(temp);
-          showPageListSearch(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else if (
-      (value.value !== null || value.value !== "") &&
-      (search === null || search === "")
-    ) {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&is-approve=${value.value}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log(temp);
-          console.log("data: ", res.data);
-          setIsSearch(true);
-          setCurrentPage(1);
-          setUseListServiceShowPage(temp);
-          showPageListSearch(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      getWithToken(
-        `/api/v1/posts/admin?limit=${limit}&page=${currentPage}&title=${search}&is-approve=${value.value}`,
-        localStorage.getItem("token")
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log(temp);
-          console.log("data: ", res.data);
-          setIsSearch(true);
-          setCurrentPage(1);
-          setUseListServiceShowPage(temp);
-          showPageListSearch(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     }
   }
 
@@ -333,12 +182,13 @@ function PostTables() {
                       name="singleSelect"
                       value={states}
                       onChange={(value) => {
-                        handleSelectSates(value);
+                        setStates(value);
+                        setCurrentPage(1);
                       }}
                       options={[
                         {
                           value: "",
-                          
+                          disabled: true
                         },
                         { value: null, label: "All States" },
                         { value: true, label: "Approve" },
@@ -347,8 +197,25 @@ function PostTables() {
                       placeholder="Status"
                     />
                   </Col>
-                  <Col className="pl-3" md="1">
-                    <Button>Zodiac</Button>
+                  <Col className="pl-3" md="2">
+                  <Select
+                      className="react-select primary"
+                      classNamePrefix="react-select"
+                      name="singleSelect"
+                      value={selectedZodiac}
+                      onChange={(value) => {
+                        setSelectedZodiac(value);
+                        setCurrentPage(1);
+                      }}
+                      options={
+                        (
+                        listZodiac.map((item) => ({
+                          value: item.id,
+                          label: item.name,
+                        })))
+                      }
+                      placeholder="Zodiac"
+                    />
                   </Col>
                   <Col className="pl-2" md="3">
                     <InputGroup>
@@ -362,7 +229,8 @@ function PostTables() {
                         type="button"
                         variant="info"
                         onClick={() => {
-                          getServiceList();
+                          loadData();
+                          setCurrentPage(1);
                         }}>
                         <span className="btn-label">
                           <i className="fas fa-search"></i>
@@ -395,7 +263,7 @@ function PostTables() {
                     </tr>
                   </thead>
                   <tbody>
-                    {useListServiceShowPage.map((item, index) => {
+                    {listPost.map((item, index) => {
                       return (
                         <tr key={index}>
                           <td>
@@ -452,38 +320,20 @@ function PostTables() {
 
             onClick={() => {
               if (currentPage - 1 > 0) {
-                if (isSearch === false) {
-                  changePage(currentPage - 1);
-                } else {
-                  changePageSearch(currentPage - 1);
-                }
+                changePage(currentPage - 1);
               }
             }}>
             «
           </PaginationLink>
         </PaginationItem>
 
-        {isSearch === false &&
-          pageList.map((page, index) => (
+        {pageList.map((page, index) => (
             <PaginationItem active={page + 1 === currentPage}>
               <PaginationLink
                 className="page"
                 key={index}
                 onClick={() => {
                   changePage(page + 1);
-                }}>
-                {page + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
-        {isSearch === true &&
-          searchPageList.map((page, index) => (
-            <PaginationItem active={page + 1 === currentPage}>
-              <PaginationLink
-                className="page"
-                key={index}
-                onClick={() => {
-                  changePageSearch(page + 1);
                 }}>
                 {page + 1}
               </PaginationLink>
@@ -497,11 +347,7 @@ function PostTables() {
             //disable={numberPage === totalNumberPage ? true : false}
             onClick={() => {
               if (currentPage + 1 <= totalPage) {
-                if (isSearch === false) {
-                  changePage(currentPage + 1);
-                } else {
-                  changePageSearch(currentPage + 1);
-                }
+                changePage(currentPage + 1);
               }
             }}>
             »

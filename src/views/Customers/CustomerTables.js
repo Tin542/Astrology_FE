@@ -169,7 +169,7 @@ function CustomTable() {
                   <Col className="pl-2" md="3">
                     <InputGroup>
                       <Input
-                        placeholder="Search title..."
+                        placeholder="Search name..."
                         type="text"
                         value={search}
                         onChange={(e) => {
@@ -279,11 +279,7 @@ function CustomTable() {
 
             onClick={() => {
               if (currentPage - 1 > 0) {
-                if (isSearch === false) {
-                  changePage(currentPage - 1);
-                } else {
-                  changePageSearch(currentPage - 1);
-                }
+                changePage(currentPage - 1);
               }
             }}>
             «
@@ -310,11 +306,7 @@ function CustomTable() {
             //disable={numberPage === totalNumberPage ? true : false}
             onClick={() => {
               if (currentPage + 1 <= totalPage) {
-                if (isSearch === false) {
-                  changePage(currentPage + 1);
-                } else {
-                  changePageSearch(currentPage + 1);
-                }
+                changePage(currentPage + 1);
               }
             }}>
             »
