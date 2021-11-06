@@ -199,7 +199,7 @@ function FamousPersonsTable() {
                   <Col className="pl-2" md="3">
                     <InputGroup>
                       <Input
-                        placeholder="Search title..."
+                        placeholder="Search name..."
                         type="text"
                         value={search}
                         onChange={(e) => {
