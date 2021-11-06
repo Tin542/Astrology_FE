@@ -27,6 +27,7 @@ function DetailCustomer() {
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
   const [image, setImage] = useState("");
+  const [chart, setChart] = useState();
 
   const history = useHistory();
 
@@ -51,6 +52,7 @@ function DetailCustomer() {
         setLatitude(temp.latitude_of_birth);
         setLongitude(temp.longitude_of_birth);
         setImage(temp.url_image);
+        setChart(temp.natal_chart_url);
 
         console.log("name: ", temp.name);
       })
@@ -58,7 +60,7 @@ function DetailCustomer() {
         console.log(err);
       });
   }
-  
+
   function deleteByID() {
     console.log("delete: ", id);
 
@@ -104,65 +106,38 @@ function DetailCustomer() {
                         </Card.Title>
                       </Card.Header>
                     </Card.Header>
+                    <hr></hr>
                     <Card.Body>
-                      <Row>
-                        <Col className="pr-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">Name</strong>
-                            <Form.Control
-                              defaultValue={name}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-
-                        <Col className="pl-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Phone Number
-                            </strong>
-                            <Form.Control
-                              defaultValue={phone}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                        <Col className="pl-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">Gender</strong>
-                            <Form.Control
-                              defaultValue={gender}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col className="pr-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Latitude
-                            </strong>
-                            <Form.Control
-                              disabled
-                              defaultValue={latitude}
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-
-                        <Col className="px-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Longitude
-                            </strong>
-                            <Form.Control
-                              disabled
-                              defaultValue={longitude}
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Customer name</p>
+                        {name}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Phone number</p>
+                        {phone}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Gender</p>
+                        {gender}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Date of birth</p>
+                        {moment(dateOfBirth).format("DD-MM-YYYY HH:mm:ss")}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Latitude of birth</p>
+                        {latitude}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Longitude of birth</p>
+                        {longitude}
+                      </div>
                       <div className="clearfix"></div>
                     </Card.Body>
                   </Card>
@@ -178,14 +153,10 @@ function DetailCustomer() {
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>
-                    <p>
-                      <strong className="text-post-detail">
-                        Date of Birth:{" "}
-                      </strong>
-                      {moment(dateOfBirth).format("DD-MM-YYYY HH:mm:ss")}
-                    </p>
 
-                    
+                    <div className="post-detail-Image">
+                      <img alt="..." src={chart}></img>
+                    </div>
                     <hr></hr>
                     <Row
                       style={{

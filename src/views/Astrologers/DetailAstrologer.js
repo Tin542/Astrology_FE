@@ -144,6 +144,27 @@ function DetailAstrologer() {
                       </Row>
                       <Row>
                         <Col className="pr-1" md="4">
+                          <p>
+                            <strong className="text-post-detail">
+                              Date of Birth:{" "}
+                            </strong>
+                            <br />
+                            {moment(dateOfBirth).format("DD-MM-YYYY HH:mm:ss")}
+                          </p>
+                        </Col>
+                        <Col className="px-1" md="4">
+                          <p>
+                            <strong
+                              className="text-post-detail"
+                              style={{ color: "purple" }}>
+                              Followers:{" "}
+                            </strong>
+                            {flowwers}
+                          </p>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col className="pr-1" md="4">
                           <Form.Group>
                             <strong className="text-post-detail">
                               Latitude
@@ -198,21 +219,7 @@ function DetailAstrologer() {
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>
-                    <p>
-                      <strong className="text-post-detail">
-                        Date of Birth:{" "}
-                      </strong>
-                      {moment(dateOfBirth).format("DD-MM-YYYY HH:mm:ss")}
-                    </p>
 
-                    <p>
-                      <strong
-                        className="text-post-detail"
-                        style={{ color: "purple" }}>
-                        Followers:{" "}
-                      </strong>
-                      {flowwers}
-                    </p>
                     <hr></hr>
                     <Row
                       style={{
