@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import ReactDatetime from "react-datetime";
-import moment from "moment";
 import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
 import { Link, useHistory } from "react-router-dom";
 import Select from "react-select";
+import {
+  getListFamousPerson,
+  getListFamousPersonWithName,
+} from "../../service/famous-person.service.js";
 
 // react-bootstrap components
 import {
@@ -42,8 +44,8 @@ function FamousPersonsTable() {
   const [listZodiac, setListZodiac] = useState([]);
 
   //Search
-  const [search, setSearch] = useState(null);
-  const [singleSelect, setSingleSelect] = React.useState("");
+  const [search, setSearch] = useState("");
+  const [selectedZodiac, setSelectedZodiac] = useState([]);
   const [isSearch, setIsSearch] = useState(true);
 
   //paging
@@ -54,43 +56,51 @@ function FamousPersonsTable() {
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
-    getFamousPersonList();
+    loadData();
+  }, [currentPage, limit, search, selectedZodiac]);
+
+  useEffect(() => {
     getAllZodiac();
   }, []);
 
-  function getFamousPersonList() {
-    if (search === null || search === "") {
-      get(`/api/v1/famouspersons?limit=${limit}&&page=${currentPage}`)
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log("temp: ", temp);
-          var totalPageNumber = Math.ceil(res.data.data.total / 5);
-          setTotalPage(totalPageNumber);
-          setIsSearch(false);
-          setPersonList(temp);
-          showPageList(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+  const loadData = () => {
+    console.log("search: ", search);
+    console.log("zodiac: ", selectedZodiac);
+    if (
+      search &&
+      search.trim() === "" &&
+      selectedZodiac &&
+      selectedZodiac.trim() === ""
+    ) {
+      getListFamousPerson(currentPage, limit).then((res) => {
+        var temp = res.data.data.list;
+        console.log("temp: ", temp);
+        var totalPageNumber = Math.ceil(res.data.data.total / 5);
+        setTotalPage(totalPageNumber);
+        setIsSearch(false);
+
+        setPersonList(temp);
+
+        showPageList(res);
+      });
     } else {
-      get(
-        `/api/v1/famouspersons?limit=${limit}&&page=${currentPage}&name=${search}`
-      )
-        .then((res) => {
-          var temp = res.data.data.list;
-          console.log("temp: ", temp);
-          var totalPageNumber = Math.ceil(res.data.data.total / 5);
-          setTotalPage(totalPageNumber);
-          setIsSearch(true);
-          setPersonList(temp);
-          showPageListSearch(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      getListFamousPersonWithName(
+        currentPage,
+        limit,
+        search,
+        selectedZodiac.value
+      ).then((res) => {
+        var temp = res.data.data.list;
+        console.log("temp: ", temp);
+        var totalPageNumber = Math.ceil(res.data.data.total / 5);
+        setTotalPage(totalPageNumber);
+        setIsSearch(true);
+
+        setPersonList(temp);
+        showPageListSearch(res);
+      });
     }
-  }
+  };
   function getAllZodiac() {
     get(`/api/v1/zodiacs?limit=12`)
       .then((res) => {
@@ -103,32 +113,39 @@ function FamousPersonsTable() {
       });
   }
   function changePage(number) {
-    get(`/api/v1/famouspersons?limit=${limit}&&page=${number}`)
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log(temp);
-        setPersonList(temp);
-        setCurrentPage(number);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-  function changePageSearch(crrPage) {
-    getWithToken(
-      `/api/v1/famouspersons?limit=${limit}&&page=${crrPage}&name=${search}`,
-      localStorage.getItem("token")
-    )
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log("paging with search post: ", temp);
-
-        setUseListServiceShowPage(temp);
-        setCurrentPage(crrPage);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (
+      search &&
+      search.trim() === "" &&
+      selectedZodiac &&
+      selectedZodiac.trim() === ""
+    ) {
+      getListFamousPerson(number, limit)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          setPersonList(temp);
+          setCurrentPage(number);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      getListFamousPersonWithName(
+        currentPage,
+        limit,
+        search,
+        selectedZodiac.value
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          setPersonList(temp);
+          setCurrentPage(number);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
   function showPageList(res) {
     var list = [];
@@ -178,26 +195,11 @@ function FamousPersonsTable() {
                       className="react-select primary"
                       classNamePrefix="react-select"
                       name="singleSelect"
-                      value={singleSelect}
-                      onChange={(value) => setSingleSelect(value)}
-                      options={[
-                        {
-                          value: "",
-                          isDisabled: true,
-                        },
-                        { value: true, label: "Active" },
-                        { value: false, label: "Banned" },
-                      ]}
-                      placeholder="Status"
-                    />
-                  </Col>
-                  <Col className="pl-2" sm="2">
-                    <Select
-                      className="react-select primary"
-                      classNamePrefix="react-select"
-                      name="singleSelect"
-                      value={singleSelect}
-                      onChange={(value) => setSingleSelect(value)}
+                      value={selectedZodiac}
+                      onChange={(value) => {
+                        setSelectedZodiac(value);
+                        setCurrentPage(1);
+                      }}
                       options={listZodiac.map((item) => ({
                         value: item.id,
                         label: item.name,
@@ -212,13 +214,16 @@ function FamousPersonsTable() {
                         placeholder="Search title..."
                         type="text"
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}></Input>
+                        onChange={(e) => {
+                          setSearch(e.target.value);
+                          setCurrentPage(1);
+                        }}></Input>
                       <Button
                         className="btn-outline"
                         type="button"
                         variant="info"
                         onClick={() => {
-                          getFamousPersonList();
+                          loadData();
                         }}>
                         <span className="btn-label">
                           <i className="fas fa-search"></i>
@@ -228,7 +233,7 @@ function FamousPersonsTable() {
                   </Col>
                   <Col></Col>
 
-                  <Col className="pl-7">
+                  <Col className="pl-7" md="2">
                     <Link to={"/admin/famousperson-create"}>
                       <Button
                         className="btn-wd mr-1"
@@ -260,7 +265,7 @@ function FamousPersonsTable() {
                               localStorage.setItem("fmID", item.id);
                               localStorage.setItem(
                                 "fmGender",
-                                item.gender === 0 ? "Male" : "Female"
+                                item.gender ? "Male" : "Female"
                               );
                             }}>
                             <Link to={"/admin/famousperson-info"}>
@@ -268,7 +273,7 @@ function FamousPersonsTable() {
                             </Link>
                           </td>
                           <td onClick={() => {}}>
-                            {item.gender === 0 ? "Male" : "Female"}
+                            {item.gender ? "Male" : "Female"}
                           </td>
                           <td onClick={() => {}}>{item.zodiac_name}</td>
                         </tr>
@@ -291,11 +296,7 @@ function FamousPersonsTable() {
 
             onClick={() => {
               if (currentPage - 1 > 0) {
-                if (isSearch === false) {
-                  changePage(currentPage - 1);
-                } else {
-                  changePageSearch(currentPage - 1);
-                }
+                changePage(currentPage - 1);
               }
             }}>
             «
@@ -322,7 +323,7 @@ function FamousPersonsTable() {
                 className="page"
                 key={index}
                 onClick={() => {
-                  changePageSearch(page + 1);
+                  changePage(page + 1);
                 }}>
                 {page + 1}
               </PaginationLink>
@@ -336,11 +337,7 @@ function FamousPersonsTable() {
             //disable={numberPage === totalNumberPage ? true : false}
             onClick={() => {
               if (currentPage + 1 <= totalPage) {
-                if (isSearch === false) {
-                  changePage(currentPage + 1);
-                } else {
-                  changePageSearch(currentPage + 1);
-                }
+                changePage(currentPage + 1);
               }
             }}>
             »

@@ -151,20 +151,58 @@ function PostTables() {
       });
   }
   function changePageSearch(crrPage) {
-    getWithToken(
-      `/api/v1/posts/admin?limit=${limit}&page=${crrPage}&title=${search}`,
-      localStorage.getItem("token")
-    )
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log("paging with search post: ", temp);
+    if (
+      (states.value === null || states.value === "") &&
+      (search !== null || search !== "")
+    ) {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&page=${crrPage}&title=${search}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("paging with search post: ", temp);
 
-        setUseListServiceShowPage(temp);
-        setCurrentPage(crrPage);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+          setUseListServiceShowPage(temp);
+          setCurrentPage(crrPage);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (
+      (states.value !== null || states.value !== "") &&
+      (search === null || search === "")
+    ) {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&page=${crrPage}&is-approve=${states.value}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("paging with search post: ", temp);
+
+          setUseListServiceShowPage(temp);
+          setCurrentPage(crrPage);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }else {
+      getWithToken(
+        `/api/v1/posts/admin?limit=${limit}&page=${crrPage}&title=${search}&is-approve=${states.value}`,
+        localStorage.getItem("token")
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("paging with search post: ", temp);
+
+          setUseListServiceShowPage(temp);
+          setCurrentPage(crrPage);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
   function showPageList(res) {
     var list = [];
@@ -232,6 +270,7 @@ function PostTables() {
           console.log(temp);
           console.log("data: ", res.data);
           setIsSearch(true);
+          setCurrentPage(1);
           setUseListServiceShowPage(temp);
           showPageListSearch(res);
         })
@@ -251,6 +290,7 @@ function PostTables() {
           console.log(temp);
           console.log("data: ", res.data);
           setIsSearch(true);
+          setCurrentPage(1);
           setUseListServiceShowPage(temp);
           showPageListSearch(res);
         })
@@ -267,6 +307,7 @@ function PostTables() {
           console.log(temp);
           console.log("data: ", res.data);
           setIsSearch(true);
+          setCurrentPage(1);
           setUseListServiceShowPage(temp);
           showPageListSearch(res);
         })
@@ -297,7 +338,7 @@ function PostTables() {
                       options={[
                         {
                           value: "",
-                          isDisabled: true,
+                          
                         },
                         { value: null, label: "All States" },
                         { value: true, label: "Approve" },
@@ -361,6 +402,10 @@ function PostTables() {
                             <div className="postImage">
                               <img
                                 alt="..."
+                                style={{
+                                  width: 160,
+                                  height: 100,
+                                }}
                                 src={item.image_url}
                                 onClick={() => {
                                   localStorage.setItem("postId", item.id);

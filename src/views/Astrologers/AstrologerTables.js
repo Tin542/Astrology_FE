@@ -3,7 +3,12 @@ import moment from "moment";
 import Select from "react-select";
 import "../../assets/css/customize.css";
 import { Link, useHistory } from "react-router-dom";
-import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
+import {
+  del,
+  getWithToken,
+  putWithToken,
+  postWithToken,
+} from "../../service/ReadAPI";
 
 // react-bootstrap components
 import {
@@ -34,6 +39,9 @@ import {
 } from "reactstrap";
 
 function AstrologerTables() {
+  //tokens
+  const token = localStorage.getItem("token");
+
   //show page
   const [astrologerList, setAstrologerList] = useState([]);
 
@@ -49,17 +57,9 @@ function AstrologerTables() {
   const [image, setImage] = useState("");
   const [flowwers, setFollowers] = useState();
 
-  //detail modal
-  const [detailModal, setDetailModal] = useState(false);
-  const toggleDetailModal = () => setDetailModal(!detailModal);
-
-  //create modal
-  const [createModal, setCreateModal] = useState(false);
-  const toggleCreateModal = () => setCreateModal(!createModal);
-
   //Search
   const [search, setSearch] = useState(null);
-  const [singleSelect, setSingleSelect] = React.useState("");
+  const [states, setStates] = React.useState({ value: null });
   const [isSearch, setIsSearch] = useState(true);
 
   //paging
@@ -74,8 +74,17 @@ function AstrologerTables() {
   }, []);
 
   function getAstrologerList() {
-    if (search === null || search === "") {
-      get(`/api/v1/astrologers?limit=${limit}&&page=${currentPage}`)
+    console.log("search: ", search);
+    console.log("state: ", states);
+
+    if (
+      (search === null || search === "") &&
+      (states.value === null || states.value === "")
+    ) {
+      getWithToken(
+        `/api/v1/astrologers/admin?limit=${limit}&&page=${currentPage}`,
+        token
+      )
         .then((res) => {
           var temp = res.data.data.list;
           console.log("temp: ", temp);
@@ -88,9 +97,31 @@ function AstrologerTables() {
         .catch((err) => {
           console.log(err);
         });
-    } else {
-      get(
-        `/api/v1/astrologers?limit=${limit}&&page=${currentPage}&name=${search}`
+    } else if (
+      (states.value === null || states.value === "") &&
+      (search !== null || search !== "")
+    ) {
+      getWithToken(
+        `/api/v1/astrologers/admin?limit=${limit}&&page=${currentPage}&name=${search}`,
+        token
+      )
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log("temp: ", temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setIsSearch(true);
+          setAstrologerList(temp);
+          showPageListSearch(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }else if((states.value !== null || states.value !== "") &&
+    (search === null || search === "")){
+      getWithToken(
+        `/api/v1/astrologers/admin?limit=${limit}&&page=${currentPage}&name=${search}is-deleted=${states.value}`,
+        token
       )
         .then((res) => {
           var temp = res.data.data.list;
@@ -108,7 +139,10 @@ function AstrologerTables() {
   }
 
   function changePage(number) {
-    get(`/api/v1/astrologers?limit=${limit}&&page=${number}`)
+    getWithToken(
+      `/api/v1/astrologers/admin?limit=${limit}&&page=${number}`,
+      token
+    )
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
@@ -121,8 +155,8 @@ function AstrologerTables() {
   }
   function changePageSearch(crrPage) {
     getWithToken(
-      `/api/v1/astrologers?limit=${limit}&&page=${crrPage}&name=${search}`,
-      localStorage.getItem("token")
+      `/api/v1/astrologers/admin?limit=${limit}&&page=${crrPage}&name=${search}`,
+      token
     )
       .then((res) => {
         var temp = res.data.data.list;
@@ -169,58 +203,6 @@ function AstrologerTables() {
     }
   }
 
-  function createAstrologer() {
-    console.log("id: ", id);
-    console.log("name: ", name);
-    console.log("phone: ", phone);
-    console.log("gender: ", gender);
-    console.log("birth: ", dateOfBirth);
-    console.log("lat: ", latitude);
-    console.log("long: ", longitude);
-    console.log("image url: ", image);
-
-    postWithToken(
-      `/api/v1/astrologers`,
-      {
-        user_id: id,
-        name: name,
-        phone_number: phone,
-        status_payment: 0,
-        gender: gender,
-        description: description,
-        image_url: image,
-        latitude_of_birth: latitude,
-        longitude_of_birth: longitude,
-        time_of_birth: dateOfBirth,
-      },
-      localStorage.getItem("token")
-    )
-      .then((res) => {
-        if (res.data.code === 0) {
-          alert("Add success");
-          setCurrentPage(1);
-          getAstrologerList();
-        }
-        if (res.data.code === 7) {
-          console.log(res.data.msg);
-          alert(res.data.msg);
-        }
-      })
-      .catch((err) => {
-        alert(err);
-        console.log(err);
-      });
-  }
-
-  const closeBtn = (x) => (
-    <button
-      className="btn border border-danger"
-      style={{ color: "#B22222" }}
-      onClick={x}>
-      X
-    </button>
-  );
-
   return (
     <>
       <Container fluid>
@@ -237,13 +219,14 @@ function AstrologerTables() {
                       className="react-select primary"
                       classNamePrefix="react-select"
                       name="singleSelect"
-                      value={singleSelect}
-                      onChange={(value) => setSingleSelect(value)}
+                      value={states}
+                      onChange={(value) => setStates(value)}
                       options={[
                         {
                           value: "",
                           isDisabled: true,
                         },
+                        { value: null, label: "All States" },
                         { value: true, label: "Active" },
                         { value: false, label: "Banned" },
                       ]}
@@ -273,7 +256,7 @@ function AstrologerTables() {
                   </Col>
                   <Col></Col>
 
-                  <Col className="pl-7">
+                  <Col className="pl-9" md="2">
                     <Link to={"/admin/astrologer-create"}>
                       <Button
                         className="btn-wd mr-1"
@@ -289,11 +272,22 @@ function AstrologerTables() {
                 <Table className="table-hover">
                   <thead>
                     <tr>
-                      <th style={{ color: "black" }}><strong>Astrologer</strong></th>
+                      <th style={{ color: "black" }}>
+                        <strong>Astrologer</strong>
+                      </th>
 
-                      <th style={{ color: "black" }}><strong>Gender</strong></th>
-                      <th style={{ color: "black" }}><strong>Phone</strong></th>
-                      <th style={{ color: "black" }}><strong>Date of birth</strong></th>
+                      <th style={{ color: "black" }}>
+                        <strong>Gender</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Phone</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Date of birth</strong>
+                      </th>
+                      <th style={{ color: "black" }}>
+                        <strong>Status</strong>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -332,6 +326,13 @@ function AstrologerTables() {
                           <td>
                             {moment(item.time_of_birth).format(
                               "DD-MM-YYYY HH:mm:ss"
+                            )}
+                          </td>
+                          <td>
+                            {item.deleted_at == null ? (
+                              <b style={{ color: "green" }}>Active</b>
+                            ) : (
+                              <b style={{ color: "red" }}>Banned</b>
                             )}
                           </td>
                         </tr>
@@ -410,141 +411,6 @@ function AstrologerTables() {
           </PaginationLink>
         </PaginationItem>
       </Pagination>
-
-      {/* Modal Create */}
-      <Modal isOpen={createModal} toggle={toggleCreateModal}>
-        <ModalHeader
-          style={{ color: "#B22222" }}
-          close={closeBtn(toggleCreateModal)}
-          toggle={toggleCreateModal}>
-          Create Astrologer
-        </ModalHeader>
-        <ModalBody>
-          <Input
-            type="number"
-            name="id"
-            id="id"
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-            placeholder="User id"
-          />
-        </ModalBody>
-        <ModalBody>
-          <Input
-            type="text"
-            name="name"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
-          />
-        </ModalBody>
-        <ModalBody>
-          <Input
-            type="number"
-            name="phone"
-            id="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Phone number"
-          />
-        </ModalBody>
-        <ModalBody>
-          <Input
-            type="text"
-            name="description"
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description"
-          />
-        </ModalBody>
-        <ModalBody>
-          <fieldset>
-            <Form.Group>
-              <Row>
-                <Col sm="10">
-                  <Form.Check className="checkbox-inline">
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        value="true"
-                        id="gender"
-                        name="gender"
-                        type="radio"
-                        onChange={(e) =>
-                          setGender(e.target.value)
-                        }></Form.Check.Input>
-                      <span className="checkbox-inline"></span>
-                      Male
-                    </Form.Check.Label>
-                  </Form.Check>
-                  <Form.Check className="checkbox-inline">
-                    <Form.Check.Label>
-                      <Form.Check.Input
-                        value="false"
-                        id="gemder"
-                        name="gender"
-                        type="radio"
-                        onChange={(e) =>
-                          setGender(e.target.value)
-                        }></Form.Check.Input>
-                      <span className="checkbox-inline"></span>
-                      Female
-                    </Form.Check.Label>
-                  </Form.Check>
-                </Col>
-              </Row>
-            </Form.Group>
-          </fieldset>
-        </ModalBody>
-
-        <ModalBody>
-          <Input
-            type="text"
-            onFocus={(e) => {
-              e.currentTarget.type = "datetime-local";
-              e.currentTarget.focus();
-            }}
-            name="dateOfBirth"
-            id="dateOfBirth"
-            value={dateOfBirth}
-            onChange={(e) => setDateOfBirth(e.target.value)}
-            placeholder="Date of birth"
-          />
-        </ModalBody>
-        <ModalBody>
-          <Input
-            type="number"
-            name="latitude"
-            id="latitude"
-            value={latitude}
-            onChange={(e) => setLatitude(e.target.value)}
-            placeholder="Latitude"
-          />
-        </ModalBody>
-        <ModalBody>
-          <Input
-            type="number"
-            name="longitude"
-            id="longitude"
-            value={longitude}
-            onChange={(e) => setLongitude(e.target.value)}
-            placeholder="Longitude"
-          />
-        </ModalBody>
-
-        <ModalFooter>
-          <Button
-            className="btn-wd"
-            variant="info"
-            onClick={() => {
-              createAstrologer();
-              setCreateModal(false);
-            }}>
-            Create
-          </Button>
-        </ModalFooter>
-      </Modal>
     </>
   );
 }
