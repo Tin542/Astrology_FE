@@ -198,7 +198,7 @@ function DetailCustomer() {
                         onClick={() => {
                           setDeleteModal(true);
                         }}>
-                        Delete
+                        Ban
                       </Button>
                     </Row>
                   </Card.Footer>
@@ -215,7 +215,7 @@ function DetailCustomer() {
           toggle={toggleDeleteModal}>
           Are you sure?
         </ModalHeader>
-        <ModalBody>Do you want to delete this Astrologer</ModalBody>
+        <ModalBody>Do you want to ban this user</ModalBody>
         <ModalFooter>
           <Button
             color="danger"

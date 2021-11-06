@@ -249,10 +249,10 @@ function FamousPersonsTable() {
                 <Table className="table-hover">
                   <thead>
                     <tr>
-                      <th>ID</th>
-                      <th>Name</th>
-                      <th>Gender</th>
-                      <th>Zodiac</th>
+                      <th  style={{ color: "black" }}><strong>ID</strong></th>
+                      <th  style={{ color: "black" }}><strong>Name</strong></th>
+                      <th  style={{ color: "black" }}><strong>Gender</strong></th>
+                      <th  style={{ color: "black" }}><strong>Zodiac</strong></th>
                     </tr>
                   </thead>
                   <tbody>
