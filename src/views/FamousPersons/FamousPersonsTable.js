@@ -261,7 +261,7 @@ function FamousPersonsTable() {
                               localStorage.setItem("fmID", item.id);
                               localStorage.setItem(
                                 "fmGender",
-                                item.gender ? "Male" : "Female"
+                                item.gender
                               );
                             }}>
                             <Link to={"/admin/famousperson-info"}>
