@@ -4,12 +4,6 @@ import Select from "react-select";
 import "../../assets/css/customize.css";
 import { Link, useHistory } from "react-router-dom";
 import {
-  del,
-  getWithToken,
-  putWithToken,
-  postWithToken,
-} from "../../service/ReadAPI";
-import {
   getListAstrologer,
   getLsitAstrologerSearchAndFilter,
 } from "../../service/astrologer.service.js";
