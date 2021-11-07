@@ -8,8 +8,7 @@ import {
   postWithToken,
   delWithToken,
 } from "../../service/ReadAPI";
-import Moment from "react-moment";
-import moment from "moment";
+import { getListRole, getLsitRoleSearch } from "../../service/role.service.js";
 
 // react-bootstrap components
 import {
@@ -38,15 +37,10 @@ import {
   PaginationItem,
   PaginationLink,
 } from "reactstrap";
-import Popup from "components/Popup/Popup";
-import axios, { Axios } from "axios";
 
 function UserRole() {
   const token = localStorage.getItem("token");
-  useEffect(() => {
-    getRoleList();
-    setCurrentPage(1);
-  }, []);
+  
   const [role, setRole] = useState([]);
   const [userId, setUserId] = useState("");
   const [roleId, setRoleId] = useState("");
@@ -59,12 +53,18 @@ function UserRole() {
 
   const toggleCreateModal = () => setCreateModal(!createModal);
 
+  //search
+  const [search, setSearch] = useState("");
+
   //paging
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
   const [pageList, setPageList] = useState([]);
   const [limit, setLimit] = useState(5);
-
+  useEffect(() => {
+    loadData();
+    
+  }, [currentPage, limit, search]);
   const mapNumToRole = (num) => {
     let Role = {
       888: "Customer",
@@ -135,6 +135,36 @@ function UserRole() {
       });
   };
 
+  const loadData = () => {
+    if (search && search.trim === "") {
+      getListRole(currentPage, limit)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setRole(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      getLsitRoleSearch(currentPage, limit, search)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setRole(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   function getRoleList() {
     getWithToken(`/api/v1/userroles?limit=${limit}&page=${currentPage}`, token)
       .then((res) => {
@@ -151,16 +181,29 @@ function UserRole() {
   }
 
   function changePage(number) {
-    getWithToken(`/api/v1/userroles?limit=${limit}&page=${number}`, token)
-      .then((res) => {
-        var temp1 = res.data.data.list;
-        console.log(temp1);
-        setRole(temp1);
-        setCurrentPage(number);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (search && search.trim() === "") {
+      getListRole(number, limit)
+        .then((res) => {
+          var temp1 = res.data.data.list;
+          console.log(temp1);
+          setRole(temp1);
+          setCurrentPage(number);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      getLsitRoleSearch(number, limit, search)
+        .then((res) => {
+          var temp1 = res.data.data.list;
+          console.log(temp1);
+          setRole(temp1);
+          setCurrentPage(number);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
 
   function showPageList(res) {
@@ -187,20 +230,47 @@ function UserRole() {
           <Col md="12">
             <Card className="table-big-boy">
               <Card.Header>
-                <Button
-                  className="btn-wd mr-1"
-                  variant="info"
-                  type="button"
-                  onClick={() => {
-                    setUserId(null);
-                    setRoleId(null);
-                    setCreateModal(true);
-                  }}>
-                  Add New Role For User
-                </Button>
-                <br></br>
               </Card.Header>
               <Card.Body className="table-full-width">
+                <Row>
+                  <Col className="pl-4" sm="3">
+                    <InputGroup>
+                      <Input
+                        placeholder="Search user id..."
+                        type="text"
+                        value={search}
+                        onChange={(e) => {
+                          setSearch(e.target.value);
+                          setCurrentPage(1);
+                        }}></Input>
+                      <Button
+                        className="btn-outline"
+                        type="button"
+                        variant="info"
+                        onClick={() => {
+                          loadData();
+                        }}>
+                        <span className="btn-label">
+                          <i className="fas fa-search"></i>
+                        </span>
+                      </Button>
+                    </InputGroup>
+                  </Col>
+                  <Col></Col>
+                  <Col className="pl-8" md="3">
+                    <Button
+                      className="btn-wd mr-1"
+                      variant="info"
+                      type="button"
+                      onClick={() => {
+                        setUserId(null);
+                        setRoleId(null);
+                        setCreateModal(true);
+                      }}>
+                      Add New Role For User
+                    </Button>
+                  </Col>
+                </Row>
                 <Table className="table-hover">
                   <thead>
                     <tr>

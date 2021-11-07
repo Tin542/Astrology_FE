@@ -95,23 +95,10 @@ function CategoryTable() {
         });
     }
   };
-  function getCategoryList() {
-    get(`/api/v1/categories?limit=${limit}&&page=${currentPage}`)
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log(temp);
-        var totalPageNumber = Math.ceil(res.data.data.total / 5);
-        setTotalPage(totalPageNumber);
-        setUseListCategoryShowPage(temp);
-        showPageList(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
 
   function changePage(number) {
-    get(`/api/v1/categories?limit=${limit}&&page=${number}`)
+    if(search && search.trim === ""){
+      getListCategory(number, limit)
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
@@ -121,6 +108,19 @@ function CategoryTable() {
       .catch((err) => {
         console.log(err);
       });
+    }else{
+      getLsitCategorySearch(number, limit, search)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log(temp);
+        setUseListCategoryShowPage(temp);
+        setCurrentPage(number);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+   
   }
 
   function showPageList(res) {
