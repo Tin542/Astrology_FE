@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
-
-import Moment from "react-moment";
-import moment from "moment";
+import {
+  getListCategory,
+  getLsitCategorySearch,
+} from "../../service/category.service.js";
 
 // react-bootstrap components
 import {
@@ -52,6 +53,9 @@ function CategoryTable() {
   const [modalCreate, setModalCreate] = useState(false);
   const toggleCreateModal = () => setModalCreate(!modalCreate);
 
+  //search category
+  const [search, setSearch] = useState("");
+
   //paging
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState();
@@ -59,9 +63,38 @@ function CategoryTable() {
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
-    getCategoryList();
-  }, []);
+    loadData();
+  }, [currentPage, limit, search]);
 
+  const loadData = () => {
+    if (search && search.trim === "") {
+      getListCategory(currentPage, limit)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setUseListCategoryShowPage(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      getLsitCategorySearch(currentPage, limit, search)
+        .then((res) => {
+          var temp = res.data.data.list;
+          console.log(temp);
+          var totalPageNumber = Math.ceil(res.data.data.total / 5);
+          setTotalPage(totalPageNumber);
+          setUseListCategoryShowPage(temp);
+          showPageList(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
   function getCategoryList() {
     get(`/api/v1/categories?limit=${limit}&&page=${currentPage}`)
       .then((res) => {
@@ -115,7 +148,7 @@ function CategoryTable() {
         if (res.data.code === 0) {
           alert("delete success");
           setCurrentPage(1);
-          getCategoryList();
+          loadData();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -140,7 +173,7 @@ function CategoryTable() {
         if (res.data.code === 0) {
           alert("Add success");
           setCurrentPage(1);
-          getCategoryList();
+          loadData();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -166,7 +199,7 @@ function CategoryTable() {
         if (res.data.code === 0) {
           alert("Edit success");
           setCurrentPage(1);
-          getCategoryList();
+          loadData();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -193,23 +226,48 @@ function CategoryTable() {
       <Container fluid>
         <Row>
           <Col md="12">
-            <Card className="table-big-boy">
+            <Card className="regular-table-with-color">
               <Card.Header>
-                <Card.Title as="h4">
-                  <Button
-                    className="btn-wd mr-1"
-                    variant="info"
-                    type="button"
-                    onClick={() => {
-                      setModalCreate(true);
-                    }}>
-                    Add Category
-                  </Button>
-                </Card.Title>
-
-                <br></br>
+                <Card.Title as="h4"></Card.Title>
               </Card.Header>
-              <Card.Body className="table-full-width">
+              <Card.Body className="table-responsive p-0">
+                <Row>
+                  <Col className="pl-4" sm="3">
+                    <InputGroup>
+                      <Input
+                        placeholder="Search name..."
+                        type="text"
+                        value={search}
+                        onChange={(e) => {
+                          setSearch(e.target.value);
+                          setCurrentPage(1);
+                        }}></Input>
+                      <Button
+                        className="btn-outline"
+                        type="button"
+                        variant="info"
+                        onClick={() => {
+                          loadData();
+                        }}>
+                        <span className="btn-label">
+                          <i className="fas fa-search"></i>
+                        </span>
+                      </Button>
+                    </InputGroup>
+                  </Col>
+                  <Col></Col>
+                  <Col className="pl-9" md="2">
+                    <Button
+                      className="btn-wd mr-1"
+                      variant="info"
+                      type="button"
+                      onClick={() => {
+                        setModalCreate(true);
+                      }}>
+                      Add Category
+                    </Button>
+                  </Col>
+                </Row>
                 <Table className="table-hover">
                   <thead>
                     <tr>
