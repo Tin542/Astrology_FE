@@ -96,7 +96,7 @@ function UserRole() {
         if (res.data.code === 0) {
           alert("delete success");
           setCurrentPage(1);
-          getRoleList();
+          loadData();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -122,7 +122,7 @@ function UserRole() {
       .then((res) => {
         if (res.data.code === 0) {
           alert("Add success");
-          getRoleList();
+          loadData();
         }
         if (res.data.code === 7) {
           console.log(res.data.msg);
@@ -164,21 +164,6 @@ function UserRole() {
         });
     }
   };
-
-  function getRoleList() {
-    getWithToken(`/api/v1/userroles?limit=${limit}&page=${currentPage}`, token)
-      .then((res) => {
-        var temp = res.data.data.list;
-        console.log(temp);
-        var totalPageNumber = Math.ceil(res.data.data.total / 5);
-        setTotalPage(totalPageNumber);
-        setRole(temp);
-        showPageList(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
 
   function changePage(number) {
     if (search && search.trim() === "") {

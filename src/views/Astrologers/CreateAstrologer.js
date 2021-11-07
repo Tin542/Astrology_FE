@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import TagsInput from "components/TagsInput/TagsInput.js";
-import moment from "moment";
+
 import { Link, useHistory } from "react-router-dom";
 import {
   del,
