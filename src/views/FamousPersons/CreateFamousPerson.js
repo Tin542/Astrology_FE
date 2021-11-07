@@ -1,74 +1,34 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import TagsInput from "components/TagsInput/TagsInput.js";
 import moment from "moment";
 import { Link, useHistory } from "react-router-dom";
-import Dropzone from "dropzone";
-import {
-  del,
-  postWithToken,
-  get,
-  put,
-  getWithToken,
-} from "../../service/ReadAPI";
+import { postWithToken, get } from "../../service/ReadAPI";
 // react-bootstrap components
-import {
-  Badge,
-  Button,
-  Card,
-  Form,
-  InputGroup,
-  Navbar,
-  Nav,
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
+import { Button, Card, Form, Container, Row, Col } from "react-bootstrap";
 import { Input, FormGroup } from "reactstrap";
-Dropzone.autoDiscover = false;
+import { storage } from "../../firebase/firebaseConfig";
+
 function CreateAstrologer() {
   const [zodiacId, setZodiacId] = useState(null);
   const [name, setName] = useState(null);
   const [description, setDescription] = useState(null);
-  const [image, setImage] = useState(
-    "https://image.lag.vn/upload/news/21/08/16/236599595_1425452954506376_3110056547255537769_n_WOLP.jpg"
-  );
+  const [image, setImage] = useState(null);
+  const [gender, setGender] = useState(false);
+  const [birth, setBirth] = useState(null);
 
   const [listZodiac, setListZodiac] = useState([]);
   const [comboboxError, setComboboxError] = useState(null);
   const [emptyNameError, setEmptyNameError] = useState(null);
   const [desError, setDesError] = useState(null);
+  const [birthError, setBirthError] = useState(null);
 
   const history = useHistory();
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     getAllZodiac();
-
-    let currentSingleFile = undefined;
-    new Dropzone(document.getElementById("dropzone-single"), {
-      url: "/",
-      thumbnailWidth: null,
-      thumbnailHeight: null,
-      previewsContainer:
-        document.getElementsByClassName("dz-preview-single")[0],
-      previewTemplate:
-        document.getElementsByClassName("dz-preview-single")[0].innerHTML,
-      maxFiles: 1,
-      acceptedFiles: "image/*",
-      init: function () {
-        this.on("addedfile", function (file) {
-          if (currentSingleFile) {
-            this.removeFile(currentSingleFile);
-          }
-          currentSingleFile = file;
-        });
-      },
-    });
   }, []);
-
-  
 
   function getAllZodiac() {
     get(`/api/v1/zodiacs?limit=12`)
@@ -81,7 +41,67 @@ function CreateAstrologer() {
         console.log(err);
       });
   }
-  
+
+  const [loading, setLoading] = useState(false);
+
+  const uploadImage = async (e) => {
+    console.log("test image: ", e.target.files[0]);
+    if (e.target.files[0]) {
+      const data = e.target.files[0];
+      const uploadTask = storage.ref(`famous_person/${data.name}`).put(data);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setProgress(progress);
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref("famous_person")
+            .child(data.name)
+            .getDownloadURL()
+            .then((url) => {
+              setImage(url);
+            });
+        }
+      );
+    }
+  };
+  console.log("image: ", image);
+  function handleCreate() {
+    console.log("create image: ", image);
+    postWithToken(
+      `/api/v1/famouspersons`,
+      {
+        name: name,
+        description: description,
+        zodiac_id: zodiacId.value,
+        url_image: image,
+        gender: gender,
+        date_of_birth: birth.toString(),
+      },
+      localStorage.getItem("token")
+    )
+      .then((res) => {
+        if (res.data.code === 0) {
+          alert("Create success");
+          history.push("/admin/famousperson-table");
+        }
+        if (res.data.code === 7) {
+          console.log(res.data.msg);
+          alert(res.data.msg);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+        console.log(err);
+      });
+  }
   return (
     <>
       <Container fluid>
@@ -131,6 +151,26 @@ function CreateAstrologer() {
                             {emptyNameError}
                           </Form.Group>
                         </Col>
+                        <Col className="pl-1" md="4">
+                          <Form.Group>
+                            <label className="text-post-detail">
+                              Date Of Birth
+                            </label>
+                            <Input
+                              type="text"
+                              onFocus={(e) => {
+                                e.currentTarget.type = "datetime-local";
+                                e.currentTarget.focus();
+                              }}
+                              name="dateOfBirth"
+                              id="dateOfBirth"
+                              value={birth}
+                              onChange={(e) => setBirth(e.target.value)}
+                              placeholder="Date of birth"
+                            />
+                            {birthError}
+                          </Form.Group>
+                        </Col>
                       </Row>
 
                       <Row>
@@ -172,7 +212,7 @@ function CreateAstrologer() {
                         <Col md="12">
                           <div class="form-group">
                             <label className="text-post-detail">
-                              More About Astrologer
+                              More About Famous person
                             </label>
                             <textarea
                               class="form-control"
@@ -189,10 +229,10 @@ function CreateAstrologer() {
                       </Row>
                       <Button
                         onClick={() => {
-                          if (userId === null) {
+                          if (zodiacId === null) {
                             setComboboxError(
                               <small className="text-danger">
-                                Plese select user-id
+                                Please select zodiac
                               </small>
                             );
                           } else {
@@ -216,7 +256,7 @@ function CreateAstrologer() {
                           } else {
                             setDesError(null);
                           }
-                          
+                          handleCreate();
                         }}>
                         Create Astrologer
                       </Button>
@@ -229,35 +269,15 @@ function CreateAstrologer() {
                 <Card className="card-user">
                   <Card.Header className="no-padding"></Card.Header>
                   <Card.Body>
-                  <div
-                    className="dropzone dropzone-single mb-3"
-                    id="dropzone-single"
-                  >
-                    <div className="fallback">
-                      <div className="custom-file">
-                        <input
-                          className="custom-file-input"
-                          id="projectCoverUploads"
-                          type="file"
-                        />
-                        <label
-                          className="custom-file-label"
-                          htmlFor="projectCoverUploads"
-                        >
-                          Choose file
-                        </label>
-                      </div>
-                    </div>
-                    <div className="dz-preview dz-preview-single">
-                      <div className="dz-preview-cover">
-                        <img
-                          alt="..."
-                          className="dz-preview-img"
-                          data-dz-thumbnail=""
-                        />
-                      </div>
-                    </div>
-                  </div>
+                    <Form.Group className="mb-1 ml-5">
+                      <Form.Label>Image</Form.Label>
+                      <Form.Control type="file" onChange={uploadImage} />
+                      {loading ? (
+                        <h3>Loading...</h3>
+                      ) : (
+                        <img src={image} style={{ width: "200px" }} />
+                      )}
+                    </Form.Group>
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>

@@ -28,7 +28,7 @@ import {
 function DetailFamous() {
   //Astrologer detail
   const id = localStorage.getItem("fmID");
-  const gender = localStorage.getItem("fmGender");
+
   const [name, setName] = useState();
   const [zodiac, setZodiac] = useState();
   const [edtGender, setEdtGender] = useState(0);
@@ -39,6 +39,7 @@ function DetailFamous() {
   const [listZodiac, setListZodiac] = useState([]);
 
   const history = useHistory();
+  const [progress, setProgress] = useState(0);
 
   //delete modal
   const [deleteModal, setDeleteModal] = useState(false);
@@ -48,7 +49,36 @@ function DetailFamous() {
     getFamousPersonByID(id);
     getAllZodiac();
   }, []);
+  const [loading, setLoading] = useState(false);
 
+  const uploadImage = async (e) => {
+    console.log("test image: ", e.target.files[0]);
+    if (e.target.files[0]) {
+      const data = e.target.files[0];
+      const uploadTask = storage.ref(`famous_person/${data.name}`).put(data);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setProgress(progress);
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref("famous_person")
+            .child(data.name)
+            .getDownloadURL()
+            .then((url) => {
+              setImage(url);
+            });
+        }
+      );
+    }
+  };
   function getFamousPersonByID(Id) {
     console.log("id: ", Id);
     get(`/api/v1/famouspersons/${Id}`)
@@ -194,8 +224,8 @@ function DetailFamous() {
                               type="select"
                               value={edtGender}
                               onChange={(e) => setEdtGender(e.target.value)}>
-                              <option value="0">Male</option>
-                              <option value="1">Female</option>
+                              <option value={true}>Male</option>
+                              <option value={false}>Female</option>
                             </Input>
                           </Form.Group>
                         </Col>
@@ -225,9 +255,13 @@ function DetailFamous() {
                 <Card className="card-user">
                   <Card.Header className="no-padding"></Card.Header>
                   <Card.Body>
-                    <div className="post-detail-Image">
-                      <img alt="..." src={image}></img>
-                    </div>
+                  <Form.Label>Image</Form.Label>
+                      <Form.Control type="file" onChange={uploadImage} />
+                      {loading ? (
+                        <h3>Loading...</h3>
+                      ) : (
+                        <img src={image} style={{ width: "300px" }} />
+                      )}
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>
@@ -269,10 +303,10 @@ function DetailFamous() {
           toggle={toggleDeleteModal}>
           Are you sure?
         </ModalHeader>
-        <ModalBody>Do you want to delete this Astrologer</ModalBody>
+        <ModalBody>Do you want to delete this Person</ModalBody>
         <ModalFooter>
           <Button
-            color="danger"
+            variant="danger"
             onClick={() => {
               deleteByID();
             }}>
