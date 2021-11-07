@@ -30,6 +30,7 @@ function DetailAstrologer() {
   const [description, setDescription] = useState();
   const [image, setImage] = useState("");
   const [flowwers, setFollowers] = useState();
+  const [chart, setChart] = useState();
 
   const history = useHistory();
 
@@ -57,6 +58,7 @@ function DetailAstrologer() {
         setDescription(temp.description);
         setImage(temp.image_url);
         setFollowers(temp.followers_count);
+        setChart(temp.natal_chart_url);
 
         console.log("name: ", temp.name);
         console.log("gender: ", gender);
@@ -219,7 +221,9 @@ function DetailAstrologer() {
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>
-
+                    <div className="post-detail-Image">
+                      <img alt="..." src={chart}></img>
+                    </div>
                     <hr></hr>
                     <Row
                       style={{
@@ -249,7 +253,7 @@ function DetailAstrologer() {
           toggle={toggleDeleteModal}>
           Are you sure?
         </ModalHeader>
-        <ModalBody>Do you want to delete this Astrologer</ModalBody>
+        <ModalBody>Do you want to ban this Astrologer</ModalBody>
         <ModalFooter>
           <Button
             color="danger"
@@ -257,7 +261,7 @@ function DetailAstrologer() {
               deleteByID();
               setDeleteModal(false);
             }}>
-            Delete
+            Ban
           </Button>{" "}
           <Button color="secondary" onClick={toggleDeleteModal}>
             Cancel

@@ -411,19 +411,19 @@ function Dashboard() {
                 <ListGroup className="list my--3" flush>
                   <h5>Backend</h5>
                   <ProgressBar>
-                    <ProgressBar max="100" min="0" now="90" variant="success">
+                    <ProgressBar max="100" min="0" now="99" variant="success">
                       <span className="sr-only">60% Complete</span>
                     </ProgressBar>
                   </ProgressBar>
                   <h5>Mobile</h5>
                   <ProgressBar>
-                    <ProgressBar max="100" min="0" now="95" variant="success">
+                    <ProgressBar max="100" min="0" now="99" variant="success">
                       <span className="sr-only">60% Complete</span>
                     </ProgressBar>
                   </ProgressBar>
                   <h5>Frontend</h5>
                   <ProgressBar>
-                    <ProgressBar max="100" min="0" now="85" variant="success">
+                    <ProgressBar max="100" min="0" now="98" variant="success">
                       <span className="sr-only">60% Complete</span>
                     </ProgressBar>
                   </ProgressBar>

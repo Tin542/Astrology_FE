@@ -258,7 +258,7 @@ function CreateAstrologer() {
                           }
                           handleCreate();
                         }}>
-                        Create Astrologer
+                        Create Famous Person
                       </Button>
                       <div className="clearfix"></div>
                     </Card.Body>

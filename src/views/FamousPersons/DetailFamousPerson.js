@@ -35,6 +35,7 @@ function DetailFamous() {
   const [zodiacID, setZodiacID] = useState();
   const [description, setDescription] = useState();
   const [image, setImage] = useState("");
+  const [birth, setBirth] = useState("");
 
   const [listZodiac, setListZodiac] = useState([]);
 
@@ -92,6 +93,8 @@ function DetailFamous() {
         setDescription(temp.description);
         setImage(temp.url_image);
         setEdtGender(temp.gender);
+        setBirth(temp.date_of_birth);
+        setEdtGender(temp.gender);
 
         console.log("name: ", temp.name);
       })
@@ -118,7 +121,6 @@ function DetailFamous() {
     console.log("edt Image: ", image);
     console.log("edt Gender: ", edtGender);
 
-    
     putWithToken(
       `/api/v1/famouspersons/${id}`,
       {
@@ -127,6 +129,7 @@ function DetailFamous() {
         zodiac_id: zodiacID,
         gender: edtGender,
         url_image: image,
+        date_of_birth: birth,
       },
       localStorage.getItem("token")
     )
@@ -219,18 +222,43 @@ function DetailFamous() {
                         </Col>
                         <Col className="pl-1" md="4">
                           <Form.Group>
-                            <strong className="text-post-detail">Gender</strong>
+                            <label className="text-post-detail">
+                              Date Of Birth
+                            </label>
                             <Input
-                              type="select"
-                              value={edtGender}
-                              onChange={(e) => setEdtGender(e.target.value)}>
-                              <option value={true}>Male</option>
-                              <option value={false}>Female</option>
-                            </Input>
+                              type="text"
+                              onFocus={(e) => {
+                                e.currentTarget.type = "datetime-local";
+                                e.currentTarget.focus();
+                              }}
+                              name="dateOfBirth"
+                              id="dateOfBirth"
+                              defaultValue={birth}
+                              value={birth}
+                              onChange={(e) => setBirth(e.target.value)}
+                              placeholder="Date of birth"
+                            />
                           </Form.Group>
                         </Col>
                       </Row>
-                      <Row></Row>
+                      <Row>
+                        <Col className="pl-3" md="4">
+                          <Form.Group>
+                            <FormGroup>
+                              <strong className="text-post-detail">
+                                Gender
+                              </strong>
+                              <Input
+                                type="select"
+                                value={edtGender}
+                                onChange={(e) => setEdtGender(e.target.value)}>
+                                <option value={true}>Male</option>
+                                <option value={false}>Female</option>
+                              </Input>
+                            </FormGroup>
+                          </Form.Group>
+                        </Col>
+                      </Row>
                       <Row>
                         <Col md="12">
                           <div class="form-group">
@@ -255,13 +283,13 @@ function DetailFamous() {
                 <Card className="card-user">
                   <Card.Header className="no-padding"></Card.Header>
                   <Card.Body>
-                  <Form.Label>Image</Form.Label>
-                      <Form.Control type="file" onChange={uploadImage} />
-                      {loading ? (
-                        <h3>Loading...</h3>
-                      ) : (
-                        <img src={image} style={{ width: "300px" }} />
-                      )}
+                    <Form.Label>Image</Form.Label>
+                    <Form.Control type="file" onChange={uploadImage} />
+                    {loading ? (
+                      <h3>Loading...</h3>
+                    ) : (
+                      <img src={image} style={{ width: "300px" }} />
+                    )}
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>

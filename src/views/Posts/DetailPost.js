@@ -128,7 +128,7 @@ function DetailPost() {
     ).then((res) => {
       if (res.data.code === 0) {
         alert("approve success");
-        getPostByID(id);
+        history.push("/admin/post-table");
       }
       if (res.data.code === 7) {
         console.log(res.data.msg);

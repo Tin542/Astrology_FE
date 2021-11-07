@@ -194,7 +194,7 @@ function DetailCustomer() {
               deleteByID();
               setDeleteModal(false);
             }}>
-            Delete
+            Ban
           </Button>{" "}
           <Button color="secondary" onClick={toggleDeleteModal}>
             Cancel
