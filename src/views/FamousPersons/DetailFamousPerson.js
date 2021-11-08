@@ -233,8 +233,8 @@ function DetailFamous() {
                               }}
                               name="dateOfBirth"
                               id="dateOfBirth"
-                              defaultValue={birth}
-                              value={birth}
+                              defaultValue={moment(birth).format("DD-MM-YYYY")}
+                              value={moment(birth).format("DD-MM-YYYY")}
                               onChange={(e) => setBirth(e.target.value)}
                               placeholder="Date of birth"
                             />
@@ -269,7 +269,10 @@ function DetailFamous() {
                               class="form-control"
                               id="exampleFormControlTextarea1"
                               rows="10"
-                              value={description}></textarea>
+                              value={description}
+                              onChange={(e) =>
+                                setDescription(e.target.value)
+                              }></textarea>
                           </div>
                         </Col>
                       </Row>

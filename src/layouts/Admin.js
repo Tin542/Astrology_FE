@@ -24,14 +24,13 @@ import AdminFooter from "components/Footers/AdminFooter.js";
 // dinamically create dashboard routes
 import routes from "routes.js";
 
-import image1 from "assets/img/full-screen-image-1.jpg";
-import image2 from "assets/img/full-screen-image-2.jpg";
-import image3 from "assets/img/full-screen-image-3.jpg";
-import image4 from "assets/img/full-screen-image-4.jpg";
+import image5 from "assets/img/full-screen-image-5.jpg";
+import image6 from "assets/img/full-screen-image-6.jpg";
+import image7 from "assets/img/full-screen-image-7.jpg";
 
 function Admin() {
-  const [sidebarImage, setSidebarImage] = React.useState(image4);
-  const [sidebarBackground, setSidebarBackground] = React.useState("purple");
+  const [sidebarImage, setSidebarImage] = React.useState(image5);
+  const [sidebarBackground, setSidebarBackground] = React.useState("white");
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
       if (prop.collapse) {

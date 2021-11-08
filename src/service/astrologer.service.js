@@ -1,4 +1,4 @@
-import { getWithTokenParam } from "../service/ReadAPI";
+import { getWithTokenParam, getWithToken } from "../service/ReadAPI";
 
 export const getListAstrologer = (page, limit) => {
     return getWithTokenParam(
@@ -20,6 +20,14 @@ export const getListAstrologer = (page, limit) => {
           name,
           "is-deleted": status,
         },
+        localStorage.getItem("token")
+      );
+    };
+
+    export const countAstrologer = () => {
+      return getWithToken(
+        `/api/v1/astrologers/admin`,
+       
         localStorage.getItem("token")
       );
     };

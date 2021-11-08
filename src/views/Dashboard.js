@@ -1,8 +1,6 @@
-import React from "react";
-// react component used to create charts
-import ChartistGraph from "react-chartist";
-// react components used to create a SVG / Vector map
+import React, { useState, useEffect } from "react";
 import { VectorMap } from "react-jvectormap";
+import ShowMoreText from "react-show-more-text";
 
 // react-bootstrap components
 import {
@@ -21,9 +19,124 @@ import {
   Col,
   ProgressBar,
 } from "react-bootstrap";
+import { Link, useHistory } from "react-router-dom";
+import moment from "moment";
 import { ListGroupItem, ListGroup, Progress } from "reactstrap";
+import {
+  countAstrologer,
+  getListAstrologer,
+} from "./../service/astrologer.service.js";
+import {
+  countCustomer,
+  getListCustomer,
+} from "./../service/customer.service.js";
+import { getListPost } from "./../service/post.service.js";
 
 function Dashboard() {
+  const [countAstro, setCountAstro] = useState(0);
+  const [countCus, setCountCus] = useState(0);
+
+  const [newAstro, setNewAstro] = useState([]);
+  const [newCustomer, setNewCustomer] = useState([]);
+
+  const [bestAstro, setBestAstro] = useState([]);
+
+  const [newPost, setNewPost] = useState([]);
+
+  const history = useHistory();
+
+  useEffect(() => {
+    numberAstrologer();
+  }, []);
+
+  useEffect(() => {
+    newAstrologer();
+  }, []);
+
+  useEffect(() => {
+    bestAstrologer();
+  }, []);
+
+  useEffect(() => {
+    newCustomers();
+  }, []);
+
+  useEffect(() => {
+    numberCustomer();
+  }, []);
+
+  useEffect(() => {
+    newPosts();
+  }, []);
+
+  const newPosts = () => {
+    getListPost(1, 1)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("post: ", temp);
+        setNewPost(temp);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const numberAstrologer = () => {
+    countAstrologer()
+      .then((res) => {
+        var temp = res.data.data.total;
+        console.log("astro: ", temp);
+        setCountAstro(temp);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const newAstrologer = () => {
+    getListAstrologer(1, 3)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("astro: ", temp);
+        setNewAstro(temp);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const bestAstrologer = () => {
+    getListAstrologer(2, 5)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("best astro: ", temp);
+        setBestAstro(temp);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const numberCustomer = () => {
+    countCustomer()
+      .then((res) => {
+        var temp = res.data.data.total;
+        console.log("customer: ", temp);
+        setCountCus(temp);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const newCustomers = () => {
+    getListCustomer(1, 3)
+      .then((res) => {
+        var temp = res.data.data.list;
+        console.log("customer: ", temp);
+        setNewCustomer(temp);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <Container fluid>
@@ -40,11 +153,19 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Astrologer</p>
-                      <Card.Title as="h4">150</Card.Title>
+                      <Card.Title as="h4" style={{ color: "orange" }}>
+                        {countAstro}
+                      </Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
+              <Card.Footer>
+                <hr></hr>
+                <div className="stats">
+                  <i className="fas fa-arrow-up"></i> Updating
+                </div>
+              </Card.Footer>
             </Card>
           </Col>
 
@@ -54,17 +175,25 @@ function Dashboard() {
                 <Row>
                   <Col xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-single-02 text-danger"></i>
+                      <i className="nc-icon nc-single-02 text-info"></i>
                     </div>
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Customer</p>
-                      <Card.Title as="h4">150</Card.Title>
+                      <Card.Title as="h4" style={{ color: "blue" }}>
+                        {countCus}
+                      </Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
+              <Card.Footer>
+                <hr></hr>
+                <div className="stats">
+                  <i className="fas fa-arrow-up"></i> Updating
+                </div>
+              </Card.Footer>
             </Card>
           </Col>
 
@@ -74,17 +203,26 @@ function Dashboard() {
                 <Row>
                   <Col xs="5">
                     <div className="icon-big text-center icon-warning">
-                      <i className="nc-icon nc-light-3 text-success"></i>
+                      <i className="nc-icon nc-explore-2 text-warning"></i>
                     </div>
                   </Col>
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Revenue</p>
-                      <Card.Title as="h4">$ 1,345</Card.Title>
+                      <Card.Title as="h4" style={{ color: "Yellow" }}>
+                        $ 1,345
+                      </Card.Title>
                     </div>
                   </Col>
                 </Row>
               </Card.Body>
+              <Card.Footer>
+                <hr></hr>
+                <div className="stats">
+                  <i className="far fa-calendar-alt mr-1"></i>
+                  In the last week
+                </div>
+              </Card.Footer>
             </Card>
           </Col>
 
@@ -105,299 +243,175 @@ function Dashboard() {
                   </Col>
                 </Row>
               </Card.Body>
+              <Card.Footer>
+                <hr></hr>
+                <div className="stats">
+                  <i className="far fa-clock mr-1"></i>
+                  In the last hour
+                </div>
+              </Card.Footer>
             </Card>
+          </Col>
+        </Row>
+        <Row>
+          <Col md="12">
+            {newPost.map((item, index) => {
+              return (
+                <Card>
+                  <Card.Body>
+                    <Row>
+                      <Col md="6">
+                        <h4>{item.title}</h4>
+                        <p className="card-category">
+                          Posted by: {item.astrologer.name}
+                        </p>
+                        <br />
+                        {/* <textarea
+                          disabled
+                          class="form-control"
+                          id="exampleFormControlTextarea1"
+                          rows="12"
+                          defaultValue={item.content}></textarea> */}
+                        <ShowMoreText
+                          /* Default options */
+                          lines={10}
+                          
+                          anchorClass="my-anchor-css-class"
+                          expanded={false}
+                          width={500}
+                          onClick={()=>{
+                            localStorage.setItem("postId", item.id);
+                            history.push("/admin/detail-post");
+                          }}
+                          truncatedEndingComponent={"... "}>
+                          {item.content}
+                        </ShowMoreText>
+                      </Col>
+                      <Col className="ml-auto mr-auto" md="6">
+                        <img
+                          alt="..."
+                          src={item.image_url}
+                          style={{
+                            width: 570,
+                            height: 400,
+                            borderRadius: 10,
+                          }}></img>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              );
+            })}
           </Col>
         </Row>
         <Row>
           <Col md="4">
             <Card>
               <Card.Header>
-                <Card.Title as="h4">Team Member</Card.Title>
+                <Card.Title as="h4">Top 5 Astrologer of the month</Card.Title>
               </Card.Header>
 
               <Card.Body>
                 <ListGroup className="list my--3" flush>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <Col className="col-auto">
-                        <img
-                          alt="..."
-                          src={require("assets/img/faces/bac.jpg").default}
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 400 / 2,
-                          }}
-                        />
-                      </Col>
-                      <div className="col ml--2">
-                        <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                          Nguyễn Văn Bắc
-                        </a>
-                        <br />
-
-                        <span className="text-success mr-1">●</span>
-                        <small>Online</small>
-                      </div>
-                    </Row>
-                  </ListGroupItem>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <Col className="col-auto">
-                        <img
-                          alt="..."
-                          src={require("assets/img/faces/tin.jpg").default}
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 400 / 2,
-                          }}
-                        />
-                      </Col>
-                      <div className="col ml--2">
-                        <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                          Nguyễn Thành Tín
-                        </a>
-                        <br />
-
-                        <span className="text-success mr-1">●</span>
-                        <small>Online</small>
-                      </div>
-                    </Row>
-                  </ListGroupItem>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <Col className="col-auto">
-                        <img
-                          alt="..."
-                          src={require("assets/img/faces/vu.jpg").default}
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 400 / 2,
-                          }}
-                        />
-                      </Col>
-                      <div className="col ml--2">
-                        <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                          Trần Quang Vũ
-                        </a>
-                        <br />
-
-                        <span className="text-success mr-1">●</span>
-                        <small>Online</small>
-                      </div>
-                    </Row>
-                  </ListGroupItem>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <Col className="col-auto">
-                        <img
-                          alt="..."
-                          src={require("assets/img/faces/dat.jpg").default}
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 400 / 2,
-                          }}
-                        />
-                      </Col>
-                      <div className="col ml--2">
-                        <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                          Nhâm Đức Đạt
-                        </a>
-                        <br />
-
-                        <span className="text-success mr-1">●</span>
-                        <small>Online</small>
-                      </div>
-                    </Row>
-                  </ListGroupItem>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <Col className="col-auto">
-                        <img
-                          alt="..."
-                          src={require("assets/img/faces/face-1.jpg").default}
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 400 / 2,
-                          }}
-                        />
-                      </Col>
-                      <div className="col ml--2">
-                        <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                          Phan Trung Dũng
-                        </a>
-                        <br />
-
-                        <span className="text-success mr-1">●</span>
-                        <small>Online</small>
-                      </div>
-                    </Row>
-                  </ListGroupItem>
-                  <ListGroupItem className="px-0">
-                    <Row className="align-items-center">
-                      <Col className="col-auto">
-                        <img
-                          alt="..."
-                          src={require("assets/img/faces/tram.jpg").default}
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 400 / 2,
-                          }}
-                        />
-                      </Col>
-                      <div className="col ml--2">
-                        <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                          Đào Bảo Trâm
-                        </a>
-                        <br />
-
-                        <span className="text-success mr-1">●</span>
-                        <small>Online</small>
-                      </div>
-                    </Row>
-                  </ListGroupItem>
+                  {bestAstro.map((item, index) => {
+                    return (
+                      <ListGroupItem className="px-0">
+                        <Row className="align-items-center">
+                          <Col className="col-auto">
+                            <img
+                              alt="..."
+                              src={item.image_url}
+                              style={{
+                                width: 50,
+                                height: 50,
+                                borderRadius: 400 / 2,
+                              }}
+                            />
+                          </Col>
+                          <div className="col ml--2">
+                            <a
+                              href="#pablo"
+                              onClick={() => {
+                                localStorage.setItem("astrologer", item.id);
+                                localStorage.setItem(
+                                  "genderAstro",
+                                  item.gender ? "Male" : "Female"
+                                );
+                              }}>
+                              <Link to={"/admin/astrologer-info"}>
+                                {item.name}
+                              </Link>
+                            </a>
+                            <br />
+                            {item.deleted_at == null ? (
+                              <span className="text-success mr-1">
+                                ●<small> Online</small>
+                              </span>
+                            ) : (
+                              <span className="text-danger mr-1">
+                                ●<small> Offline</small>
+                              </span>
+                            )}
+                          </div>
+                        </Row>
+                      </ListGroupItem>
+                    );
+                  })}
                 </ListGroup>
               </Card.Body>
             </Card>
           </Col>
 
-          <Col md="6">
+          <Col md="8">
             <Card className="card-tasks">
               <Card.Header>
-                <Card.Title as="h4">Tasks</Card.Title>
+                <Card.Title as="h4">New Astrologer</Card.Title>
               </Card.Header>
               <Card.Body>
                 <div className="table-full-width">
                   <Table className="table-hover">
                     <tbody>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultValue=""
-                                type="checkbox"></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>Call agora api</td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-688296980">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                            placement="top">
-                            <Button
-                              className="btn-simple btn-link"
-                              type="button"
-                              variant="info">
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-202192706">Remove..</Tooltip>
-                            }
-                            placement="top">
-                            <Button
-                              className="btn-simple btn-link"
-                              type="button"
-                              variant="danger">
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultValue=""
-                                type="checkbox"></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>Approve rich text for description</td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-746544352">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                            placement="top">
-                            <Button
-                              className="btn-simple btn-link"
-                              type="button"
-                              variant="info">
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-743037005">Remove..</Tooltip>
-                            }
-                            placement="top">
-                            <Button
-                              className="btn-simple btn-link"
-                              type="button"
-                              variant="danger">
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Form.Check className="mb-1 pl-0">
-                            <Form.Check.Label>
-                              <Form.Check.Input
-                                defaultValue=""
-                                type="checkbox"></Form.Check.Input>
-                              <span className="form-check-sign"></span>
-                            </Form.Check.Label>
-                          </Form.Check>
-                        </td>
-                        <td>Approve search for post, user</td>
-                        <td className="td-actions text-right">
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-855684210">
-                                Edit Task..
-                              </Tooltip>
-                            }
-                            placement="top">
-                            <Button
-                              className="btn-simple btn-link"
-                              type="button"
-                              variant="info">
-                              <i className="fas fa-edit"></i>
-                            </Button>
-                          </OverlayTrigger>
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip id="tooltip-242945902">Remove..</Tooltip>
-                            }
-                            placement="top">
-                            <Button
-                              className="btn-simple btn-link"
-                              type="button"
-                              variant="danger">
-                              <i className="fas fa-times"></i>
-                            </Button>
-                          </OverlayTrigger>
-                        </td>
-                      </tr>
+                      {newAstro.map((item, index) => {
+                        return (
+                          <tr key={index}>
+                            <td
+                              onClick={() => {
+                                localStorage.setItem("astrologer", item.id);
+                                localStorage.setItem(
+                                  "genderAstro",
+                                  item.gender ? "Male" : "Female"
+                                );
+                              }}>
+                              <Row className="align-items-center">
+                                <Col className="col-auto">
+                                  <img
+                                    alt="..."
+                                    style={{
+                                      width: 50,
+                                      height: 50,
+                                      borderRadius: 400 / 2,
+                                    }}
+                                    src={item.image_url}></img>{" "}
+                                </Col>
+                                <div className="col ml--2">
+                                  <Link to={"/admin/astrologer-info"}>
+                                    {item.name}
+                                  </Link>
+                                </div>
+                              </Row>
+                            </td>
+
+                            <td>{item.gender ? "Male" : "Female"}</td>
+                            <td>{item.phone_number}</td>
+                            <td>
+                              {moment(item.time_of_birth).format(
+                                "DD-MM-YYYY HH:mm:ss"
+                              )}
+                            </td>
+                            <td></td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </Table>
                 </div>
@@ -405,29 +419,58 @@ function Dashboard() {
             </Card>
             <Card className="card-tasks">
               <Card.Header>
-                <Card.Title as="h4">Progress</Card.Title>
+                <Card.Title as="h4">New Customer</Card.Title>
               </Card.Header>
               <Card.Body>
-                <ListGroup className="list my--3" flush>
-                  <h5>Backend</h5>
-                  <ProgressBar>
-                    <ProgressBar max="100" min="0" now="99" variant="success">
-                      <span className="sr-only">60% Complete</span>
-                    </ProgressBar>
-                  </ProgressBar>
-                  <h5>Mobile</h5>
-                  <ProgressBar>
-                    <ProgressBar max="100" min="0" now="99" variant="success">
-                      <span className="sr-only">60% Complete</span>
-                    </ProgressBar>
-                  </ProgressBar>
-                  <h5>Frontend</h5>
-                  <ProgressBar>
-                    <ProgressBar max="100" min="0" now="98" variant="success">
-                      <span className="sr-only">60% Complete</span>
-                    </ProgressBar>
-                  </ProgressBar>
-                </ListGroup>
+                <div className="table-full-width">
+                  <Table className="table-hover">
+                    <tbody>
+                      {newCustomer.map((item, index) => {
+                        return (
+                          <tr key={index}>
+                            <td
+                              onClick={() => {
+                                localStorage.setItem("customerId", item.id);
+                                localStorage.setItem(
+                                  "genderCus",
+                                  item.gender ? "Male" : "Female"
+                                );
+                              }}>
+                              <Row className="align-items-center">
+                                <Col className="col-auto">
+                                  <img
+                                    alt="..."
+                                    style={{
+                                      width: 50,
+                                      height: 50,
+                                      borderRadius: 400 / 2,
+                                    }}
+                                    src={item.url_image}></img>{" "}
+                                </Col>
+                                <div className="col ml--2">
+                                  <Link to={"/admin/customer-info"}>
+                                    {item.name}
+                                  </Link>
+                                </div>
+                              </Row>
+                            </td>
+
+                            <td onClick={() => {}}>
+                              {item.gender ? "Male" : "Female"}
+                            </td>
+                            <td onClick={() => {}}>{item.phone_number}</td>
+                            <td onClick={() => {}}>
+                              {moment(item.time_of_birth).format(
+                                "DD-MM-YYYY HH:mm:ss"
+                              )}
+                            </td>
+                            <td></td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </Table>
+                </div>
               </Card.Body>
             </Card>
           </Col>
