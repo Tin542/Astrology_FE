@@ -1,4 +1,4 @@
-import { getWithTokenParam } from "../service/ReadAPI";
+import { getWithTokenParam, getWithToken } from "../service/ReadAPI";
 
 export const getListCustomer = (page, limit) => {
     return getWithTokenParam(
@@ -20,6 +20,14 @@ export const getListCustomer = (page, limit) => {
           name,
           "is-deleted": status,
         },
+        localStorage.getItem("token")
+      );
+    };
+
+    export const countCustomer = () => {
+      return getWithToken(
+        `/api/v1/customers/admin`,
+        
         localStorage.getItem("token")
       );
     };
