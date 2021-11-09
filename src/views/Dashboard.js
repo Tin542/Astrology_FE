@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { VectorMap } from "react-jvectormap";
 import ShowMoreText from "react-show-more-text";
 
 // react-bootstrap components

@@ -1,124 +1,129 @@
 import React, { useState, useEffect } from "react";
-import { del, post, get, put } from "../../service/ReadAPI";
-import Moment from 'react-moment';
-import moment from "moment";
 
 // react-bootstrap components
+import { Card, Form, Container, Row, Col } from "react-bootstrap";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import {
-  Badge,
-  Button,
-  Card,
-  Form,
-  InputGroup,
-  Navbar,
-  Nav,
-  Table,
-  Container,
-  Row,
-  Col,
-  OverlayTrigger,
-  Tooltip,
-} from "react-bootstrap";
-
+  getListPlanet,
+  getDetailPlanet,
+} from "../../service/planet.service.js";
 
 function PlanetTable() {
   useEffect(() => {
-    getServiceList();
-    // displayFIeldName();
-    // displayStateName();
-    // get("​/api​/v1.0​/company​").then((res) => {
-    //   if (res && res.status === 200) {
-    //     setListFilterState(res.data);
-    //   }
-    // });
-    // get("/api​/v1.0​/major_field​").then((res) => {
-    //   if (res && res.status === 200) {
-    //     setListFilterState(res.data);
-    //   }
-    // });
+    loadData();
   }, []);
+  //list
   const [planet, setPlanet] = useState([]);
-  function getServiceList() {
-    get("/api/v1/planets")
+
+  //detail planet
+  const [id, setId] = useState();
+  const [name, setName] = useState();
+  const [descripiton, setDescription] = useState();
+  const [image, setImage] = useState();
+
+  //detail modal
+  const [detailModal, setDetailModal] = useState(false);
+  const toggDetailModal = () => setDetailModal(!detailModal);
+
+  const loadData = () => {
+    getListPlanet(1, 10)
       .then((res) => {
         var temp = res.data.data.list;
         console.log(temp);
 
         setPlanet(temp);
-        // setUseListCategoryShowPage(
-        //   temp.slice(numberPage * 5 - 5, numberPage * 5)
-        // );
-        // setTotalNumberPage(Math.ceil(temp.length / 5));
-        // setCount(count);
       })
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
+
+  const getDetail = (id) => {
+    getDetailPlanet(id)
+      .then((res) => {
+        var temp = res.data.data;
+        console.log(temp);
+
+        setName(temp.name);
+        setDescription(temp.description);
+        setImage(temp.image_url);
+
+        console.log("name: ", temp.name);
+        console.log("des: ", temp.description);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const closeBtn = (x) => (
+    <button
+      className="btn border border-danger"
+      style={{ color: "#B22222" }}
+      onClick={x}>
+      X
+    </button>
+  );
   return (
     <>
       <Container fluid>
         <Row>
-          <Col md="12">
-            <Card className="table-big-boy">
-              <Card.Header>
-                
-                <br></br>
-              </Card.Header>
-              <Card.Body className="table-full-width">
-                <Table className="table-bigboy">
-                  <thead>
-                    <tr>
-                      <th className="text-center">Image</th>
-                      <th>Name</th>
-                      <th className="th-description">Description</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {planet.map((plan, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <div className="img-container">
-                              <img
-                                alt="..."
-                                src={
-                                  plan.image_url
-                                }></img>
-                            </div>
-                          </td>
-                          <td className="td-name">{plan.name}</td>
-                          <td>{plan.description}</td>
-                          <td className="td-actions">
-                            <OverlayTrigger
-                              overlay={
-                                <Tooltip id="tooltip-461494662">
-                                  Edit
-                                </Tooltip>
-                              }
-                              placement="left">
-                              <Button
-                                className="btn-link btn-icon"
-                                type="button"
-                                variant="success">
-                                <i className="fas fa-edit"></i>
-                              </Button>
-                            </OverlayTrigger>
-                          </td>
-                        </tr>
-                        
-                      );
-                    })}
-                    
-                   
-                  </tbody>
-                </Table>
-              </Card.Body>
-            </Card>
-          </Col>
+          {planet.map((plan, index) => {
+            return (
+              <Col lg="4" sm="6">
+                <Card className="card-stats">
+                  <Card.Body>
+                    <Row>
+                      <Col xs="5">
+                        <div className="planet-image">
+                          <img
+                            alt="..."
+                            style={{
+                              width: 160,
+                              height: 100,
+                            }}
+                            src={plan.image_url}></img>
+                        </div>
+                      </Col>
+                      <Col xs="7">
+                        <div>
+                          <p
+                            className="card-category"
+                            style={{ color: "black" }}>
+                            <strong>{plan.name}</strong>
+                          </p>
+                          <small
+                            onClick={() => {
+                              setDetailModal(true);
+                              getDetail(plan.id);
+                            }}>
+                            <a href="#">detail</a>
+                          </small>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Col>
+            );
+          })}
         </Row>
       </Container>
+
+      <Modal isOpen={detailModal} toggle={toggDetailModal}>
+        <ModalHeader
+          style={{ color: "#B22222" }}
+          close={closeBtn(toggDetailModal)}
+          toggle={toggDetailModal}>
+          {name}
+        </ModalHeader>
+
+        <ModalBody>
+          <p>{descripiton}</p>
+        </ModalBody>
+
+        <ModalFooter></ModalFooter>
+      </Modal>
     </>
   );
 }
