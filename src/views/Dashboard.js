@@ -238,7 +238,7 @@ function Dashboard() {
                   <Col xs="7">
                     <div className="numbers">
                       <p className="card-category">Downmoaded</p>
-                      <Card.Title as="h4">+45K</Card.Title>
+                      <Card.Title as="h4">+45</Card.Title>
                     </div>
                   </Col>
                 </Row>
@@ -266,12 +266,7 @@ function Dashboard() {
                           Posted by: {item.astrologer.name}
                         </p>
                         <br />
-                        {/* <textarea
-                          disabled
-                          class="form-control"
-                          id="exampleFormControlTextarea1"
-                          rows="12"
-                          defaultValue={item.content}></textarea> */}
+                       
                         <ShowMoreText
                           /* Default options */
                           lines={10}
