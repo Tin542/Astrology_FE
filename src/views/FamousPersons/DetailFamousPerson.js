@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { storage } from "../../firebase/firebaseConfig";
 import Select from "react-select";
 import moment from "moment";
 import { Link, useHistory } from "react-router-dom";
