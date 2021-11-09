@@ -112,100 +112,48 @@ function DetailAstrologer() {
                       </Card.Header>
                     </Card.Header>
                     <Card.Body>
-                      <Row>
-                        <Col className="pr-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">Name</strong>
-                            <Form.Control
-                              defaultValue={name}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-
-                        <Col className="pl-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Phone Number
-                            </strong>
-                            <Form.Control
-                              defaultValue={phone}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                        <Col className="pl-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">Gender</strong>
-                            <Form.Control
-                              defaultValue={gender}
-                              disabled
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col className="pr-1" md="4">
-                          <p>
-                            <strong className="text-post-detail">
-                              Date of Birth:{" "}
-                            </strong>
-                            <br />
-                            {moment(dateOfBirth).format("DD-MM-YYYY HH:mm:ss")}
-                          </p>
-                        </Col>
-                        <Col className="px-1" md="4">
-                          <p>
-                            <strong
-                              className="text-post-detail"
-                              style={{ color: "purple" }}>
-                              Followers:{" "}
-                            </strong>
-                            {flowwers}
-                          </p>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col className="pr-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Latitude
-                            </strong>
-                            <Form.Control
-                              disabled
-                              defaultValue={latitude}
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-
-                        <Col className="px-1" md="4">
-                          <Form.Group>
-                            <strong className="text-post-detail">
-                              Longitude
-                            </strong>
-                            <Form.Control
-                              disabled
-                              defaultValue={longitude}
-                              type="text"></Form.Control>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md="12">
-                          <div class="form-group">
-                            <strong className="text-post-detail">
-                              About me
-                            </strong>
-                            <textarea
-                              disabled
-                              class="form-control"
-                              id="exampleFormControlTextarea1"
-                              rows="10"
-                              defaultValue={description}></textarea>
-                          </div>
-                        </Col>
-                      </Row>
-
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Astrologer name</p>
+                        {name}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Phone number</p>
+                        {phone}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Gender</p>
+                        {gender}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Date of birth</p>
+                        {moment(dateOfBirth).format("DD-MM-YYYY HH:mm:ss")}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Latitude of birth</p>
+                        {latitude}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Longitude of birth</p>
+                        {longitude}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p className="category">Followers </p>
+                        {flowwers}
+                      </div>
+                      <div className="typo-line">
+                        <h1></h1>
+                        <p>
+                          <span className="category">About Astrologer</span>
+                          {description}
+                        </p>
+                      </div>
                       <div className="clearfix"></div>
                     </Card.Body>
                   </Card>
