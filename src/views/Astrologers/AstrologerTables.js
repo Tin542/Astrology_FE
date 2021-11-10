@@ -242,7 +242,7 @@ function AstrologerTables() {
                                     height: 50,
                                     borderRadius: 400 / 2,
                                   }}
-                                  src={item.image_url}></img>{" "}
+                                  src={item.url_image}></img>{" "}
                               </Col>
                               <div className="col ml--2">
                                 <Link to={"/admin/astrologer-info"}>

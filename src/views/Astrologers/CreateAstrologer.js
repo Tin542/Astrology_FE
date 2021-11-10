@@ -86,7 +86,7 @@ function CreateAstrologer() {
         status_payment: 0,
         gender: gender,
         description: description,
-        image_url: image,
+        url_image: image,
         latitude_of_birth: latitude,
         longitude_of_birth: longitude,
         time_of_birth: dateOfBirth,
