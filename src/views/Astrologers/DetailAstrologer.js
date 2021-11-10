@@ -56,7 +56,7 @@ function DetailAstrologer() {
         setLatitude(temp.latitude_of_birth);
         setLongitude(temp.longitude_of_birth);
         setDescription(temp.description);
-        setImage(temp.image_url);
+        setImage(temp.url_image);
         setFollowers(temp.followers_count);
         setChart(temp.natal_chart_url);
 
