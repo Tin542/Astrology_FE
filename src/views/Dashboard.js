@@ -337,7 +337,7 @@ function Dashboard() {
                               </Link>
                             </a>
                             <br />
-                            {item.deleted_at == null ? (
+                            {item.is_online ? (
                               <span className="text-success mr-1">
                                 ●<small> Online</small>
                               </span>

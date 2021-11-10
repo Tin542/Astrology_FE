@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { Link, useHistory } from "react-router-dom";
-import { del, get, putWithToken, postWithToken } from "../../service/ReadAPI";
+import { del, get, getWithToken } from "../../service/ReadAPI";
 // react-bootstrap components
 import {
-  Badge,
   Button,
   Card,
   Form,
-  InputGroup,
-  Navbar,
-  Nav,
   Container,
   Row,
   Col,
@@ -44,7 +40,7 @@ function DetailAstrologer() {
 
   function getAstrologerByID(Id) {
     console.log("id: ", Id);
-    get(`/api/v1/astrologers/${Id}`)
+    getWithToken(`/api/v1/astrologers/admin/${Id}`, localStorage.getItem("token"))
       .then((res) => {
         var temp = res.data.data;
         console.log(temp);
@@ -184,7 +180,7 @@ function DetailAstrologer() {
                         onClick={() => {
                           setDeleteModal(true);
                         }}>
-                        Delete
+                        Ban
                       </Button>
                     </Row>
                   </Card.Footer>
