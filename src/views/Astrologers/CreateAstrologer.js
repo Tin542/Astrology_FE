@@ -35,7 +35,7 @@ function CreateAstrologer() {
   const [longitude, setLongitude] = useState(null);
   const [description, setDescription] = useState(null);
   const [image, setImage] = useState(
-    "https://image.lag.vn/upload/news/21/08/16/236599595_1425452954506376_3110056547255537769_n_WOLP.jpg"
+    "https://firebasestorage.googleapis.com/v0/b/spiritastro-2bfba.appspot.com/o/avatar%2F202111101330066da10830f10-8ef6-306a9-9bb0-b6ce1111b10d60.png?alt=media&token=c3af298a-d5d9-4773-9b21-f9f6901f1df8"
   );
 
   const [listUsetId, setListUserId] = useState([]);
