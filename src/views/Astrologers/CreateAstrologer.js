@@ -1,24 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { storage } from "../../firebase/firebaseConfig";
 
 import { Link, useHistory } from "react-router-dom";
 import {
-  del,
   postWithToken,
-  get,
-  put,
   getWithToken,
 } from "../../service/ReadAPI";
 // react-bootstrap components
 import {
-  Badge,
   Button,
   Card,
   Form,
-  InputGroup,
-  Navbar,
-  Nav,
   Container,
   Row,
   Col,
@@ -34,9 +28,7 @@ function CreateAstrologer() {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [description, setDescription] = useState(null);
-  const [image, setImage] = useState(
-    "https://firebasestorage.googleapis.com/v0/b/spiritastro-2bfba.appspot.com/o/avatar%2F202111101330066da10830f10-8ef6-306a9-9bb0-b6ce1111b10d60.png?alt=media&token=c3af298a-d5d9-4773-9b21-f9f6901f1df8"
-  );
+  const [image, setImage] = useState(null);
 
   const [listUsetId, setListUserId] = useState([]);
   const [comboboxError, setComboboxError] = useState(null);
@@ -66,6 +58,38 @@ function CreateAstrologer() {
         console.log(err);
       });
   }
+  const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  const uploadImage = async (e) => {
+    console.log("test image: ", e.target.files[0]);
+    if (e.target.files[0]) {
+      const data = e.target.files[0];
+      const uploadTask = storage.ref(`avatar/${data.name}`).put(data);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setProgress(progress);
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref("avatar")
+            .child(data.name)
+            .getDownloadURL()
+            .then((url) => {
+              setImage(url);
+            });
+        }
+      );
+    }
+  };
+  console.log("image: ", image);
   function createAstrologer() {
     console.log("id: ", userId.value);
     console.log("name: ", name);
@@ -86,7 +110,7 @@ function CreateAstrologer() {
         status_payment: 0,
         gender: gender,
         description: description,
-        url_image: image,
+        image_url: image,
         latitude_of_birth: latitude,
         longitude_of_birth: longitude,
         time_of_birth: dateOfBirth,
@@ -120,7 +144,9 @@ function CreateAstrologer() {
                   <Card>
                     <Card.Header>
                       <Card.Header>
-                        <Card.Title as="h4" className="text-post-detail">Create Astrologer</Card.Title>
+                        <Card.Title as="h4" className="text-post-detail">
+                          Create Astrologer
+                        </Card.Title>
                       </Card.Header>
                     </Card.Header>
                     <Card.Body>
@@ -271,7 +297,7 @@ function CreateAstrologer() {
                               onChange={(e) =>
                                 setDescription(e.target.value)
                               }></textarea>
-                              {desError}
+                            {desError}
                           </div>
                         </Col>
                       </Row>
@@ -304,7 +330,8 @@ function CreateAstrologer() {
                           } else if (phone.length < 9 || phone.length > 11) {
                             setPhoneError(
                               <small className="text-danger">
-                                Phone is required atleast 9 numbers and maximum 11 number
+                                Phone is required atleast 9 numbers and maximum
+                                11 number
                               </small>
                             );
                           } else {
@@ -366,9 +393,15 @@ function CreateAstrologer() {
                 <Card className="card-user">
                   <Card.Header className="no-padding"></Card.Header>
                   <Card.Body>
-                    <div className="post-detail-Image">
-                      <img alt="..." src={image}></img>
-                    </div>
+                    <Form.Group className="mb-1 ml-5">
+                      <Form.Label>Image</Form.Label>
+                      <Form.Control type="file" onChange={uploadImage} />
+                      {loading ? (
+                        <h3>Loading...</h3>
+                      ) : (
+                        <img src={image} style={{ width: "200px" }} />
+                      )}
+                    </Form.Group>
                   </Card.Body>
                   <Card.Footer>
                     <hr></hr>
