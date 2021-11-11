@@ -26,9 +26,7 @@ const auth = app.auth();
 const db = app.firestore();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-async function getToken(fbToken){
-  return post("/api/v1/users/login", {token: fbToken});
-}
+
 const loginWithGoogle = async () => {
     try {
       const res = await auth.signInWithPopup(googleProvider);
@@ -52,7 +50,9 @@ const loginWithGoogle = async () => {
     }
 };
 
-
+async function getToken(fbToken){
+  return await post("/api/v1/users/login", {token: fbToken});
+}
 
 const logout = () => {
   auth.signOut();

@@ -8,16 +8,6 @@ import { postToken, post } from "../../service/ReadAPI";
 import "./login.css";
 
 // react-bootstrap components
-import {
-  Badge,
-  Button,
-  Card,
-  Form,
-  Navbar,
-  Nav,
-  Container,
-  Col,
-} from "react-bootstrap";
 
 function LoginPage() {
   const [user, loading, error] = useAuthState(auth);
